@@ -12,8 +12,8 @@ Three standing principles hold for every bmo-next repository, this one included:
   on a service.
 
 This repository is the base library `bmo-markup`: the reading and writing of markdown and text that the
-chat services, the console and the archive share. It ships one Rust crate in `rust/` and one TypeScript
-package in `ts/`, twins that read a text the same way. It has no server, no deployment and no data of its
+chat services, the console and the archive share. It ships one Rust crate at the root and one TypeScript
+package in `package/`, twins that read a text the same way. It has no server, no deployment and no data of its
 own, and every bmo-next repository may depend on it directly.
 
 ## Rules
@@ -25,7 +25,7 @@ own, and every bmo-next repository may depend on it directly.
 - **The library depends on nothing `bmo-*`.** Both manifests name registry dependencies only; the
   repository test fails on any other. What differs per consumer (words a reader sees, a part's English
   policy, a glossary's path) is passed in by the consumer, with a safe default here.
-- **Tests live in `tests/`:** `rust/tests/` for the crate, `ts/tests/` for the package. No test module sits
+- **Tests live in `tests/`:** `tests/` for the crate, `package/tests/` for the package. No test module sits
   beside runtime code.
 - **English only** in code, comments, strings, tests and documents, and in commit messages. A message the
   library returns is an English sentence; a machine-read outcome is a status code or a kebab-case code.
@@ -34,16 +34,17 @@ own, and every bmo-next repository may depend on it directly.
   sequence or a char code, and every file holding it is counted in `korean-ledger.json`.
 - **No names of agents, owners or hosts, and no personal paths** in code, documents or commits. Write the
   role instead: a consumer, a reader, the owner.
-- **No directory named after its parent** (no `x/x`), **no manifest at the root**, and each of `rust/` and
-  `ts/` is a project of its own with its manifest and lockfile.
+- **No directory named after its parent** (no `x/x`) and **no folder named for a language.** The crate's
+  manifest and lockfile are the only ones at the root; `package/` is a project of its own with its manifest
+  and lockfile.
 - **Documents state what is true now**: no change history, no quoted source and no file-and-line pins.
 
 ## Checks
 
-- Rust, from `rust/`: `cargo check --all-targets`, `cargo clippy --all-targets -- -D warnings`,
-  `cargo fmt --check` (108 columns, 2-space indentation, as the root `rustfmt.toml` sets), then
-  `cargo test`.
-- TypeScript, from `ts/`: `bun run typecheck`, then `bun test`.
-- `testbed.toml` declares the same steps and the quick checks for the testbed.
+- Rust, from the root: `cargo check --all-targets`, `cargo clippy --all-targets -- -D warnings`,
+  `cargo fmt --check` (108 columns, 2-space indentation, as `rustfmt.toml` sets), then `cargo test`.
+- TypeScript, from `package/`: `bun run check`, the static check and the tests together.
+- `testbed.toml` declares the quick checks and the setup for the testbed, which checks and tests the crate
+  as the root project and the package by its `check` script.
 - The version is the repository's, in semver: `VERSION`, the crate's and the package's version are one
   number, and the repository test fails where they differ.

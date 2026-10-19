@@ -11,8 +11,9 @@ text.
 | Folder | What it holds |
 |---|---|
 | `docs/` | The design, the public API, the boundary and the inventory of what the library was built from |
-| `rust/` | The Rust crate `bmo-markup`, its sources and its tests |
-| `ts/` | The TypeScript package `bmo-markup`, its modules, its tests and their data files |
+| `src/` | The sources of the Rust crate `bmo-markup`, whose manifest stands at the root |
+| `tests/` | The crate's tests, and the repository test that holds the repository's own shape |
+| `package/` | The TypeScript package `bmo-markup`, its modules, its tests and their data files |
 
 The library depends on nothing but registry packages and has no server or deployment. A consumer takes
 the crate by path or git and the package as a dependency, and passes in whatever is its own to decide:

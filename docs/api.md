@@ -240,7 +240,7 @@ rest) turned into the markdown they stand for.
 
 ## Data files
 
-- **`ts/tests/answer-cap-cases.json`** holds the cases the answer ceiling is held to: lists to cut, with their
+- **`package/tests/answer-cap-cases.json`** holds the cases the answer ceiling is held to: lists to cut, with their
   render, unit, ceiling and what is kept, left and said, and values to cut with what they become. A piece of
   text is a string or a text repeated so many times. A Rust twin of the ceiling a consumer keeps is held to the
   same file; its entries of a repeated Hangul syllable tell a count of characters from a count of bytes.

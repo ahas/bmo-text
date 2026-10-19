@@ -1,6 +1,7 @@
-//! The repository's own shape, held for both projects in it: no manifest at the root, no directory named
-//! after its parent, tests only under `tests/`, no dependency on another bmo repository, one version, and
-//! Korean only where the ledger allows it and never hidden behind an escape (docs/design.md).
+//! The repository's own shape, held for the crate at the root and the package beside it: the crate's
+//! manifest the only one at the root, no directory named after its parent, tests only under a `tests/`
+//! folder, no dependency on another bmo repository, one version, and Korean only where the ledger allows
+//! it and never hidden behind an escape (docs/design.md).
 
 use std::collections::BTreeMap;
 use std::fs;
@@ -11,12 +12,9 @@ use std::sync::LazyLock;
 use regex::Regex;
 use serde_json::Value;
 
-/// The repository root: the folder above the crate.
+/// The repository root, where the crate stands.
 fn root() -> PathBuf {
-  Path::new(env!("CARGO_MANIFEST_DIR"))
-    .parent()
-    .expect("the crate stands inside the repository")
-    .to_owned()
+  Path::new(env!("CARGO_MANIFEST_DIR")).to_owned()
 }
 
 /// Every file of the checkout, tracked or new and not ignored, relative to the root.
@@ -77,14 +75,19 @@ fn hangul_lines(text: &str) -> usize {
     .count()
 }
 
+/// The one manifest the root holds: the crate's.
+const ROOT_MANIFEST: &str = "Cargo.toml";
+
 #[test]
-fn no_manifest_stands_at_the_root() {
-  let found: Vec<String> =
-    checkout_files().into_iter().filter(|path| MANIFESTS.contains(&path.as_str())).collect();
+fn only_the_crate_s_manifest_stands_at_the_root() {
+  let found: Vec<String> = checkout_files()
+    .into_iter()
+    .filter(|path| MANIFESTS.contains(&path.as_str()) && path != ROOT_MANIFEST)
+    .collect();
 
   assert!(
     found.is_empty(),
-    "the root holds {found:?}; each project keeps its manifest in its own folder"
+    "the root holds {found:?}; only the crate's manifest stands there, the package keeps its own"
   );
 }
 
@@ -112,7 +115,7 @@ fn tests_live_only_in_tests() {
   let misplaced: Vec<String> = checkout_files()
     .into_iter()
     .filter(|path| {
-      let in_tests = path.starts_with("rust/tests/") || path.starts_with("ts/tests/");
+      let in_tests = path.starts_with("tests/") || path.starts_with("package/tests/");
       let test_file = path.contains(".test.") || path.contains(".spec.");
       let rust_test = path.ends_with(".rs") && holds_rust_test(&text_of(path));
 
@@ -161,11 +164,11 @@ fn package_dependencies(manifest: &Value) -> Vec<String> {
 }
 
 fn cargo_manifest() -> toml::Table {
-  text_of("rust/Cargo.toml").parse().expect("the crate's manifest is TOML")
+  text_of(ROOT_MANIFEST).parse().expect("the crate's manifest is TOML")
 }
 
 fn package_manifest() -> Value {
-  serde_json::from_str(&text_of("ts/package.json")).expect("the package's manifest is JSON")
+  serde_json::from_str(&text_of("package/package.json")).expect("the package's manifest is JSON")
 }
 
 #[test]

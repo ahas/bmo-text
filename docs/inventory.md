@@ -25,10 +25,10 @@ the count and the source each was read from, and what becomes of each.
 | Manifests | 4 | 2 | 2 |
 | Total | 42 | 32 | 10 |
 
-### Kept: the Rust crate, into `rust/`
+### Kept: the Rust crate, at the root
 
-Each module keeps its name under `rust/src/`. The eight that carried an inline test module have it moved
-into `rust/tests/`, one file per module.
+Each module keeps its name under `src/`. The eight that carried an inline test module have it moved into
+`tests/`, one file per module.
 
 | Module | Inline tests | What changes in it |
 |---|---|---|
@@ -42,7 +42,7 @@ into `rust/tests/`, one file per module.
 | `web_address` | yes | Its Hangul ranges and its test's Korean sample written plainly instead of as escapes |
 | `wording` | yes | Its test's Korean word written plainly instead of as escapes |
 
-### Kept: the TypeScript package, into `ts/`
+### Kept: the TypeScript package, into `package/`
 
 | Module | What changes in it |
 |---|---|
@@ -59,13 +59,13 @@ into `rust/tests/`, one file per module.
 | `web-address` | Its Hangul ranges written as literal characters instead of escapes |
 | `wording` | Loses its two checkout scans; reading a glossary takes the path from the caller |
 
-The eight kept tests move into `ts/tests/`: `answer-cap`, `dashes`, `finding-markdown`, `format`,
+The eight kept tests move into `package/tests/`: `answer-cap`, `dashes`, `finding-markdown`, `format`,
 `html-reading`, `markdown-structure`, `markdown` and `web-address`. Their example text follows the Korean
 rule of `docs/design.md`, and names of people, agents and real places become neutral ones.
 
 ### Kept: data and manifests
 
-- `answer-cap-cases.json`, the answer ceiling's cases, into `ts/tests/`. Its entries of a repeated Hangul
+- `answer-cap-cases.json`, the answer ceiling's cases, into `package/tests/`. Its entries of a repeated Hangul
   syllable stay, because they are what proves a ceiling counts characters as a reader does rather than
   bytes; its other example words are English.
 - `package.json` and `tsconfig.json`, rewritten for a package of its own (`docs/design.md`, 「Layout」).
@@ -116,7 +116,7 @@ rule of `docs/design.md`, and names of people, agents and real places become neu
 ## Tests outside `markup/` that exercised it
 
 Eleven test files in the old repository imported the library. Two test the library's own functions alone
-and are carried into `ts/tests/`; the other nine test their own unit's behaviour through it and stay with
+and are carried into `package/tests/`; the other nine test their own unit's behaviour through it and stay with
 that unit.
 
 | Test | What it checks | Here |

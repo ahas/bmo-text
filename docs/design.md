@@ -7,14 +7,17 @@ name and depends on no repository.
 
 ## Layout
 
-- **Two projects of their own, side by side.** `rust/` holds the crate `bmo-markup` with its manifest and
-  lockfile; `ts/` holds the package `bmo-markup` with its manifest and lockfile. No manifest stands at the
-  root, so neither build tool's files mix with the other's, and the testbed finds each as a project of its
-  own.
+- **The crate at the root, the package beside it.** The crate `bmo-markup` is the repository's root
+  project: its manifest and lockfile are the only manifest and lockfile at the root, with `src/` and
+  `tests/`. The package `bmo-markup` stands in `package/` with its own manifest and lockfile, a project of
+  its own in the testbed's sense, so the two build tools' files never mix. No folder is named for a
+  language.
 - **One crate, split into modules.** Nothing in the crate has to stand apart, so there is no `crates/`
-  workspace. Each reading is one module under `rust/src/`; its tests are one file under `rust/tests/`.
-- **One package, one file per module.** Each module is a file at the top of `ts/`, exported by its name;
-  its tests are under `ts/tests/` with their data files.
+  workspace. Each reading is one module under `src/`; its tests are one file under `tests/`, beside the
+  repository test that holds the repository's own shape.
+- **One package, one file per module.** Each module is a file at the top of `package/`, exported by its
+  name; its tests are under `package/tests/` with their data files. The package's `check` script runs its
+  static check and its tests together, and is how the testbed checks and tests it.
 - **The package is named `bmo-markup`,** as the crate is and as `bmo-ui` is named and imported, so a
   consumer imports a module as `bmo-markup/<module>`.
 - **One version.** `VERSION` holds the repository's semver; the crate and the package carry the same
