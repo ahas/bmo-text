@@ -1,5 +1,5 @@
 {
-  "about": "The cases the English test is held to: a part's set-aside pattern, the Latin letters each Hangul syllable left is weighed against, and the text. A strict policy reads two names past and allows no Hangul; a lenient one also reads a phrase past and weighs each syllable against twenty letters.",
+  "about": "The cases the English test is held to: a part's set-aside pattern, the Latin letters each Hangul syllable left is weighed against, and the text. A strict policy reads two names past and allows no Hangul; a lenient one also reads a phrase past and weighs each syllable against twenty letters. Then the letters that are not English, whatever the language: a text, and for each letter found the comments and literals a caller's reader marks, every index in UTF-16 units.",
   "passes": [
     {
       "name": "a strict policy refuses a single syllable",
@@ -135,6 +135,361 @@
         "see 마바 and see that"
       ],
       "answer": true
+    }
+  ],
+  "holdsNonEnglish": [
+    {
+      "name": "plain English holds none",
+      "args": [
+        "plain English line"
+      ],
+      "answer": false
+    },
+    {
+      "name": "a Latin letter with a mark is English",
+      "args": [
+        "a café, a naïve façade"
+      ],
+      "answer": false
+    },
+    {
+      "name": "an empty text holds none",
+      "args": [
+        ""
+      ],
+      "answer": false
+    },
+    {
+      "name": "Hangul is not English",
+      "args": [
+        "// 한글 comment"
+      ],
+      "answer": true
+    },
+    {
+      "name": "hiragana is not English",
+      "args": [
+        "const word = \"ひらがな\";"
+      ],
+      "answer": true
+    },
+    {
+      "name": "katakana is not English",
+      "args": [
+        "katakana カタカナ"
+      ],
+      "answer": true
+    },
+    {
+      "name": "Han is not English",
+      "args": [
+        "han 漢字"
+      ],
+      "answer": true
+    },
+    {
+      "name": "Cyrillic is not English",
+      "args": [
+        "cyrillic Привет"
+      ],
+      "answer": true
+    },
+    {
+      "name": "Greek is not English",
+      "args": [
+        "greek λόγος"
+      ],
+      "answer": true
+    },
+    {
+      "name": "Arabic is not English",
+      "args": [
+        "arabic مرحبا"
+      ],
+      "answer": true
+    },
+    {
+      "name": "a fullwidth Latin letter is Latin",
+      "args": [
+        "fullwidth ＡＢＣ"
+      ],
+      "answer": false
+    },
+    {
+      "name": "a digit of another script is no letter",
+      "args": [
+        "an Arabic digit ٣"
+      ],
+      "answer": false
+    },
+    {
+      "name": "symbols and punctuation of any script are no letter",
+      "args": [
+        "µ → ½ ° © 「」。"
+      ],
+      "answer": false
+    },
+    {
+      "name": "a braced escape names a letter",
+      "args": [
+        "a braced escape \\u{D55C}"
+      ],
+      "answer": true
+    },
+    {
+      "name": "a four-digit escape names a letter",
+      "args": [
+        "a four-digit escape \\uD55C"
+      ],
+      "answer": true
+    },
+    {
+      "name": "an eight-digit escape names a letter",
+      "args": [
+        "an eight-digit escape \\U0000D55C"
+      ],
+      "answer": true
+    },
+    {
+      "name": "a pattern's braced escape names a letter",
+      "args": [
+        "[\\x{AC00}-\\x{D7A3}]"
+      ],
+      "answer": true
+    },
+    {
+      "name": "an escape naming a Latin letter is English",
+      "args": [
+        "\\u0041\\u{e9}\\x{62}"
+      ],
+      "answer": false
+    },
+    {
+      "name": "a lone surrogate's escape names no letter",
+      "args": [
+        "a lone half \\uD840"
+      ],
+      "answer": false
+    },
+    {
+      "name": "a surrogate pair's escapes name one letter",
+      "args": [
+        "a pair \\uD840\\uDC00"
+      ],
+      "answer": true
+    },
+    {
+      "name": "a doubled backslash still names the letter",
+      "args": [
+        "a pattern in a literal \\\\uD55C"
+      ],
+      "answer": true
+    },
+    {
+      "name": "an escape of too few digits names nothing",
+      "args": [
+        "\\u{} and \\uAC0"
+      ],
+      "answer": false
+    }
+  ],
+  "nonEnglishLetters": [
+    {
+      "name": "plain English gives none",
+      "args": [
+        "plain English",
+        {
+          "comments": [],
+          "literals": []
+        }
+      ],
+      "answer": []
+    },
+    {
+      "name": "a letter is placed in the literal or the comment it starts in",
+      "args": [
+        "let a = \"가\"; // 나",
+        {
+          "comments": [
+            {
+              "start": 13,
+              "end": 17
+            }
+          ],
+          "literals": [
+            {
+              "start": 8,
+              "end": 11
+            }
+          ]
+        }
+      ],
+      "answer": [
+        {
+          "start": 9,
+          "end": 10,
+          "letter": "가",
+          "escaped": false,
+          "place": "literal"
+        },
+        {
+          "start": 16,
+          "end": 17,
+          "letter": "나",
+          "escaped": false,
+          "place": "comment"
+        }
+      ]
+    },
+    {
+      "name": "an escape covers its whole length and is placed where its backslash stands",
+      "args": [
+        "x = \"\\u{D55C}\" # \\uAC00",
+        {
+          "comments": [
+            {
+              "start": 15,
+              "end": 23
+            }
+          ],
+          "literals": [
+            {
+              "start": 4,
+              "end": 14
+            }
+          ]
+        }
+      ],
+      "answer": [
+        {
+          "start": 5,
+          "end": 13,
+          "letter": "한",
+          "escaped": true,
+          "place": "literal"
+        },
+        {
+          "start": 17,
+          "end": 23,
+          "letter": "가",
+          "escaped": true,
+          "place": "comment"
+        }
+      ]
+    },
+    {
+      "name": "with no stretch named every letter is in the code",
+      "args": [
+        "ident 変数 = 1",
+        {
+          "comments": [],
+          "literals": []
+        }
+      ],
+      "answer": [
+        {
+          "start": 6,
+          "end": 7,
+          "letter": "変",
+          "escaped": false,
+          "place": "code"
+        },
+        {
+          "start": 7,
+          "end": 8,
+          "letter": "数",
+          "escaped": false,
+          "place": "code"
+        }
+      ]
+    },
+    {
+      "name": "a letter at a stretch's end is outside it",
+      "args": [
+        "ab 가",
+        {
+          "comments": [
+            {
+              "start": 0,
+              "end": 3
+            }
+          ],
+          "literals": []
+        }
+      ],
+      "answer": [
+        {
+          "start": 3,
+          "end": 4,
+          "letter": "가",
+          "escaped": false,
+          "place": "code"
+        }
+      ]
+    },
+    {
+      "name": "an index counts UTF-16 units past an emoji",
+      "args": [
+        "emoji 😀 then Ж",
+        {
+          "comments": [],
+          "literals": []
+        }
+      ],
+      "answer": [
+        {
+          "start": 14,
+          "end": 15,
+          "letter": "Ж",
+          "escaped": false,
+          "place": "code"
+        }
+      ]
+    },
+    {
+      "name": "an astral letter takes two units, and a surrogate pair's escapes give it once",
+      "args": [
+        "𠀀 and \\uD840\\uDC00",
+        {
+          "comments": [],
+          "literals": []
+        }
+      ],
+      "answer": [
+        {
+          "start": 0,
+          "end": 2,
+          "letter": "𠀀",
+          "escaped": false,
+          "place": "code"
+        },
+        {
+          "start": 7,
+          "end": 19,
+          "letter": "𠀀",
+          "escaped": true,
+          "place": "code"
+        }
+      ]
+    },
+    {
+      "name": "an escape naming a Latin letter is passed over",
+      "args": [
+        "\\u0041\\uAC00",
+        {
+          "comments": [],
+          "literals": []
+        }
+      ],
+      "answer": [
+        {
+          "start": 6,
+          "end": 12,
+          "letter": "가",
+          "escaped": true,
+          "place": "code"
+        }
+      ]
     }
   ]
 }

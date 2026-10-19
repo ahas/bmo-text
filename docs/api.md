@@ -43,6 +43,22 @@ fields. Where an entry calls a module "the package's", the package's entry says 
     once the set-aside words are read past; otherwise the text holds some Latin letters and fewer syllables
     than one to every so many of them.
   - **`Default`** reads nothing past and weighs at zero, so any Hangul syllable fails it.
+- **`holds_non_english`** answers whether a text holds a letter that is not English, whatever language it
+  is: a letter of any script but Latin (Hangul, kana, Han, Cyrillic, Greek, Arabic and every other), written
+  as itself or named by an escape. The escapes read are the four shapes code languages share, their code
+  point in hexadecimal: a braced `\u{…}`, a four-digit `\u`, an eight-digit `\U` and a pattern's braced
+  `\x{…}`; two four-digit escapes naming a surrogate pair name the one letter the pair stands for. A text
+  may be any code language, a comment as much as a literal, so an escape is read wherever it stands and
+  whatever backslashes come before it, as a pattern written in a literal doubles its backslash and still
+  names the letter. A Latin letter with a mark, a digit, a symbol, and punctuation of any script are no
+  such letter, nor is a letter of no script of its own such as the micro sign.
+- **`non_english_letters`** gives each such letter of a text in the order written, placed by the stretches
+  the caller's own reader of the code language marks. **`NonEnglishLetter`** is one: its `start` and `end`,
+  covering the letter or the whole escape naming it, the `letter`, whether it was `escaped`, and its
+  `place`. **`LetterPlace`** is that place, by where the letter's start falls: in one of the comments, in
+  one of the literals, or else in the code itself; its `code` is the package's name for it, `comment`,
+  `literal` or `code`. **`CodeStretches`** are the `comments` and the `literals` the caller names, each a
+  range; its `Default` names none, which places every letter in the code. Every index is in UTF-16 units.
 
 ### `finding_markdown`
 
@@ -232,6 +248,11 @@ WebAssembly, which the package carries (`docs/design.md`, 「One implementation�
   both defaulting to the strictest test; **`passes`** answers for a text. The pattern is compiled by the
   crate's engine, which takes lookaround and backreferences and reads `\w`, `\d` and `\b` over all of
   Unicode where JavaScript's reads them over ASCII. It throws on a pattern that does not compile.
+- **`holdsNonEnglish`** and **`nonEnglishLetters`** are the crate's `holds_non_english` and
+  `non_english_letters`. The stretches are optional and name none by default; **`CodeStretches`** holds
+  them as `comments` and `literals`, each a list of **`Stretch`**, a `start` and an `end`.
+  **`NonEnglishLetter`** is one letter found, its `letter` a string of one code point and its `place` one of
+  **`LetterPlace`**'s `"comment"`, `"literal"` and `"code"`.
 
 ### `finding-markdown`
 

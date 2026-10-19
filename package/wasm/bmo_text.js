@@ -527,6 +527,17 @@ export function holdsKorean(text) {
 }
 
 /**
+ * @param {string} text
+ * @returns {boolean}
+ */
+export function holdsNonEnglish(text) {
+    const ptr0 = passStringToWasm0(text, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.holdsNonEnglish(ptr0, len0);
+    return ret !== 0;
+}
+
+/**
  * @param {string} url
  * @returns {boolean}
  */
@@ -668,6 +679,24 @@ export function maxSendFileBytes() {
 export function maxValueChars() {
     const ret = wasm.maxValueChars();
     return ret;
+}
+
+/**
+ * The letters of a text that are not English, placed by the stretches the package wrote as JSON.
+ * @param {string} text
+ * @param {string} stretches
+ * @returns {any}
+ */
+export function nonEnglishLetters(text, stretches) {
+    const ptr0 = passStringToWasm0(text, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ptr1 = passStringToWasm0(stretches, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len1 = WASM_VECTOR_LEN;
+    const ret = wasm.nonEnglishLetters(ptr0, len0, ptr1, len1);
+    if (ret[2]) {
+        throw takeFromExternrefTable0(ret[1]);
+    }
+    return takeFromExternrefTable0(ret[0]);
 }
 
 /**

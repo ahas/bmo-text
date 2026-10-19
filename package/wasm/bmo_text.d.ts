@@ -90,6 +90,8 @@ export function headingSlug(text: string): string;
 
 export function holdsKorean(text: string): boolean;
 
+export function holdsNonEnglish(text: string): boolean;
+
 export function isLinkable(url: string): boolean;
 
 export function isWebAddress(url: string): boolean;
@@ -115,6 +117,11 @@ export function maxAnswerChars(): number;
 export function maxSendFileBytes(): number;
 
 export function maxValueChars(): number;
+
+/**
+ * The letters of a text that are not English, placed by the stretches the package wrote as JSON.
+ */
+export function nonEnglishLetters(text: string, stretches: string): any;
 
 export function parseGlossary(text: string): any;
 
@@ -199,6 +206,7 @@ export interface InitOutput {
     readonly halveText: (a: number, b: number) => any;
     readonly headingSlug: (a: number, b: number) => [number, number];
     readonly holdsKorean: (a: number, b: number) => number;
+    readonly holdsNonEnglish: (a: number, b: number) => number;
     readonly isLinkable: (a: number, b: number) => number;
     readonly isWebAddress: (a: number, b: number) => number;
     readonly knownLanguages: () => [number, number];
@@ -212,6 +220,7 @@ export interface InitOutput {
     readonly maxAnswerChars: () => number;
     readonly maxSendFileBytes: () => number;
     readonly maxValueChars: () => number;
+    readonly nonEnglishLetters: (a: number, b: number, c: number, d: number) => [number, number, number];
     readonly parseGlossary: (a: number, b: number) => [number, number, number];
     readonly parseInline: (a: number, b: number, c: number) => any;
     readonly parseMarkdown: (a: number, b: number) => any;

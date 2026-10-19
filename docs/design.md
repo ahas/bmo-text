@@ -94,6 +94,9 @@ name and depends on no repository.
   past (a regular expression, matched as the consumer writes it) and how many Latin letters a Hangul
   syllable is weighed against. The consumer passes both, from its own policy; the default reads past nothing
   and weighs at zero, so any Hangul left fails the test.
+- **Where a code text's comments and literals stand.** The judgement of letters that are not English places
+  each letter it finds by the comments and literals the consumer's own reader of the code language marks.
+  The library reads no code language; with no stretch named, every letter is in the code.
 - **The glossary's path.** The banned-term check reads the glossary at the path the caller names. The
   library exposes the conventional file name, `WORDING.md`, as a default the caller may use.
 
@@ -103,6 +106,9 @@ name and depends on no repository.
   and its data (the tag, the character, the tag still open, the tag it may not stand in) and one fixed
   English sentence saying what is wrong. A consumer that shows a reason in another language translates from
   the kind and the data, never from the sentence.
+- **What is not English.** Whether a text is not English is a question of script, not of any one language:
+  a letter of any script but Latin is not English, written as itself or named by one of the escapes code
+  languages share. Neither the scripts nor the escape shapes are a policy, so neither is passed in.
 - **Telegram's limits.** The text and caption limits are Telegram's, not a policy, and stand as constants.
 
 ## Korean

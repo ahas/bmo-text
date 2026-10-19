@@ -1,6 +1,6 @@
 [package]
 name = "bmo-text"
-version = "2.1.0"
+version = "2.2.0"
 description = "Markdown and text as a chat room reads them, written into Telegram's HTML."
 edition = "2024"
 publish = false
