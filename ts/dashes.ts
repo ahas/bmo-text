@@ -1,5 +1,5 @@
-// A dash left between words, replaced the way a person types the same sentence
-// (prompts/rules/plain-writing.md). The writer is told never to write one; this is the net under
+// A dash left between words, replaced the way a person types the same sentence. The writer is
+// told never to write one; this is the net under
 // that rule on the way out, so it reads nothing but the characters: a name and its explanation get
 // a colon, an aside between two dashes of one sentence gets commas (or brackets, where it has
 // commas of its own), every further dash in the sentence a comma, and a dash between two digits is
