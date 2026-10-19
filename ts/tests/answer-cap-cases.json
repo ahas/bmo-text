@@ -1,0 +1,117 @@
+{
+  "about": "The cases an answer ceiling is held to: this package's capItems and capValue, and any Rust twin of them a consumer keeps, where a Hangul syllable is three bytes and one character. A piece of text is a string, or a text and how many times it repeats; a case's items are its pieces taken `copies` times over.",
+  "items": [
+    {
+      "name": "a list that fits comes back whole",
+      "items": ["one", "two", "three"],
+      "render": "lines",
+      "unit": "nodes",
+      "how": "ask with narrower words.",
+      "kept": 3,
+      "left": 0,
+      "note": null
+    },
+    {
+      "name": "an empty list fits",
+      "items": [],
+      "render": "lines",
+      "unit": "nodes",
+      "how": "ask with narrower words.",
+      "kept": 0,
+      "left": 0,
+      "note": null
+    },
+    {
+      "name": "a list over the ceiling is cut to whole items",
+      "items": [{ "text": "가", "times": 9 }],
+      "copies": 40,
+      "limit": 100,
+      "render": "lines",
+      "unit": "nodes",
+      "how": "ask with narrower words.",
+      "kept": 10,
+      "left": 30,
+      "note": "-- cut at the 100-character ceiling: 10 of 40 nodes. For the other 30: ask with narrower words."
+    },
+    {
+      "name": "counts of a thousand and over are grouped",
+      "items": [{ "text": "가", "times": 9 }],
+      "copies": 4000,
+      "limit": 100,
+      "render": "lines",
+      "unit": "nodes",
+      "how": "ask with narrower words.",
+      "kept": 10,
+      "left": 3990,
+      "note": "-- cut at the 100-character ceiling: 10 of 4,000 nodes. For the other 3,990: ask with narrower words."
+    },
+    {
+      "name": "one item alone over the ceiling leaves nothing",
+      "items": [{ "text": "가", "times": 500 }, "short"],
+      "limit": 100,
+      "render": "lines",
+      "unit": "nodes",
+      "how": "ask with narrower words.",
+      "kept": 0,
+      "left": 2,
+      "note": "-- one of the nodes alone is over the 100-character ceiling, so nothing was given. ask with narrower words."
+    },
+    {
+      "name": "characters are code points",
+      "items": [{ "text": "가", "times": 9 }, { "text": "가", "times": 9 }],
+      "limit": 10,
+      "render": "lines",
+      "unit": "lines",
+      "how": "ask over a narrower range.",
+      "kept": 1,
+      "left": 1,
+      "note": "-- cut at the 10-character ceiling: 1 of 2 lines. For the other 1: ask over a narrower range."
+    },
+    {
+      "name": "the standing ceiling, grouped",
+      "items": [{ "text": "가", "times": 99 }],
+      "copies": 400,
+      "render": "lines",
+      "unit": "rows",
+      "how": "give a LIMIT.",
+      "kept": 300,
+      "left": 100,
+      "note": "-- cut at the 30,000-character ceiling: 300 of 400 rows. For the other 100: give a LIMIT."
+    },
+    {
+      "name": "the ceiling holds what would be printed, separators and all",
+      "items": ["one", "two", "three"],
+      "limit": 20,
+      "render": "json",
+      "unit": "nodes",
+      "how": "ask with narrower words.",
+      "kept": 2,
+      "left": 1,
+      "note": "-- cut at the 20-character ceiling: 2 of 3 nodes. For the other 1: ask with narrower words."
+    }
+  ],
+  "values": [
+    {
+      "name": "a value that fits stands as it is",
+      "text": ["a short value"],
+      "expect": ["a short value"]
+    },
+    {
+      "name": "a long value is cut where it stands",
+      "text": [{ "text": "가", "times": 120 }],
+      "limit": 100,
+      "expect": [{ "text": "가", "times": 100 }, "…(+20 chars)"]
+    },
+    {
+      "name": "what was cut is counted in code points",
+      "text": [{ "text": "가", "times": 100 }, { "text": "🙂", "times": 20 }],
+      "limit": 100,
+      "expect": [{ "text": "가", "times": 100 }, "…(+20 chars)"]
+    },
+    {
+      "name": "the standing value ceiling, grouped",
+      "text": [{ "text": "가", "times": 3500 }],
+      "expect": [{ "text": "가", "times": 2000 }, "…(+1,500 chars)"]
+    }
+  ]
+}

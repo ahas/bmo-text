@@ -1,0 +1,3 @@
+[test]
+# The package's tests read nothing outside the package, so nothing is preloaded.
+root = "tests"

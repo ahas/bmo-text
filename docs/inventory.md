@@ -65,8 +65,9 @@ rule of `docs/design.md`, and names of people, agents and real places become neu
 
 ### Kept: data and manifests
 
-- `answer-cap-cases.json`, the answer ceiling's cases, into `ts/tests/`. Its Korean entries stay, because
-  they are what proves a ceiling counts characters as a reader does rather than bytes.
+- `answer-cap-cases.json`, the answer ceiling's cases, into `ts/tests/`. Its entries of a repeated Hangul
+  syllable stay, because they are what proves a ceiling counts characters as a reader does rather than
+  bytes; its other example words are English.
 - `package.json` and `tsconfig.json`, rewritten for a package of its own (`docs/design.md`, 「Layout」).
 
 ### Dropped

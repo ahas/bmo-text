@@ -4,5 +4,15 @@
   "rust/tests/english.rs": 3,
   "rust/tests/js.rs": 1,
   "rust/tests/web_address.rs": 1,
-  "rust/tests/wording.rs": 7
+  "rust/tests/wording.rs": 7,
+  "ts/answer-language.ts": 1,
+  "ts/tests/answer-cap.test.ts": 9,
+  "ts/tests/answer-language.test.ts": 1,
+  "ts/tests/markdown-structure.test.ts": 1,
+  "ts/tests/markdown.test.ts": 4,
+  "ts/tests/web-address.test.ts": 9,
+  "ts/tests/wording.test.ts": 10,
+  "ts/translation-parts.ts": 1,
+  "ts/web-address.ts": 1,
+  "ts/wording.ts": 2
 }
