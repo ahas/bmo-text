@@ -1,5 +1,6 @@
 {
   "rust/src/english.rs": 1,
+  "rust/src/web_address.rs": 1,
   "rust/src/wording.rs": 2,
   "rust/tests/english.rs": 3,
   "rust/tests/js.rs": 1,

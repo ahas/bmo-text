@@ -39,7 +39,7 @@ into `rust/tests/`, one file per module.
 | `js` | yes | Its hash test's Korean sample written plainly instead of as escapes |
 | `markdown` | yes | Nothing beyond the move of its tests |
 | `telegram` | yes | Nothing beyond the move of its tests |
-| `web_address` | yes | Its test's Korean sample written plainly instead of as escapes |
+| `web_address` | yes | Its Hangul ranges and its test's Korean sample written plainly instead of as escapes |
 | `wording` | yes | Its test's Korean word written plainly instead of as escapes |
 
 ### Kept: the TypeScript package, into `ts/`

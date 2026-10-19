@@ -11,8 +11,7 @@ use regex::Regex;
 use crate::js::{SPACE, chars, is_space, text};
 
 // Korean letters: jamo, compatibility jamo, and the syllables with their extensions.
-const HANGUL: &str =
-  r"\x{1100}-\x{11ff}\x{3130}-\x{318f}\x{a960}-\x{a97f}\x{ac00}-\x{d7af}\x{d7b0}-\x{d7ff}";
+const HANGUL: &str = "ᄀ-ᇿ㄰-㆏ꥠ-꥿가-힯ힰ-퟿";
 
 static BARE: LazyLock<Regex> = LazyLock::new(|| {
   Regex::new(&format!(r#"(?i)^https?://[^{SPACE}<>"'`{HANGUL}]+"#)).expect("a bare address")
