@@ -1,6 +1,6 @@
 mod shared;
 
-use bmo_markup::answer_language::holds_korean;
+use bmo_text::answer_language::holds_korean;
 use serde_json::Value;
 
 #[test]

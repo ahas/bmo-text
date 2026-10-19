@@ -1,6 +1,6 @@
 mod shared;
 
-use bmo_markup::english::*;
+use bmo_text::english::*;
 use serde_json::Value;
 
 use shared::text;

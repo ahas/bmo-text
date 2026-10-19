@@ -11,7 +11,7 @@ Three standing principles hold for every bmo-next repository, this one included:
   never reaches into its data or decides what is that service's to decide, and a base library never depends
   on a service.
 
-This repository is the base library `bmo-markup`: the reading and writing of markdown and text that the
+This repository is the base library `bmo-text`: the reading and writing of markdown and text that the
 chat services, the console and the archive share. It ships one Rust crate at the root and one TypeScript
 package in `package/`, twins that read a text the same way. It has no server, no deployment and no data of its
 own, and every bmo-next repository may depend on it directly.

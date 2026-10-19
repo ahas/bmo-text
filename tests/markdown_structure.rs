@@ -1,6 +1,6 @@
 mod shared;
 
-use bmo_markup::markdown_structure::*;
+use bmo_text::markdown_structure::*;
 use serde_json::{Value, json};
 
 use shared::text;

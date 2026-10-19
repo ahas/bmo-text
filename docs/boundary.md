@@ -2,10 +2,10 @@
 
 ## What this repository exposes
 
-- **The Rust crate `bmo-markup`,** at the repository's root, taken by a consumer as a path or git
+- **The Rust crate `bmo-text`,** at the repository's root, taken by a consumer as a path or git
   dependency. Its public modules and items are stated in `docs/api.md`.
-- **The TypeScript package `bmo-markup`,** in `package/`, taken by a consumer as a dependency and imported
-  one module at a time as `bmo-markup/<module>`. Its exports are stated in `docs/api.md`.
+- **The TypeScript package `bmo-text`,** in `package/`, taken by a consumer as a dependency and imported
+  one module at a time as `bmo-text/<module>`. Its exports are stated in `docs/api.md`.
 - **The cases** both sides are held to, one file per module under `cases/`, named in `docs/api.md`.
 
 The version both carry is the repository's, in `VERSION`. A consumer pins the version it was built

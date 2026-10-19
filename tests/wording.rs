@@ -2,7 +2,7 @@ mod shared;
 
 use std::path::Path;
 
-use bmo_markup::wording::*;
+use bmo_text::wording::*;
 use serde_json::{Map, Value, json};
 
 use shared::text;

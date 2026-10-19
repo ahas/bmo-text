@@ -3,9 +3,9 @@
 
 mod shared;
 
-use bmo_markup::js::chars;
-use bmo_markup::markdown::*;
-use bmo_markup::telegram::TEXT_LIMIT;
+use bmo_text::js::chars;
+use bmo_text::markdown::*;
+use bmo_text::telegram::TEXT_LIMIT;
 use serde_json::{Value, json};
 
 use shared::text;

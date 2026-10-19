@@ -1,7 +1,7 @@
 # How the testbed tests and checks this repository (the testbed's docs/declaration.md). A base library is
 # taken by its consumers and built inside their builds, so it declares no build and no deployment.
 testbed = 0
-name = "bmo-markup"
+name = "bmo-text"
 
 # The crate stands at the root and is checked and tested as the root project. The package in `package/` is
 # a project of its own, found by its manifest and its lockfile, and checked and tested by its manifest's

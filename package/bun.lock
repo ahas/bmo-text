@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "bmo-markup",
+      "name": "bmo-text",
       "dependencies": {
         "entities": "^8.1.0",
       },

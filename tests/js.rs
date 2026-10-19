@@ -1,4 +1,4 @@
-use bmo_markup::js::*;
+use bmo_text::js::*;
 
 #[test]
 fn bun_s_hash_is_zig_s_wyhash() {

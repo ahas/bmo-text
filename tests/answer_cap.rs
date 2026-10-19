@@ -5,7 +5,7 @@
 use std::fs;
 use std::path::Path;
 
-use bmo_markup::answer_cap::{MAX_ANSWER_CHARS, MAX_VALUE_CHARS, Said, cap_items, cap_value};
+use bmo_text::answer_cap::{MAX_ANSWER_CHARS, MAX_VALUE_CHARS, Said, cap_items, cap_value};
 use serde_json::Value;
 
 fn cases() -> Value {

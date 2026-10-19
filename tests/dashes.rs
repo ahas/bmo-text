@@ -1,6 +1,6 @@
 mod shared;
 
-use bmo_markup::dashes::*;
+use bmo_text::dashes::*;
 use serde_json::Value;
 
 use shared::text;

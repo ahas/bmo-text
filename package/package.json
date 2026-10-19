@@ -1,6 +1,6 @@
 {
-  "name": "bmo-markup",
-  "version": "1.0.0",
+  "name": "bmo-text",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "exports": {

@@ -1,7 +1,7 @@
 mod shared;
 
-use bmo_markup::js::{chars, units_of, within};
-use bmo_markup::web_address::*;
+use bmo_text::js::{chars, units_of, within};
+use bmo_text::web_address::*;
 use serde_json::{Value, json};
 
 use shared::text;

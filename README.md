@@ -1,4 +1,4 @@
-# bmo-markup
+# bmo-text
 
 The base library for reading and writing markdown and text the way a chat room, the console and the
 archive read it: markdown into Telegram's HTML and plain text, the structure check of a piece of markup,
@@ -11,9 +11,9 @@ trims follow JavaScript, so the Rust crate and the TypeScript package give one a
 | Folder | What it holds |
 |---|---|
 | `docs/` | The design, the public API, the boundary and the inventory of what the library was built from |
-| `src/` | The sources of the Rust crate `bmo-markup`, whose manifest stands at the root |
+| `src/` | The sources of the Rust crate `bmo-text`, whose manifest stands at the root |
 | `tests/` | The crate's tests, and the repository test that holds the repository's own shape |
-| `package/` | The TypeScript package `bmo-markup`, its modules and its tests |
+| `package/` | The TypeScript package `bmo-text`, its modules and its tests |
 | `cases/` | The cases both the crate and the package are held to, one file per module |
 
 The library depends on nothing but registry packages and has no server or deployment. A consumer takes

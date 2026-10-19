@@ -2,7 +2,7 @@ mod shared;
 
 use base64::Engine;
 use base64::engine::general_purpose::STANDARD;
-use bmo_markup::html_reading::{HtmlPicture, read_html};
+use bmo_text::html_reading::{HtmlPicture, read_html};
 use serde_json::{Value, json};
 
 use shared::text;

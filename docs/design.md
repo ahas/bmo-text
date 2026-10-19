@@ -1,15 +1,15 @@
 # Design
 
-`bmo-markup` is a base library: the text readings that the chat services, the console, the archive, the
+`bmo-text` is a base library: the text readings that the chat services, the console, the archive, the
 gate and the testbed would otherwise each hold a copy of. It holds the mechanism of a reading and a safe
 default for anything that differs per consumer; the consumer supplies the rest. It knows no consumer by
 name and depends on no repository.
 
 ## Layout
 
-- **The crate at the root, the package beside it.** The crate `bmo-markup` is the repository's root
+- **The crate at the root, the package beside it.** The crate `bmo-text` is the repository's root
   project: its manifest and lockfile are the only manifest and lockfile at the root, with `src/` and
-  `tests/`. The package `bmo-markup` stands in `package/` with its own manifest and lockfile, a project of
+  `tests/`. The package `bmo-text` stands in `package/` with its own manifest and lockfile, a project of
   its own in the testbed's sense, so the two build tools' files never mix. No folder is named for a
   language.
 - **One crate, split into modules.** Nothing in the crate has to stand apart, so there is no `crates/`
@@ -20,10 +20,10 @@ name and depends on no repository.
   tests together, and is how the testbed checks and tests it.
 - **The cases at the root.** The cases both sides are held to stand in `cases/`, one JSON file per module,
   read by the tests of both projects (「The twins」).
-- **The package is named `bmo-markup`,** as the crate is and as `bmo-ui` is named and imported, so a
-  consumer imports a module as `bmo-markup/<module>`.
+- **The package is named `bmo-text`,** as the crate is and as `bmo-ui` is named and imported, so a
+  consumer imports a module as `bmo-text/<module>`.
 - **One version.** `VERSION` holds the repository's semver; the crate and the package carry the same
-  number. The public API stated in `docs/api.md` is fixed at major version 1; a change to a public
+  number. The public API stated in `docs/api.md` is fixed at major version 2; a change to a public
   signature or to what a reading answers for an input is a major change.
 
 ## The twins

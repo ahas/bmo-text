@@ -1,12 +1,12 @@
 # Public API
 
-Everything a consumer may use, project by project and module by module, fixed at major version 1. An item
+Everything a consumer may use, project by project and module by module, fixed at major version 2. An item
 not named here is internal and may change in any version. Both sides carry the same modules
 (`docs/design.md`, 「The twins」), the crate's `js` apart, and a module gives one answer for one input on
 either side. Lengths are UTF-16 units and spaces are JavaScript's white space; a length named `chars`
 counts code points. An item one side carries and the other does not is marked as such.
 
-## The Rust crate `bmo-markup`
+## The Rust crate `bmo-text`
 
 A function of the package is named in `snake_case` here and a constant in `SCREAMING_SNAKE_CASE`; a
 function that answers none in the package answers an `Option`, and a record is a struct of the same
@@ -183,9 +183,9 @@ the word's own sense (`<language> · <term> · <phrase> — <why>`) and allowed 
 - **`add_banned_terms`** writes new banned lines after the last entry of the document's list, passing over a
   term already banned in its language and refusing a line that would not read back as written.
 
-## The TypeScript package `bmo-markup`
+## The TypeScript package `bmo-text`
 
-Each module is imported by its name, as `bmo-markup/<module>`.
+Each module is imported by its name, as `bmo-text/<module>`.
 
 ### `answer-cap`
 

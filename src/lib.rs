@@ -1,4 +1,4 @@
-//! Markdown and text as a chat room reads them, one twin of the `bmo-markup` package: the markdown read
+//! Markdown and text as a chat room reads them, one twin of the `bmo-text` package: the markdown read
 //! line for line into Telegram's HTML and plain text, the structure check every markup is read by, the
 //! fold, the division into messages, the dash net under the writing rules, the test of whether a text is
 //! English, the net of the terms a glossary bans, the answer ceiling, the structure of a markdown document,

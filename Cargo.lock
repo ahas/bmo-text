@@ -45,8 +45,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3ded4057c258ba199e2d26386d3af3780957ecaee6c4ef4041c6b4b8b97c0b06"
 
 [[package]]
-name = "bmo-markup"
-version = "1.0.0"
+name = "bmo-text"
+version = "2.0.0"
 dependencies = [
  "base64",
  "fancy-regex",
