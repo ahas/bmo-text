@@ -1,0 +1,42 @@
+# How the testbed tests and checks this repository (the testbed's docs/declaration.md). A base library is
+# taken by its consumers and built inside their builds, so it declares no build and no deployment.
+testbed = 0
+name = "bmo-markup"
+
+# The crate in `rust/` and the package in `ts/` are projects of their own, each found by its manifest and
+# its lockfile; nothing stands at the root.
+[test]
+languages = ["cargo", "bun"]
+files = ["ts/tests/**/*.test.ts"]
+setup = ["bun install --frozen-lockfile --cwd ts"]
+
+[check]
+# Korean in the code, the README's folder table and the dependencies the manifests name. The ledger counts
+# the files whose code inherently reads Korean (docs/design.md, 「Korean」).
+quick = ["korean", "layout", "dependencies"]
+korean_ledger = "korean-ledger.json"
+# A base library stands on registry crates and packages alone.
+base_libraries = []
+
+[[check.step]]
+id = "check"
+command = "cargo check --all-targets"
+dir = "rust"
+lane = "wide"
+
+[[check.step]]
+id = "clippy"
+command = "cargo clippy --all-targets -- -D warnings"
+dir = "rust"
+lane = "wide"
+
+[[check.step]]
+id = "fmt"
+command = "cargo fmt --check"
+dir = "rust"
+
+[[check.step]]
+id = "typecheck"
+command = "bun run typecheck"
+dir = "ts"
+lane = "wide"

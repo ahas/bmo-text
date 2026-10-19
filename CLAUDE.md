@@ -1,0 +1,49 @@
+# Working in this repository
+
+Three standing principles hold for every bmo-next repository, this one included:
+
+- **(a) Each service runs on its own,** with no context bleeding in from other repositories: it builds, tests
+  and runs from its own repository, data and settings, and never reads another repository's code, files,
+  data folders or tables.
+- **(b) Services talk to each other only through documented APIs** (HTTP routes, events, a documented
+  command), never by importing another service's code.
+- **(c) Upstream never intrudes on downstream:** a service calls only what the service below it documents,
+  never reaches into its data or decides what is that service's to decide, and a base library never depends
+  on a service.
+
+This repository is the base library `bmo-markup`: the reading and writing of markdown and text that the
+chat services, the console and the archive share. It ships one Rust crate in `rust/` and one TypeScript
+package in `ts/`, twins that read a text the same way. It has no server, no deployment and no data of its
+own, and every bmo-next repository may depend on it directly.
+
+## Rules
+
+- **`docs/` is canonical.** `docs/design.md` states the shape and the boundary decisions, `docs/api.md`
+  every public item, `docs/boundary.md` what the library exposes and calls, `docs/inventory.md` what it was
+  built from. Read the one covering a change first. A change that would make it wrong repairs the document
+  first, stating what is true now, and the code is then written to match.
+- **The library depends on nothing `bmo-*`.** Both manifests name registry dependencies only; the
+  repository test fails on any other. What differs per consumer (words a reader sees, a part's English
+  policy, a glossary's path) is passed in by the consumer, with a safe default here.
+- **Tests live in `tests/`:** `rust/tests/` for the crate, `ts/tests/` for the package. No test module sits
+  beside runtime code.
+- **English only** in code, comments, strings, tests and documents, and in commit messages. A message the
+  library returns is an English sentence; a machine-read outcome is a status code or a kebab-case code.
+- **Korean only where the code inherently reads Korean** (a Hangul-aware parser, a Korean line of a
+  glossary, a test whose point is how Hangul is read). Such Korean is written plainly, never as an escape
+  sequence or a char code, and every file holding it is counted in `korean-ledger.json`.
+- **No names of agents, owners or hosts, and no personal paths** in code, documents or commits. Write the
+  role instead: a consumer, a reader, the owner.
+- **No directory named after its parent** (no `x/x`), **no manifest at the root**, and each of `rust/` and
+  `ts/` is a project of its own with its manifest and lockfile.
+- **Documents state what is true now**: no change history, no quoted source and no file-and-line pins.
+
+## Checks
+
+- Rust, from `rust/`: `cargo check --all-targets`, `cargo clippy --all-targets -- -D warnings`,
+  `cargo fmt --check` (108 columns, 2-space indentation, as the root `rustfmt.toml` sets), then
+  `cargo test`.
+- TypeScript, from `ts/`: `bun run typecheck`, then `bun test`.
+- `testbed.toml` declares the same steps and the quick checks for the testbed.
+- The version is the repository's, in semver: `VERSION`, the crate's and the package's version are one
+  number, and the repository test fails where they differ.
