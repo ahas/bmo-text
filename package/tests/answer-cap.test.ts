@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 
 import { capItems, capValue, maxAnswerChars, maxValueChars } from "../answer-cap";
-import cases from "./answer-cap-cases.json";
+import cases from "../../cases/answer-cap.json";
 
 // The ceiling every verb answers under. What it has to do is cut to whole items, never inside one,
 // and say what it left out — a short answer read as the whole answer is the failure this exists to

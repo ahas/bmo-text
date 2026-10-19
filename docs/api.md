@@ -1,10 +1,26 @@
 # Public API
 
-Everything a consumer may use, project by project and module by module. An item not named here is internal
-and may change in any version. Lengths are UTF-16 units and spaces are JavaScript's white space on both sides
-unless an entry says otherwise; where a module stands on both sides, the two give one answer for one text.
+Everything a consumer may use, project by project and module by module, fixed at major version 1. An item
+not named here is internal and may change in any version. Both sides carry the same modules
+(`docs/design.md`, 「The twins」), the crate's `js` apart, and a module gives one answer for one input on
+either side. Lengths are UTF-16 units and spaces are JavaScript's white space; a length named `chars`
+counts code points. An item one side carries and the other does not is marked as such.
 
 ## The Rust crate `bmo-markup`
+
+A function of the package is named in `snake_case` here and a constant in `SCREAMING_SNAKE_CASE`; a
+function that answers none in the package answers an `Option`, and a record is a struct of the same
+fields. Where an entry calls a module "the package's", the package's entry says what it does.
+
+### `answer_cap`
+
+- **`MAX_ANSWER_CHARS`**, **`MAX_VALUE_CHARS`**, **`Capped`**, **`cap_items`** and **`cap_value`** are the
+  package's `answer-cap`. **`Said`** is what `cap_items` is told: the unit counted, how to ask for the rest,
+  and the ceiling, which defaults to `MAX_ANSWER_CHARS`. The render is a closure given each prefix tried.
+
+### `answer_language`
+
+- **`holds_korean`** is the package's `holdsKorean`.
 
 ### `dashes`
 
@@ -27,6 +43,13 @@ unless an entry says otherwise; where a module stands on both sides, the two giv
     than one to every so many of them.
   - **`Default`** reads nothing past and weighs at zero, so any Hangul syllable fails it.
 
+### `finding_markdown`
+
+- **`PART_KEYS`**, **`FindingWords`**, **`finding_markdown`**, **`footnote_marks`**, **`picture_caption`**,
+  **`FINDING_BLOCK`**, **`FINDING_MAP`** and **`finding_excerpt`** are the package's `finding-markdown`; the
+  package's `englishFindingWords` is `FindingWords`' `Default`, and the two block shapes are compiled
+  regular expressions.
+
 ### `format`
 
 - **`escape_html`** escapes the three characters Telegram's HTML mode reads outside a tag, the ampersand
@@ -45,7 +68,14 @@ unless an entry says otherwise; where a module stands on both sides, the two giv
 - **`fault_reason`** says a fault in one fixed English sentence naming its tag or character. A consumer
   showing it in another language translates from the fault's kind and data, not from the sentence.
 
+### `html_reading`
+
+- **`read_html`**, **`HtmlReading`** and **`HtmlPicture`** are the package's `html-reading`, read with the
+  same streaming HTML rewriter the package's runtime uses; a picture's media type is its `media_type`.
+
 ### `js`
+
+The crate's own: JavaScript's counting, spaces and trims, which the package has from its language.
 
 - **`SPACE`** and **`DOT`** are JavaScript's `\s` and `.` as regular expression class bodies.
 - **`is_space`**, **`trim`** and **`trim_end`** are JavaScript's white space and its trims.
@@ -82,16 +112,30 @@ The markdown an agent writes, read line for line into Telegram's HTML and plain 
 - **`markdown_parts`** divides a long text into consecutive messages at the pauses a reader makes, each under
   a limit, a code block cut in two being closed and opened again with its language; **`telegram_parts`** does
   it at Telegram's text limit.
+- **`Pair`**, **`Span`**, **`sent_length`** and **`telegram_parts`** are the crate's own.
+
+### `markdown_structure`
+
+- **`MarkdownHeading`**, **`markdown_headings`**, **`plain_heading`**, **`heading_slug`**,
+  **`markdown_sections`** and **`halve_text`** are the package's `markdown-structure`; **`Halved`** is what
+  `halve_text` answers, the two halves and the joint.
 
 ### `telegram`
 
 - **`TEXT_LIMIT`** (4096) and **`CAPTION_LIMIT`** (1024) are what one message's text and one file's caption
-  hold.
+  hold; **`MAX_SEND_FILE_BYTES`** is the largest file the Bot API takes, 50 MiB.
+- **`bot_id_from_token`** reads a bot's user id out of its token: the number before its colon, nought where
+  there is none.
 - **`plain_parts`** divides plain words into messages under a limit the way a Telegram client divides a long
   paste: each part ends after the last blank line, line break or space that fits.
 - **`transcript_parts`** folds the reading a voice was spoken from under the voice: its first part the
   caption, the rest replies, every part an expandable quote of its escaped words, cut only between whole
   characters a reader sees as one.
+
+### `translation_parts`
+
+- **`TextLanguage`**, **`text_language`**, **`TRANSLATION_PART_TOKENS`**, **`translation_parts`** and
+  **`shown_part`** are the package's `translation-parts`, a language being `Ko` or `En`.
 
 ### `web_address`
 
@@ -155,6 +199,13 @@ Each module is imported by its name, as `bmo-markup/<module>`.
 
 - **`withoutDashes`** is the crate's `without_dashes`, the wrapped reading asked for by an option.
 
+### `english`
+
+- **`EnglishTest`** is the crate's `EnglishTest`: constructed from the set-aside pattern, a regular
+  expression source as the part writes it, and the Latin letters each Hangul syllable is weighed against,
+  both defaulting to the strictest test; **`passes`** answers for a text. It throws on a pattern that does
+  not compile.
+
 ### `finding-markdown`
 
 A search finding's structure lines (`VERDICT:`, `SUMMARY:`, `NAME:`, `ADDRESS:`, `MENU:`, `IMAGE:` and the
@@ -207,11 +258,10 @@ rest) turned into the markdown they stand for.
   **`foldBlocks`**, **`foldedMarkup`**, **`codeMarkup`** and **`markdownParts`** its functions, the limit of a
   division defaulting to Telegram's text limit.
 
-### `telegram-parts`
+### `telegram`
 
-- **`telegramTextLimit`**, **`telegramCaptionLimit`** and **`maxSendFileBytes`** are what one message, one
-  caption and one file sent through the Bot API hold; **`botIdFromToken`** reads a bot's user id out of its
-  token.
+- **`telegramTextLimit`**, **`telegramCaptionLimit`**, **`maxSendFileBytes`**, **`botIdFromToken`**,
+  **`plainParts`** and **`transcriptParts`** are the crate's `telegram`.
 
 ### `translation-parts`
 
@@ -237,12 +287,16 @@ rest) turned into the markdown they stand for.
   read from, which each hit carries; **`knownLanguages`** are the codes a line can be told in.
 - **`checkWording`** holds files, each read through a function the caller gives, to the glossary: the uses no
   allowed use covers, and the allowed uses that no longer cover anything, in a **`WordingReport`**.
+- **`knownLanguages`**, **`checkWording`** and **`WordingReport`** are the package's own; the crate's
+  `QUOTED_SPAN` and its `parse_glossary` of the banned terms alone are the crate's.
 
 ## Data files
 
-- **`package/tests/answer-cap-cases.json`** holds the cases the answer ceiling is held to: lists to cut, with their
-  render, unit, ceiling and what is kept, left and said, and values to cut with what they become. A piece of
-  text is a string or a text repeated so many times. A Rust twin of the ceiling a consumer keeps is held to the
-  same file; its entries of a repeated Hangul syllable tell a count of characters from a count of bytes.
+- **`cases/<module>.json`** holds, for each module, the cases both sides are held to (`docs/design.md`,
+  「The twins」): an `about` line and, per public function, cases each with a `name`, the inputs and the
+  answer expected. A piece of text too long to write out stands as a text and how many times it repeats,
+  where the file's `about` says so. **`cases/answer-cap.json`** is one such: lists to cut, with their render,
+  unit, ceiling and what is kept, left and said, and values to cut with what they become; its entries of a
+  repeated Hangul syllable tell a count of characters from a count of bytes.
 - **`korean-ledger.json`** at the root counts, per code file, the lines holding Korean the code inherently
   reads; the repository test and the testbed's `korean` check hold every file to it.

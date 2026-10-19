@@ -54,7 +54,7 @@ Each module keeps its name under `src/`. The eight that carried an inline test m
 | `html-reading` | Nothing |
 | `markdown-structure` | Nothing |
 | `markdown` | Nothing beyond Korean in comments |
-| `telegram-parts` | Nothing |
+| `telegram-parts` | Becomes `telegram`, the crate's twin, and gains the crate's divisions of plain words and of a transcript |
 | `translation-parts` | Nothing |
 | `web-address` | Its Hangul ranges written as literal characters instead of escapes |
 | `wording` | Loses its two checkout scans; reading a glossary takes the path from the caller |
@@ -65,7 +65,7 @@ rule of `docs/design.md`, and names of people, agents and real places become neu
 
 ### Kept: data and manifests
 
-- `answer-cap-cases.json`, the answer ceiling's cases, into `package/tests/`. Its entries of a repeated Hangul
+- `answer-cap-cases.json`, the answer ceiling's cases, into `cases/answer-cap.json`, which both sides read. Its entries of a repeated Hangul
   syllable stay, because they are what proves a ceiling counts characters as a reader does rather than
   bytes; its other example words are English.
 - `package.json` and `tsconfig.json`, rewritten for a package of its own (`docs/design.md`, 「Layout」).

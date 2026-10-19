@@ -16,20 +16,38 @@ name and depends on no repository.
   workspace. Each reading is one module under `src/`; its tests are one file under `tests/`, beside the
   repository test that holds the repository's own shape.
 - **One package, one file per module.** Each module is a file at the top of `package/`, exported by its
-  name; its tests are under `package/tests/` with their data files. The package's `check` script runs its
-  static check and its tests together, and is how the testbed checks and tests it.
+  name; its tests are under `package/tests/`. The package's `check` script runs its static check and its
+  tests together, and is how the testbed checks and tests it.
+- **The cases at the root.** The cases both sides are held to stand in `cases/`, one JSON file per module,
+  read by the tests of both projects (「The twins」).
 - **The package is named `bmo-markup`,** as the crate is and as `bmo-ui` is named and imported, so a
   consumer imports a module as `bmo-markup/<module>`.
 - **One version.** `VERSION` holds the repository's semver; the crate and the package carry the same
-  number. A change to a public signature or to what a reading answers for a text is a major change.
+  number. The public API stated in `docs/api.md` is fixed at major version 1; a change to a public
+  signature or to what a reading answers for an input is a major change.
 
 ## The twins
 
-The crate and the package read a text the same way: lengths are counted in UTF-16 units, as Telegram and
-JavaScript count them, and every space, trim and character class is JavaScript's. A module present in both
-gives one answer for one text. Some readings exist on one side only, because only that side's consumers
-need them; `docs/api.md` names which. There is no test that runs one side against the other: each side's
-tests hold its own cases, and a case added to one is added to the other by hand.
+- **One list of modules.** The crate and the package carry the same readings under the same names, a module
+  being `snake_case` in the crate and `kebab-case` in the package: `answer_cap`, `answer_language`, `dashes`,
+  `english`, `finding_markdown`, `format`, `html_reading`, `markdown`, `markdown_structure`, `telegram`,
+  `translation_parts`, `web_address` and `wording`. The crate's `js` is the one module apart: it is how the
+  crate counts, spaces and trims as JavaScript does, which the package has from its language, so it is the
+  mechanism of the twinning rather than a reading.
+- **One answer for one input.** A module gives the same answer on both sides for the same input. Spaces,
+  trims and character classes are JavaScript's on both sides, and a regular expression the package writes
+  is read the same way by the crate.
+- **A length says what it counts.** A length is counted in UTF-16 units, as Telegram and JavaScript count
+  it, unless its name says `chars`: such a length counts characters as a reader does, one to a code point,
+  so a Hangul syllable and an emoji are one each. A budget of estimated tokens is named for tokens.
+- **The cases are shared.** Each module is held to one file of cases under `cases/`, named as the package
+  names the module, and both sides' tests read every case in it: the inputs of each public function and
+  the answer expected, in the package's JSON shape (camelCase keys, `null` for none). A case is added once,
+  to that file, and a side that answers it differently fails its own tests. Each side's own tests stand
+  beside the shared ones for what only that side has, such as a type's shape or a closure the caller
+  passes.
+- **Items may differ where a side's consumers differ.** Within one module, a side may carry an item the
+  other does not, because only that side's consumers need it; `docs/api.md` names each such item.
 
 ## What the consumer decides
 
@@ -61,7 +79,8 @@ tests hold its own cases, and a case added to one is added to the other by hand.
 - **A test keeps Korean only where English would stop it testing what it tests:** script detection, UTF-16
   widths of Hangul, where an address ends against a Hangul letter, Korean punctuation and sentence ends, the
   Korean lines of a glossary, and a ceiling counting Hangul as characters. Every other example text is
-  neutral English. A test file keeping Korean is counted in the ledger like any other file.
+  neutral English. A test file keeping Korean is counted in the ledger like any other file; a cases file
+  under `cases/` is data rather than code, keeps Korean by the same rule, and is not counted.
 - **No name of a person, an agent or a real place** stands in a test; the example text uses neutral words.
 
 ## What the library does not hold

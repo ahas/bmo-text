@@ -1,5 +1,5 @@
 {
-  "about": "The cases an answer ceiling is held to: this package's capItems and capValue, and any Rust twin of them a consumer keeps, where a Hangul syllable is three bytes and one character. A piece of text is a string, or a text and how many times it repeats; a case's items are its pieces taken `copies` times over.",
+  "about": "The cases an answer ceiling is held to: the package's capItems and capValue and the crate's cap_items and cap_value alike, where a Hangul syllable is three bytes and one character. A piece of text is a string, or a text and how many times it repeats; a case's items are its pieces taken `copies` times over.",
   "items": [
     {
       "name": "a list that fits comes back whole",
