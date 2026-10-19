@@ -45,10 +45,19 @@ const EXTENSIONS: Record<string, string> = {
   "image/svg+xml": ".svg"
 };
 
+// A payload's escapes read as a URI component's, or the payload as it stands where they are not well formed.
+function unescaped(payload: string): string {
+  try {
+    return decodeURIComponent(payload);
+  } catch {
+    return payload;
+  }
+}
+
 function pictureBytes(match: RegExpExecArray): Uint8Array {
   const payload = match[3] ?? "";
 
-  return match[2] === undefined ? new TextEncoder().encode(decodeURIComponent(payload)) : new Uint8Array(Buffer.from(payload, "base64"));
+  return match[2] === undefined ? new TextEncoder().encode(unescaped(payload)) : new Uint8Array(Buffer.from(payload, "base64"));
 }
 
 // The reading of one page. `stem` is what the pictures taken out of it are named after, numbered
@@ -100,7 +109,10 @@ export function readHtml(html: string, stem = "picture"): HtmlReading {
           return;
         }
 
+        // An element that cannot hold content, such as a self-closing one in SVG, has no end tag to wait for.
         if (tag === "title") {
+          if (!element.canHaveContent) return;
+
           inTitle = true;
           element.onEndTag(() => {
             inTitle = false;
@@ -110,6 +122,8 @@ export function readHtml(html: string, stem = "picture"): HtmlReading {
         }
 
         if (UNREAD.has(tag)) {
+          if (!element.canHaveContent) return;
+
           unread += 1;
           element.onEndTag(() => {
             unread -= 1;
@@ -138,7 +152,7 @@ export function readHtml(html: string, stem = "picture"): HtmlReading {
           if (heading !== null) prefix = `${"#".repeat(Number(heading[1]))} `;
           if (tag === "li") prefix = "- ";
 
-          if (!element.selfClosing && tag !== "br" && tag !== "hr") {
+          if (element.canHaveContent && !element.selfClosing && tag !== "br" && tag !== "hr") {
             element.onEndTag(() => {
               if (unread === 0) flush();
             });

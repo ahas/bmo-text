@@ -1,0 +1,1970 @@
+{
+  "about": "The cases the markdown reading is held to: a line's pieces and a document's blocks in the package's shape, their markup and plain text, a whole conversion as its markup, plain text and whether it is formatted, the fold, the folded markup and the markup a send asking no gate puts up, each from a source, and the division into messages under a limit in UTF-16 units, Telegram's text limit where none is given.",
+  "parseInline": [
+    {
+      "name": "words, code, pairs and a link",
+      "args": [
+        "a **b _c_** `d` [e](https://x.example) ~~f~~ ||g||"
+      ],
+      "answer": [
+        {
+          "kind": "text",
+          "text": "a "
+        },
+        {
+          "kind": "b",
+          "children": [
+            {
+              "kind": "text",
+              "text": "b _c_"
+            }
+          ]
+        },
+        {
+          "kind": "text",
+          "text": " "
+        },
+        {
+          "kind": "code",
+          "text": "d"
+        },
+        {
+          "kind": "text",
+          "text": " "
+        },
+        {
+          "kind": "link",
+          "url": "https://x.example",
+          "children": [
+            {
+              "kind": "text",
+              "text": "e"
+            }
+          ]
+        },
+        {
+          "kind": "text",
+          "text": " "
+        },
+        {
+          "kind": "s",
+          "children": [
+            {
+              "kind": "text",
+              "text": "f"
+            }
+          ]
+        },
+        {
+          "kind": "text",
+          "text": " "
+        },
+        {
+          "kind": "spoiler",
+          "children": [
+            {
+              "kind": "text",
+              "text": "g"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "a backslash takes a marker's meaning away",
+      "args": [
+        "\\*not\\* a \\\\ pair"
+      ],
+      "answer": [
+        {
+          "kind": "text",
+          "text": "*not* a \\ pair"
+        }
+      ]
+    },
+    {
+      "name": "an image mark is a link",
+      "args": [
+        "![alt](https://x.example/a.png) after"
+      ],
+      "answer": [
+        {
+          "kind": "link",
+          "url": "https://x.example/a.png",
+          "children": [
+            {
+              "kind": "text",
+              "text": "alt"
+            }
+          ]
+        },
+        {
+          "kind": "text",
+          "text": " after"
+        }
+      ]
+    },
+    {
+      "name": "an unclosed pair stays words",
+      "args": [
+        "**open and `code"
+      ],
+      "answer": [
+        {
+          "kind": "text",
+          "text": "**open and `code"
+        }
+      ]
+    },
+    {
+      "name": "Hangul stuck to a pair",
+      "args": [
+        "한**굵게**글"
+      ],
+      "answer": [
+        {
+          "kind": "text",
+          "text": "한"
+        },
+        {
+          "kind": "b",
+          "children": [
+            {
+              "kind": "text",
+              "text": "굵게"
+            }
+          ]
+        },
+        {
+          "kind": "text",
+          "text": "글"
+        }
+      ]
+    }
+  ],
+  "parseMarkdown": [
+    {
+      "name": "blocks and their gaps",
+      "args": [
+        "para one\nline two\n\n\n```py\ncode\n```\n> quote\n> > inner\n\nend"
+      ],
+      "answer": {
+        "blocks": [
+          {
+            "kind": "lines",
+            "lines": [
+              [
+                {
+                  "kind": "text",
+                  "text": "para one"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "text": "line two"
+                }
+              ]
+            ]
+          },
+          {
+            "kind": "pre",
+            "language": "py",
+            "text": "code"
+          },
+          {
+            "kind": "quote",
+            "blocks": [
+              {
+                "kind": "lines",
+                "lines": [
+                  [
+                    {
+                      "kind": "text",
+                      "text": "quote"
+                    }
+                  ],
+                  [
+                    {
+                      "kind": "text",
+                      "text": "inner"
+                    }
+                  ]
+                ]
+              }
+            ],
+            "gaps": [
+              ""
+            ]
+          },
+          {
+            "kind": "lines",
+            "lines": [
+              [
+                {
+                  "kind": "text",
+                  "text": "end"
+                }
+              ]
+            ]
+          }
+        ],
+        "gaps": [
+          "",
+          "\n\n\n",
+          "\n",
+          "\n\n"
+        ]
+      }
+    },
+    {
+      "name": "an empty source",
+      "args": [
+        ""
+      ],
+      "answer": {
+        "blocks": [],
+        "gaps": []
+      }
+    },
+    {
+      "name": "a fence that never closes",
+      "args": [
+        "before\n~~~\nopen code"
+      ],
+      "answer": {
+        "blocks": [
+          {
+            "kind": "lines",
+            "lines": [
+              [
+                {
+                  "kind": "text",
+                  "text": "before"
+                }
+              ]
+            ]
+          },
+          {
+            "kind": "pre",
+            "language": null,
+            "text": "open code"
+          }
+        ],
+        "gaps": [
+          "",
+          "\n"
+        ]
+      }
+    }
+  ],
+  "renderInline": [
+    {
+      "name": "words, code, pairs and a link",
+      "args": [
+        [
+          {
+            "kind": "text",
+            "text": "a "
+          },
+          {
+            "kind": "b",
+            "children": [
+              {
+                "kind": "text",
+                "text": "b _c_"
+              }
+            ]
+          },
+          {
+            "kind": "text",
+            "text": " "
+          },
+          {
+            "kind": "code",
+            "text": "d"
+          },
+          {
+            "kind": "text",
+            "text": " "
+          },
+          {
+            "kind": "link",
+            "url": "https://x.example",
+            "children": [
+              {
+                "kind": "text",
+                "text": "e"
+              }
+            ]
+          },
+          {
+            "kind": "text",
+            "text": " "
+          },
+          {
+            "kind": "s",
+            "children": [
+              {
+                "kind": "text",
+                "text": "f"
+              }
+            ]
+          },
+          {
+            "kind": "text",
+            "text": " "
+          },
+          {
+            "kind": "spoiler",
+            "children": [
+              {
+                "kind": "text",
+                "text": "g"
+              }
+            ]
+          }
+        ]
+      ],
+      "answer": "a <b>b _c_</b> <code>d</code> <a href=\"https://x.example\">e</a> <s>f</s> <tg-spoiler>g</tg-spoiler>"
+    },
+    {
+      "name": "a backslash takes a marker's meaning away",
+      "args": [
+        [
+          {
+            "kind": "text",
+            "text": "*not* a \\ pair"
+          }
+        ]
+      ],
+      "answer": "*not* a \\ pair"
+    },
+    {
+      "name": "an image mark is a link",
+      "args": [
+        [
+          {
+            "kind": "link",
+            "url": "https://x.example/a.png",
+            "children": [
+              {
+                "kind": "text",
+                "text": "alt"
+              }
+            ]
+          },
+          {
+            "kind": "text",
+            "text": " after"
+          }
+        ]
+      ],
+      "answer": "<a href=\"https://x.example/a.png\">alt</a> after"
+    },
+    {
+      "name": "an unclosed pair stays words",
+      "args": [
+        [
+          {
+            "kind": "text",
+            "text": "**open and `code"
+          }
+        ]
+      ],
+      "answer": "**open and `code"
+    },
+    {
+      "name": "Hangul stuck to a pair",
+      "args": [
+        [
+          {
+            "kind": "text",
+            "text": "한"
+          },
+          {
+            "kind": "b",
+            "children": [
+              {
+                "kind": "text",
+                "text": "굵게"
+              }
+            ]
+          },
+          {
+            "kind": "text",
+            "text": "글"
+          }
+        ]
+      ],
+      "answer": "한<b>굵게</b>글"
+    }
+  ],
+  "plainInline": [
+    {
+      "name": "words, code, pairs and a link",
+      "args": [
+        [
+          {
+            "kind": "text",
+            "text": "a "
+          },
+          {
+            "kind": "b",
+            "children": [
+              {
+                "kind": "text",
+                "text": "b _c_"
+              }
+            ]
+          },
+          {
+            "kind": "text",
+            "text": " "
+          },
+          {
+            "kind": "code",
+            "text": "d"
+          },
+          {
+            "kind": "text",
+            "text": " "
+          },
+          {
+            "kind": "link",
+            "url": "https://x.example",
+            "children": [
+              {
+                "kind": "text",
+                "text": "e"
+              }
+            ]
+          },
+          {
+            "kind": "text",
+            "text": " "
+          },
+          {
+            "kind": "s",
+            "children": [
+              {
+                "kind": "text",
+                "text": "f"
+              }
+            ]
+          },
+          {
+            "kind": "text",
+            "text": " "
+          },
+          {
+            "kind": "spoiler",
+            "children": [
+              {
+                "kind": "text",
+                "text": "g"
+              }
+            ]
+          }
+        ]
+      ],
+      "answer": "a b _c_ d e (https://x.example) f g"
+    },
+    {
+      "name": "a backslash takes a marker's meaning away",
+      "args": [
+        [
+          {
+            "kind": "text",
+            "text": "*not* a \\ pair"
+          }
+        ]
+      ],
+      "answer": "*not* a \\ pair"
+    },
+    {
+      "name": "an image mark is a link",
+      "args": [
+        [
+          {
+            "kind": "link",
+            "url": "https://x.example/a.png",
+            "children": [
+              {
+                "kind": "text",
+                "text": "alt"
+              }
+            ]
+          },
+          {
+            "kind": "text",
+            "text": " after"
+          }
+        ]
+      ],
+      "answer": "alt (https://x.example/a.png) after"
+    },
+    {
+      "name": "an unclosed pair stays words",
+      "args": [
+        [
+          {
+            "kind": "text",
+            "text": "**open and `code"
+          }
+        ]
+      ],
+      "answer": "**open and `code"
+    },
+    {
+      "name": "Hangul stuck to a pair",
+      "args": [
+        [
+          {
+            "kind": "text",
+            "text": "한"
+          },
+          {
+            "kind": "b",
+            "children": [
+              {
+                "kind": "text",
+                "text": "굵게"
+              }
+            ]
+          },
+          {
+            "kind": "text",
+            "text": "글"
+          }
+        ]
+      ],
+      "answer": "한굵게글"
+    }
+  ],
+  "convertMarkdown": [
+    {
+      "name": "a long report converts with sound tags and no marker beside a tag",
+      "args": [
+        "A summary of the checks that ran overnight is done. I grouped the failures by kind, found the causes, and closed the two that kept returning in code, deployed.\n\nWhat I counted\nThe 17 cases of a pair beside a tag came from the reader taking the backticks off and leaving the star pairs. 1~3, refused three times this round, are those, and 16 of them came after the second run.\nOf the 44 backtick cases, 39 were already closed by the change on the fifth. What was left is the flaw of one value wrapped in backticks several times becoming code in one place only and the code blocks of many lines.\nSeveral bold runs, fold borders, quoted messages, nested tags and the checker's answer shape all came before the fifth, and none since.\nThe other 46 are the first stage picking the wrong piece or the checker misjudging: 5 refused for the number of bold runs, 13 with formatting on the wrong piece, and 28 others.\nChecking the same attempt three times wasted 29 of 173 runs.\n\nWhat I fixed\nThe star pairs and backtick pairs an answer writes are now taken off where they are written, before any tag is put on. Bold or code goes in their place, so a star and a tag can no longer overlap. Backticks wrapping the same value several times become code in each place. 2**3, server/**/*.ts, stars inside backticks and stars with no pair stay as written.\nAn attempt the same as one already refused is no longer sent to the checker; it ends with the earlier verdict kept as its reason in the record.\nThe output rulebook and the checker's instruction were fixed first, and the code was made to match.\nThe side writing the answers is not stopped on its own. The manual already says not to write markup and it came in anyway, and since formatting is made in one place only, taking it off there shuts every path.\n\nWhat I checked\nI ran the 20 star cases and 1~3 again on the deployed code: 0 stars or backticks left, 0 tag structure faults, and the words as written.\nI added 13 regression tests. The typecheck passed, and so did the 183 format, gate and agent tests.\nOf the whole suite's 228 files, 3 failed. I fixed the agent test this change broke. A web test added for the change made its own temporary folder, and I fixed that in a commit of its own.\nThe last one is the code graph check, which fails on files another job has not committed yet.\nAfter the deployment the service came up healthy.\n\nWhat I left\nTurning a code block of many lines ``` into <pre> is not done. It is a feature of its own, and it happened once.\nA checker misjudging a rule the code already keeps is cut off only where the attempt is the same. A different attempt still goes through the checker.\nThe stars of a message that goes without formatting (PLAIN, one short line) go as written, the same rule as the backticks.\n\n1 done · 344 cases sorted · 183 tests passed · 225 of 228 passed · 9 files changed · 2 commits · 1 deployment\n\nUncommitted changes of earlier work were kept: docs/guide.md, docs/deploy.md, docs/web.md, scripts/deploy.ts, scripts/check.ts and 33 more"
+      ],
+      "answer": {
+        "markup": "A summary of the checks that ran overnight is done. I grouped the failures by kind, found the causes, and closed the two that kept returning in code, deployed.\n\nWhat I counted\nThe 17 cases of a pair beside a tag came from the reader taking the backticks off and leaving the star pairs. 1~3, refused three times this round, are those, and 16 of them came after the second run.\nOf the 44 backtick cases, 39 were already closed by the change on the fifth. What was left is the flaw of one value wrapped in backticks several times becoming code in one place only and the code blocks of many lines.\nSeveral bold runs, fold borders, quoted messages, nested tags and the checker's answer shape all came before the fifth, and none since.\nThe other 46 are the first stage picking the wrong piece or the checker misjudging: 5 refused for the number of bold runs, 13 with formatting on the wrong piece, and 28 others.\nChecking the same attempt three times wasted 29 of 173 runs.\n\nWhat I fixed\nThe star pairs and backtick pairs an answer writes are now taken off where they are written, before any tag is put on. Bold or code goes in their place, so a star and a tag can no longer overlap. Backticks wrapping the same value several times become code in each place. 2**3, server/**/*.ts, stars inside backticks and stars with no pair stay as written.\nAn attempt the same as one already refused is no longer sent to the checker; it ends with the earlier verdict kept as its reason in the record.\nThe output rulebook and the checker's instruction were fixed first, and the code was made to match.\nThe side writing the answers is not stopped on its own. The manual already says not to write markup and it came in anyway, and since formatting is made in one place only, taking it off there shuts every path.\n\nWhat I checked\nI ran the 20 star cases and 1~3 again on the deployed code: 0 stars or backticks left, 0 tag structure faults, and the words as written.\nI added 13 regression tests. The typecheck passed, and so did the 183 format, gate and agent tests.\nOf the whole suite's 228 files, 3 failed. I fixed the agent test this change broke. A web test added for the change made its own temporary folder, and I fixed that in a commit of its own.\nThe last one is the code graph check, which fails on files another job has not committed yet.\nAfter the deployment the service came up healthy.\n\nWhat I left\nTurning a code block of many lines ``` into &lt;pre&gt; is not done. It is a feature of its own, and it happened once.\nA checker misjudging a rule the code already keeps is cut off only where the attempt is the same. A different attempt still goes through the checker.\nThe stars of a message that goes without formatting (PLAIN, one short line) go as written, the same rule as the backticks.\n\n1 done · 344 cases sorted · 183 tests passed · 225 of 228 passed · 9 files changed · 2 commits · 1 deployment\n\nUncommitted changes of earlier work were kept: docs/guide.md, docs/deploy.md, docs/web.md, scripts/deploy.ts, scripts/check.ts and 33 more",
+        "plain": "A summary of the checks that ran overnight is done. I grouped the failures by kind, found the causes, and closed the two that kept returning in code, deployed.\n\nWhat I counted\nThe 17 cases of a pair beside a tag came from the reader taking the backticks off and leaving the star pairs. 1~3, refused three times this round, are those, and 16 of them came after the second run.\nOf the 44 backtick cases, 39 were already closed by the change on the fifth. What was left is the flaw of one value wrapped in backticks several times becoming code in one place only and the code blocks of many lines.\nSeveral bold runs, fold borders, quoted messages, nested tags and the checker's answer shape all came before the fifth, and none since.\nThe other 46 are the first stage picking the wrong piece or the checker misjudging: 5 refused for the number of bold runs, 13 with formatting on the wrong piece, and 28 others.\nChecking the same attempt three times wasted 29 of 173 runs.\n\nWhat I fixed\nThe star pairs and backtick pairs an answer writes are now taken off where they are written, before any tag is put on. Bold or code goes in their place, so a star and a tag can no longer overlap. Backticks wrapping the same value several times become code in each place. 2**3, server/**/*.ts, stars inside backticks and stars with no pair stay as written.\nAn attempt the same as one already refused is no longer sent to the checker; it ends with the earlier verdict kept as its reason in the record.\nThe output rulebook and the checker's instruction were fixed first, and the code was made to match.\nThe side writing the answers is not stopped on its own. The manual already says not to write markup and it came in anyway, and since formatting is made in one place only, taking it off there shuts every path.\n\nWhat I checked\nI ran the 20 star cases and 1~3 again on the deployed code: 0 stars or backticks left, 0 tag structure faults, and the words as written.\nI added 13 regression tests. The typecheck passed, and so did the 183 format, gate and agent tests.\nOf the whole suite's 228 files, 3 failed. I fixed the agent test this change broke. A web test added for the change made its own temporary folder, and I fixed that in a commit of its own.\nThe last one is the code graph check, which fails on files another job has not committed yet.\nAfter the deployment the service came up healthy.\n\nWhat I left\nTurning a code block of many lines ``` into <pre> is not done. It is a feature of its own, and it happened once.\nA checker misjudging a rule the code already keeps is cut off only where the attempt is the same. A different attempt still goes through the checker.\nThe stars of a message that goes without formatting (PLAIN, one short line) go as written, the same rule as the backticks.\n\n1 done · 344 cases sorted · 183 tests passed · 225 of 228 passed · 9 files changed · 2 commits · 1 deployment\n\nUncommitted changes of earlier work were kept: docs/guide.md, docs/deploy.md, docs/web.md, scripts/deploy.ts, scripts/check.ts and 33 more",
+        "formatted": false
+      }
+    },
+    {
+      "name": "a long report converts with sound tags and no marker beside a tag, 2",
+      "args": [
+        "The way to reopen a finished report with its earlier results kept is finished. A finished report can now be opened again from the command or the console, and what the earlier round did and its result documents stay, for the new plan to read and carry on.\n\nWhat I fixed\nI made the command run report --todo <number> --reopen and the console's \"Open again\" button on a report. Opening it again moves every finished step, with its result and document path, into history, named r1-plan, r1-step-0-0 and so on, and keeps that round's purpose and instruction apart. Then the report goes back to draft and the entry back to waiting.\nChanges to the purpose, the instruction and the model are taken in the same request that opens it again. The moment an entry goes back to waiting the queue may pick it, so a change made after opening could have the plan start on the instruction from before.\nThe new round's building turn takes the earlier round's purpose, instruction and results as input, with the word not to search again what still holds. Each step's earlier result carries its first 2,000 characters only and points to its document for the rest. On a copy of the record the planning prompt went from 120,000 to 59,000 characters.\nUnits, side workers, prompts and result document names carry the round (r2-plan and so on), so no earlier document is overwritten and no row or launch count is mixed. The console's tag reads \"round 2 step 1-1\" too.\nWhen the command refuses a finished report it now points to --reopen. The documents guide.md and web.md and the manual are fixed, and the manual is reloaded.\n\nWhat I checked\nI added tests. Running one round to the end and opening it again puts the earlier study, build and final results and the old purpose and instruction into the new planning prompt. Names stand as r2- and the earlier documents stay. There are tests for the control API's reopening and the console panel as well.\nThe typecheck passed at the root and in the web, and the 176 tests I touched passed. Of the whole suite's 222 files 221 passed. The one that failed is graph.test, on new files another job has not committed. On a tree holding my commits alone, the typecheck and 174 tests passed.\nI ran the script's --reopen on a copy of the live database. On a development console started on that copy and a stand-in control API, reopening by the button worked.\nAfter the deployment the service came up healthy, and the real control API refused reopening an unfinished report with 409. The new console bundle carries the button.\n\nWhat I left\nThe uncommitted changes of another job are untouched; I picked my own hunks to commit. No migration changes the schema. The temporary login was made in the copy only and went with it. The original report itself was not opened again.\n\n1 done · 0 open · 176 touched tests passed · 221/222 files passed (the 1 failure is another job's) · 18 files changed\n\nUncommitted changes of earlier work were kept: docs/guide.md, docs/deploy.md, docs/web.md, scripts/deploy.ts, scripts/check.ts and 32 more"
+      ],
+      "answer": {
+        "markup": "The way to reopen a finished report with its earlier results kept is finished. A finished report can now be opened again from the command or the console, and what the earlier round did and its result documents stay, for the new plan to read and carry on.\n\nWhat I fixed\nI made the command run report --todo &lt;number&gt; --reopen and the console's \"Open again\" button on a report. Opening it again moves every finished step, with its result and document path, into history, named r1-plan, r1-step-0-0 and so on, and keeps that round's purpose and instruction apart. Then the report goes back to draft and the entry back to waiting.\nChanges to the purpose, the instruction and the model are taken in the same request that opens it again. The moment an entry goes back to waiting the queue may pick it, so a change made after opening could have the plan start on the instruction from before.\nThe new round's building turn takes the earlier round's purpose, instruction and results as input, with the word not to search again what still holds. Each step's earlier result carries its first 2,000 characters only and points to its document for the rest. On a copy of the record the planning prompt went from 120,000 to 59,000 characters.\nUnits, side workers, prompts and result document names carry the round (r2-plan and so on), so no earlier document is overwritten and no row or launch count is mixed. The console's tag reads \"round 2 step 1-1\" too.\nWhen the command refuses a finished report it now points to --reopen. The documents guide.md and web.md and the manual are fixed, and the manual is reloaded.\n\nWhat I checked\nI added tests. Running one round to the end and opening it again puts the earlier study, build and final results and the old purpose and instruction into the new planning prompt. Names stand as r2- and the earlier documents stay. There are tests for the control API's reopening and the console panel as well.\nThe typecheck passed at the root and in the web, and the 176 tests I touched passed. Of the whole suite's 222 files 221 passed. The one that failed is graph.test, on new files another job has not committed. On a tree holding my commits alone, the typecheck and 174 tests passed.\nI ran the script's --reopen on a copy of the live database. On a development console started on that copy and a stand-in control API, reopening by the button worked.\nAfter the deployment the service came up healthy, and the real control API refused reopening an unfinished report with 409. The new console bundle carries the button.\n\nWhat I left\nThe uncommitted changes of another job are untouched; I picked my own hunks to commit. No migration changes the schema. The temporary login was made in the copy only and went with it. The original report itself was not opened again.\n\n1 done · 0 open · 176 touched tests passed · 221/222 files passed (the 1 failure is another job's) · 18 files changed\n\nUncommitted changes of earlier work were kept: docs/guide.md, docs/deploy.md, docs/web.md, scripts/deploy.ts, scripts/check.ts and 32 more",
+        "plain": "The way to reopen a finished report with its earlier results kept is finished. A finished report can now be opened again from the command or the console, and what the earlier round did and its result documents stay, for the new plan to read and carry on.\n\nWhat I fixed\nI made the command run report --todo <number> --reopen and the console's \"Open again\" button on a report. Opening it again moves every finished step, with its result and document path, into history, named r1-plan, r1-step-0-0 and so on, and keeps that round's purpose and instruction apart. Then the report goes back to draft and the entry back to waiting.\nChanges to the purpose, the instruction and the model are taken in the same request that opens it again. The moment an entry goes back to waiting the queue may pick it, so a change made after opening could have the plan start on the instruction from before.\nThe new round's building turn takes the earlier round's purpose, instruction and results as input, with the word not to search again what still holds. Each step's earlier result carries its first 2,000 characters only and points to its document for the rest. On a copy of the record the planning prompt went from 120,000 to 59,000 characters.\nUnits, side workers, prompts and result document names carry the round (r2-plan and so on), so no earlier document is overwritten and no row or launch count is mixed. The console's tag reads \"round 2 step 1-1\" too.\nWhen the command refuses a finished report it now points to --reopen. The documents guide.md and web.md and the manual are fixed, and the manual is reloaded.\n\nWhat I checked\nI added tests. Running one round to the end and opening it again puts the earlier study, build and final results and the old purpose and instruction into the new planning prompt. Names stand as r2- and the earlier documents stay. There are tests for the control API's reopening and the console panel as well.\nThe typecheck passed at the root and in the web, and the 176 tests I touched passed. Of the whole suite's 222 files 221 passed. The one that failed is graph.test, on new files another job has not committed. On a tree holding my commits alone, the typecheck and 174 tests passed.\nI ran the script's --reopen on a copy of the live database. On a development console started on that copy and a stand-in control API, reopening by the button worked.\nAfter the deployment the service came up healthy, and the real control API refused reopening an unfinished report with 409. The new console bundle carries the button.\n\nWhat I left\nThe uncommitted changes of another job are untouched; I picked my own hunks to commit. No migration changes the schema. The temporary login was made in the copy only and went with it. The original report itself was not opened again.\n\n1 done · 0 open · 176 touched tests passed · 221/222 files passed (the 1 failure is another job's) · 18 files changed\n\nUncommitted changes of earlier work were kept: docs/guide.md, docs/deploy.md, docs/web.md, scripts/deploy.ts, scripts/check.ts and 32 more",
+        "formatted": false
+      }
+    },
+    {
+      "name": "a long report converts with sound tags and no marker beside a tag, 3",
+      "args": [
+        "This run spent no tokens of its own.\n\nThe \"four checkouts\" in the alert are temporary folders named tmp-run-…-checkout. The overnight job ran its tests just before deploying (06:15, 06:21, 06:24), and the fake runner inside the tests wrote fake session records under the state folder. The watcher read those records as real sessions.\n\nThere are three reasons.\n① runner.test.ts uses a fake engine and a fake runner instead of the real ones, and is meant to remove the runner- records when it ends.\n② The \"usage limit reached\" line in the watcher's log is the same as the test phrase in queue.test.ts and runner.test.ts.\n③ The usage record shows no such burst at that time.\n\nWhat was really spent in the same window (05:50~06:30):\novernight job: 18.3M tokens, about $13, mostly cache reads\nearlier job: 14.8M tokens, about $11\nthe chat agent: 25 turns, 12.5M tokens\n\nThe same false alert came at 05:54 as well. It looks to have begun when the tests started imitating the runner's records, and it will ring again each time the tests run. Shall I file an entry to have the tests write their fake records outside the state folder, or the watcher pass over this temporary folder?"
+      ],
+      "answer": {
+        "markup": "This run spent no tokens of its own.\n\nThe \"four checkouts\" in the alert are temporary folders named tmp-run-…-checkout. The overnight job ran its tests just before deploying (06:15, 06:21, 06:24), and the fake runner inside the tests wrote fake session records under the state folder. The watcher read those records as real sessions.\n\nThere are three reasons.\n① runner.test.ts uses a fake engine and a fake runner instead of the real ones, and is meant to remove the runner- records when it ends.\n② The \"usage limit reached\" line in the watcher's log is the same as the test phrase in queue.test.ts and runner.test.ts.\n③ The usage record shows no such burst at that time.\n\nWhat was really spent in the same window (05:50~06:30):\novernight job: 18.3M tokens, about $13, mostly cache reads\nearlier job: 14.8M tokens, about $11\nthe chat agent: 25 turns, 12.5M tokens\n\nThe same false alert came at 05:54 as well. It looks to have begun when the tests started imitating the runner's records, and it will ring again each time the tests run. Shall I file an entry to have the tests write their fake records outside the state folder, or the watcher pass over this temporary folder?",
+        "plain": "This run spent no tokens of its own.\n\nThe \"four checkouts\" in the alert are temporary folders named tmp-run-…-checkout. The overnight job ran its tests just before deploying (06:15, 06:21, 06:24), and the fake runner inside the tests wrote fake session records under the state folder. The watcher read those records as real sessions.\n\nThere are three reasons.\n① runner.test.ts uses a fake engine and a fake runner instead of the real ones, and is meant to remove the runner- records when it ends.\n② The \"usage limit reached\" line in the watcher's log is the same as the test phrase in queue.test.ts and runner.test.ts.\n③ The usage record shows no such burst at that time.\n\nWhat was really spent in the same window (05:50~06:30):\novernight job: 18.3M tokens, about $13, mostly cache reads\nearlier job: 14.8M tokens, about $11\nthe chat agent: 25 turns, 12.5M tokens\n\nThe same false alert came at 05:54 as well. It looks to have begun when the tests started imitating the runner's records, and it will ring again each time the tests run. Shall I file an entry to have the tests write their fake records outside the state folder, or the watcher pass over this temporary folder?",
+        "formatted": false
+      }
+    },
+    {
+      "name": "a long report converts with sound tags and no marker beside a tag, 4",
+      "args": [
+        "I added the requester's words, as they were, to the entry. It is the work that changes where an editor's model and harness are chosen, so it went there, and nothing has run for it yet, so they reach the next run's prompt as they are.\n\nThis is how the editors run now.\nThe digest and the writer are both tied to one editor line and run on one model. The writer is on high effort and keeps its session.\nThe gates have a model set per agent, mostly a local model, and take one request and end.\n\nI read \"a single agent like the gates\" this way:\n① Each agent can have its own model.\n② It takes one request and ends instead of keeping a session.\n③ The default is a mid model, matched by a model of the same level on the other providers.\n\nOnce ② is done, the session problem carried over from the earlier entry is solved and running it on another machine gets easier too. If it was not meant to go as far as running without a session, say so."
+      ],
+      "answer": {
+        "markup": "I added the requester's words, as they were, to the entry. It is the work that changes where an editor's model and harness are chosen, so it went there, and nothing has run for it yet, so they reach the next run's prompt as they are.\n\nThis is how the editors run now.\nThe digest and the writer are both tied to one editor line and run on one model. The writer is on high effort and keeps its session.\nThe gates have a model set per agent, mostly a local model, and take one request and end.\n\nI read \"a single agent like the gates\" this way:\n① Each agent can have its own model.\n② It takes one request and ends instead of keeping a session.\n③ The default is a mid model, matched by a model of the same level on the other providers.\n\nOnce ② is done, the session problem carried over from the earlier entry is solved and running it on another machine gets easier too. If it was not meant to go as far as running without a session, say so.",
+        "plain": "I added the requester's words, as they were, to the entry. It is the work that changes where an editor's model and harness are chosen, so it went there, and nothing has run for it yet, so they reach the next run's prompt as they are.\n\nThis is how the editors run now.\nThe digest and the writer are both tied to one editor line and run on one model. The writer is on high effort and keeps its session.\nThe gates have a model set per agent, mostly a local model, and take one request and end.\n\nI read \"a single agent like the gates\" this way:\n① Each agent can have its own model.\n② It takes one request and ends instead of keeping a session.\n③ The default is a mid model, matched by a model of the same level on the other providers.\n\nOnce ② is done, the session problem carried over from the earlier entry is solved and running it on another machine gets easier too. If it was not meant to go as far as running without a session, say so.",
+        "formatted": false
+      }
+    },
+    {
+      "name": "a long report converts with sound tags and no marker beside a tag, 5",
+      "args": [
+        "The two processes read different material and write to different places.\n\n① The digest\nMaterial: the notes the agent left with note.ts\nWhat it does: sorts each note into one of three. Written as a room's rule it goes into the rules folder, written as knowledge into the knowledge folder, and neither is dropped. It runs every hour, and at once when the requester says \"sort it now\".\n\n② The writer\nMaterial: a room's conversation as written, one batch at a time\nWhat it does: writes pieces by subject for each speaker, such as character, way of speaking and relations, into the people folder and keeps the index in step. Then the summariser makes the standing summary out of those pieces.\n\nThe digest sorts the notes the agent wrote into rules or knowledge, and the writer reads the conversation itself and writes about the people.\n\nThe digest's instruction already has the knowledge documents. It tags a note as one room's own or shared, and keeps shared only what the requester said may be shared. Making the new knowledge documents and the knowledge sorter may overlap with this."
+      ],
+      "answer": {
+        "markup": "The two processes read different material and write to different places.\n\n① The digest\nMaterial: the notes the agent left with note.ts\nWhat it does: sorts each note into one of three. Written as a room's rule it goes into the rules folder, written as knowledge into the knowledge folder, and neither is dropped. It runs every hour, and at once when the requester says \"sort it now\".\n\n② The writer\nMaterial: a room's conversation as written, one batch at a time\nWhat it does: writes pieces by subject for each speaker, such as character, way of speaking and relations, into the people folder and keeps the index in step. Then the summariser makes the standing summary out of those pieces.\n\nThe digest sorts the notes the agent wrote into rules or knowledge, and the writer reads the conversation itself and writes about the people.\n\nThe digest's instruction already has the knowledge documents. It tags a note as one room's own or shared, and keeps shared only what the requester said may be shared. Making the new knowledge documents and the knowledge sorter may overlap with this.",
+        "plain": "The two processes read different material and write to different places.\n\n① The digest\nMaterial: the notes the agent left with note.ts\nWhat it does: sorts each note into one of three. Written as a room's rule it goes into the rules folder, written as knowledge into the knowledge folder, and neither is dropped. It runs every hour, and at once when the requester says \"sort it now\".\n\n② The writer\nMaterial: a room's conversation as written, one batch at a time\nWhat it does: writes pieces by subject for each speaker, such as character, way of speaking and relations, into the people folder and keeps the index in step. Then the summariser makes the standing summary out of those pieces.\n\nThe digest sorts the notes the agent wrote into rules or knowledge, and the writer reads the conversation itself and writes about the people.\n\nThe digest's instruction already has the knowledge documents. It tags a note as one room's own or shared, and keeps shared only what the requester said may be shared. Making the new knowledge documents and the knowledge sorter may overlap with this.",
+        "formatted": false
+      }
+    },
+    {
+      "name": "a long report converts with sound tags and no marker beside a tag, 6",
+      "args": [
+        "Log in to the host over SSH and type `relay`, and that is it.\n\n```\nssh user@example-host\n/usr/local/bin/relay\n```\n\nThe relay service keeps `relay server` up as the default session, on the default settings path, so typing it with no argument joins that session. Where /usr/local/bin is not on the PATH, type the whole path as above.\n\nBefore joining, `relay status` shows whether the server is up.\nTo leave, press `ctrl+b` then `q` — the window alone goes, and the jobs running inside stay alive.\n\nTo join straight from another computer without SSH, `relay --remote user@example-host` works too. That computer needs relay installed as well."
+      ],
+      "answer": {
+        "markup": "Log in to the host over SSH and type <code>relay</code>, and that is it.\n\n<pre>ssh user@example-host\n/usr/local/bin/relay</pre>\n\nThe relay service keeps <code>relay server</code> up as the default session, on the default settings path, so typing it with no argument joins that session. Where /usr/local/bin is not on the PATH, type the whole path as above.\n\nBefore joining, <code>relay status</code> shows whether the server is up.\nTo leave, press <code>ctrl+b</code> then <code>q</code> — the window alone goes, and the jobs running inside stay alive.\n\nTo join straight from another computer without SSH, <code>relay --remote user@example-host</code> works too. That computer needs relay installed as well.",
+        "plain": "Log in to the host over SSH and type relay, and that is it.\n\nssh user@example-host\n/usr/local/bin/relay\n\nThe relay service keeps relay server up as the default session, on the default settings path, so typing it with no argument joins that session. Where /usr/local/bin is not on the PATH, type the whole path as above.\n\nBefore joining, relay status shows whether the server is up.\nTo leave, press ctrl+b then q — the window alone goes, and the jobs running inside stay alive.\n\nTo join straight from another computer without SSH, relay --remote user@example-host works too. That computer needs relay installed as well.",
+        "formatted": true
+      }
+    },
+    {
+      "name": "a heading keeps its words and loses its marks",
+      "args": [
+        "## Result\nThe body.\n### **Bold** title ###"
+      ],
+      "answer": {
+        "markup": "Result\nThe body.\n<b>Bold</b> title",
+        "plain": "Result\nThe body.\nBold title",
+        "formatted": true
+      }
+    },
+    {
+      "name": "bullets become •, nested ones keep their indent, and numbers stay as written",
+      "args": [
+        "- one\n  * two\n+ three\n1. first\n2) second"
+      ],
+      "answer": {
+        "markup": "• one\n  • two\n• three\n1. first\n2) second",
+        "plain": "• one\n  • two\n• three\n1. first\n2) second",
+        "formatted": false
+      }
+    },
+    {
+      "name": "a table is its rows with the cells joined, and the rule row is gone",
+      "args": [
+        "| name | value |\n|---|:---:|\n| `a` | 1 |\n| b | **2** |"
+      ],
+      "answer": {
+        "markup": "name · value\n<code>a</code> · 1\nb · <b>2</b>",
+        "plain": "name · value\na · 1\nb · 2",
+        "formatted": true
+      }
+    },
+    {
+      "name": "a pipe inside a cell's code span or link address is not a cell border",
+      "args": [
+        "| command | what it does |\n|---|---|\n| `ls | grep foo` | the files holding foo |\n| [search](https://example.com/?q=a|b) | address |"
+      ],
+      "answer": {
+        "markup": "command · what it does\n<code>ls | grep foo</code> · the files holding foo\n<a href=\"https://example.com/?q=a|b\">search</a> · address",
+        "plain": "command · what it does\nls | grep foo · the files holding foo\nsearch (https://example.com/?q=a|b) · address",
+        "formatted": true
+      }
+    },
+    {
+      "name": "pipes in a sentence are not a table",
+      "args": [
+        "a | b, one of the two\nthe next line"
+      ],
+      "answer": {
+        "markup": "a | b, one of the two\nthe next line",
+        "plain": "a | b, one of the two\nthe next line",
+        "formatted": false
+      }
+    },
+    {
+      "name": "a horizontal rule is gone, and so is a setext underline",
+      "args": [
+        "above\n\n---\n\nbelow"
+      ],
+      "answer": {
+        "markup": "above\n\nbelow",
+        "plain": "above\n\nbelow",
+        "formatted": false
+      }
+    },
+    {
+      "name": "a horizontal rule is gone, and so is a setext underline, 2",
+      "args": [
+        "Title\n---\nbody"
+      ],
+      "answer": {
+        "markup": "Title\nbody",
+        "plain": "Title\nbody",
+        "formatted": false
+      }
+    },
+    {
+      "name": "a horizontal rule is gone, and so is a setext underline, 3",
+      "args": [
+        "above\n***\nbelow"
+      ],
+      "answer": {
+        "markup": "above\nbelow",
+        "plain": "above\nbelow",
+        "formatted": false
+      }
+    },
+    {
+      "name": "an indented line is text, not code",
+      "args": [
+        "item\n    an indented note"
+      ],
+      "answer": {
+        "markup": "item\n    an indented note",
+        "plain": "item\n    an indented note",
+        "formatted": false
+      }
+    },
+    {
+      "name": "a text with no markdown is its own plain text, byte for byte, with no tags",
+      "args": [
+        "Soup would be good for dinner tonight.\n\nFor 3~5 people, order about 2*3 bowls."
+      ],
+      "answer": {
+        "markup": "Soup would be good for dinner tonight.\n\nFor 3~5 people, order about 2*3 bowls.",
+        "plain": "Soup would be good for dinner tonight.\n\nFor 3~5 people, order about 2*3 bowls.",
+        "formatted": false
+      }
+    },
+    {
+      "name": "bold, italic, strike, spoiler and code",
+      "args": [
+        "**bold** *slanted* ~~struck~~ ||hidden|| `value`"
+      ],
+      "answer": {
+        "markup": "<b>bold</b> <i>slanted</i> <s>struck</s> <tg-spoiler>hidden</tg-spoiler> <code>value</code>",
+        "plain": "bold slanted struck hidden value",
+        "formatted": true
+      }
+    },
+    {
+      "name": "a code block keeps its language and escapes what it holds",
+      "args": [
+        "Look.\n```ts\nif (a < b && c) {}\n\n```\nThe end."
+      ],
+      "answer": {
+        "markup": "Look.\n<pre><code class=\"language-ts\">if (a &lt; b &amp;&amp; c) {}\n</code></pre>\nThe end.",
+        "plain": "Look.\nif (a < b && c) {}\n\nThe end.",
+        "formatted": true
+      }
+    },
+    {
+      "name": "a fence that never closes runs to the end",
+      "args": [
+        "```\n**not bold**"
+      ],
+      "answer": {
+        "markup": "<pre>**not bold**</pre>",
+        "plain": "**not bold**",
+        "formatted": true
+      }
+    },
+    {
+      "name": "a code block with nothing in it is left out",
+      "args": [
+        "above\n```\n```\nbelow"
+      ],
+      "answer": {
+        "markup": "above\nbelow",
+        "plain": "above\nbelow",
+        "formatted": false
+      }
+    },
+    {
+      "name": "< > & are escaped in text, in code and in an href",
+      "args": [
+        "a < b & c > d `x<y&z` [here](https://example.com/?a=1&b=\"2\")"
+      ],
+      "answer": {
+        "markup": "a &lt; b &amp; c &gt; d <code>x&lt;y&amp;z</code> <a href=\"https://example.com/?a=1&amp;b=&quot;2&quot;\">here</a>",
+        "plain": "a < b & c > d x<y&z here (https://example.com/?a=1&b=\"2\")",
+        "formatted": true
+      }
+    },
+    {
+      "name": "HTML in the message is shown as its characters",
+      "args": [
+        "<div>title</div> one line<br>"
+      ],
+      "answer": {
+        "markup": "&lt;div&gt;title&lt;/div&gt; one line&lt;br&gt;",
+        "plain": "<div>title</div> one line<br>",
+        "formatted": false
+      }
+    },
+    {
+      "name": "a link needs an http address; any other stays words with its address after them",
+      "args": [
+        "[press](javascript:alert(1))"
+      ],
+      "answer": {
+        "markup": "press javascript:alert(1)",
+        "plain": "press javascript:alert(1)",
+        "formatted": false
+      }
+    },
+    {
+      "name": "a link needs an http address; any other stays words with its address after them, 2",
+      "args": [
+        "[map](https://map.example/x)"
+      ],
+      "answer": {
+        "markup": "<a href=\"https://map.example/x\">map</a>",
+        "plain": "map (https://map.example/x)",
+        "formatted": true
+      }
+    },
+    {
+      "name": "a link needs an http address; any other stays words with its address after them, 3",
+      "args": [
+        "<https://example.com/a>"
+      ],
+      "answer": {
+        "markup": "https://example.com/a",
+        "plain": "https://example.com/a",
+        "formatted": false
+      }
+    },
+    {
+      "name": "a link needs an http address; any other stays words with its address after them, 4",
+      "args": [
+        "![photo](https://example.com/p.png)"
+      ],
+      "answer": {
+        "markup": "<a href=\"https://example.com/p.png\">photo</a>",
+        "plain": "photo (https://example.com/p.png)",
+        "formatted": true
+      }
+    },
+    {
+      "name": "a bare address stays for Telegram to read unless the Korean sentence runs on straight after it",
+      "args": [
+        "주소 https://site.example.com/archive/83 에 있어"
+      ],
+      "answer": {
+        "markup": "주소 https://site.example.com/archive/83 에 있어",
+        "plain": "주소 https://site.example.com/archive/83 에 있어",
+        "formatted": false
+      }
+    },
+    {
+      "name": "a bare address stays for Telegram to read unless the Korean sentence runs on straight after it, 2",
+      "args": [
+        "(https://site.example.com/archive/83)에 있어"
+      ],
+      "answer": {
+        "markup": "(<a href=\"https://site.example.com/archive/83\">https://site.example.com/archive/83</a>)에 있어",
+        "plain": "(https://site.example.com/archive/83)에 있어",
+        "formatted": true
+      }
+    },
+    {
+      "name": "a bare address stays for Telegram to read unless the Korean sentence runs on straight after it, 3",
+      "args": [
+        "https://site.example.com/archive/83에"
+      ],
+      "answer": {
+        "markup": "<a href=\"https://site.example.com/archive/83\">https://site.example.com/archive/83</a>에",
+        "plain": "https://site.example.com/archive/83에",
+        "formatted": true
+      }
+    },
+    {
+      "name": "a quote is one blockquote, and a quote inside it is flattened into it",
+      "args": [
+        "> somebody's words\n>> the words inside them\n\nmy words"
+      ],
+      "answer": {
+        "markup": "<blockquote>somebody's words\nthe words inside them</blockquote>\n\nmy words",
+        "plain": "somebody's words\nthe words inside them\n\nmy words",
+        "formatted": true
+      }
+    },
+    {
+      "name": "a formatting around code is split around it, since code may not sit inside one",
+      "args": [
+        "**before `value` after**"
+      ],
+      "answer": {
+        "markup": "<b>before </b><code>value</code><b> after</b>",
+        "plain": "before value after",
+        "formatted": true
+      }
+    },
+    {
+      "name": "code inside a link's words loses its tag and keeps its letters",
+      "args": [
+        "[`bun test` result](https://example.com/)"
+      ],
+      "answer": {
+        "markup": "<a href=\"https://example.com/\">bun test result</a>",
+        "plain": "bun test result (https://example.com/)",
+        "formatted": true
+      }
+    },
+    {
+      "name": "formatting inside formatting and inside a link nests the way Telegram takes it",
+      "args": [
+        "**bold *slanted inside* end** [*a slanted link*](https://example.com/)"
+      ],
+      "answer": {
+        "markup": "<b>bold <i>slanted inside</i> end</b> <a href=\"https://example.com/\"><i>a slanted link</i></a>",
+        "plain": "bold slanted inside end a slanted link (https://example.com/)",
+        "formatted": true
+      }
+    },
+    {
+      "name": "glued to a letter, digit, underscore or slash, padded inside, or alone",
+      "args": [
+        "2**3"
+      ],
+      "answer": {
+        "markup": "2**3",
+        "plain": "2**3",
+        "formatted": false
+      }
+    },
+    {
+      "name": "glued to a letter, digit, underscore or slash, padded inside, or alone, 2",
+      "args": [
+        "server/**/*.ts"
+      ],
+      "answer": {
+        "markup": "server/**/*.ts",
+        "plain": "server/**/*.ts",
+        "formatted": false
+      }
+    },
+    {
+      "name": "glued to a letter, digit, underscore or slash, padded inside, or alone, 3",
+      "args": [
+        "a || b"
+      ],
+      "answer": {
+        "markup": "a || b",
+        "plain": "a || b",
+        "formatted": false
+      }
+    },
+    {
+      "name": "glued to a letter, digit, underscore or slash, padded inside, or alone, 4",
+      "args": [
+        "3~5 people"
+      ],
+      "answer": {
+        "markup": "3~5 people",
+        "plain": "3~5 people",
+        "formatted": false
+      }
+    },
+    {
+      "name": "glued to a letter, digit, underscore or slash, padded inside, or alone, 5",
+      "args": [
+        "x*y*z"
+      ],
+      "answer": {
+        "markup": "x*y*z",
+        "plain": "x*y*z",
+        "formatted": false
+      }
+    },
+    {
+      "name": "glued to a letter, digit, underscore or slash, padded inside, or alone, 6",
+      "args": [
+        "**no pair"
+      ],
+      "answer": {
+        "markup": "**no pair",
+        "plain": "**no pair",
+        "formatted": false
+      }
+    },
+    {
+      "name": "glued to a letter, digit, underscore or slash, padded inside, or alone, 7",
+      "args": [
+        "a ** b ** c"
+      ],
+      "answer": {
+        "markup": "a ** b ** c",
+        "plain": "a ** b ** c",
+        "formatted": false
+      }
+    },
+    {
+      "name": "glued to a letter, digit, underscore or slash, padded inside, or alone, 8",
+      "args": [
+        "3~5~7"
+      ],
+      "answer": {
+        "markup": "3~5~7",
+        "plain": "3~5~7",
+        "formatted": false
+      }
+    },
+    {
+      "name": "underscores are never markup",
+      "args": [
+        "snake_case_name and __init__.py"
+      ],
+      "answer": {
+        "markup": "snake_case_name and __init__.py",
+        "plain": "snake_case_name and __init__.py",
+        "formatted": false
+      }
+    },
+    {
+      "name": "a pair stuck to Korean on both sides is still a pair",
+      "args": [
+        "이건**중요**합니다"
+      ],
+      "answer": {
+        "markup": "이건<b>중요</b>합니다",
+        "plain": "이건중요합니다",
+        "formatted": true
+      }
+    },
+    {
+      "name": "a backslash takes a marker's meaning away and leaves other backslashes alone",
+      "args": [
+        "\\*\\*star\\*\\* C:\\Users \\d"
+      ],
+      "answer": {
+        "markup": "**star** C:\\Users \\d",
+        "plain": "**star** C:\\Users \\d",
+        "formatted": false
+      }
+    },
+    {
+      "name": "stars inside backticks are the code's own letters",
+      "args": [
+        "`**/*.ts`"
+      ],
+      "answer": {
+        "markup": "<code>**/*.ts</code>",
+        "plain": "**/*.ts",
+        "formatted": true
+      }
+    },
+    {
+      "name": "bolds that each take a whole line all stand, bullets and numbers aside",
+      "args": [
+        "- **First**\na note\n① **Second**\na note\n**Third**\na note"
+      ],
+      "answer": {
+        "markup": "• <b>First</b>\na note\n① <b>Second</b>\na note\n<b>Third</b>\na note",
+        "plain": "• First\na note\n① Second\na note\nThird\na note",
+        "formatted": true
+      }
+    },
+    {
+      "name": "bolds inside sentences leave the first one and the others as words",
+      "args": [
+        "**Before** a sentence.\n\n**Name**\nAnd **more** there."
+      ],
+      "answer": {
+        "markup": "<b>Before</b> a sentence.\n\nName\nAnd more there.",
+        "plain": "Before a sentence.\n\nName\nAnd more there.",
+        "formatted": true
+      }
+    },
+    {
+      "name": "keeps the first block and a short last block in the open",
+      "args": [
+        "An opening.\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\n\nThe conclusion is this."
+      ],
+      "answer": {
+        "markup": "An opening.\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\n\nThe conclusion is this.",
+        "plain": "An opening.\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\n\nThe conclusion is this.",
+        "formatted": false
+      }
+    },
+    {
+      "name": "too little to hide is no fold",
+      "args": [
+        "An opening.\n\nOne line more."
+      ],
+      "answer": {
+        "markup": "An opening.\n\nOne line more.",
+        "plain": "An opening.\n\nOne line more.",
+        "formatted": false
+      }
+    },
+    {
+      "name": "too little to hide is no fold, 2",
+      "args": [
+        "A short word of one paragraph."
+      ],
+      "answer": {
+        "markup": "A short word of one paragraph.",
+        "plain": "A short word of one paragraph.",
+        "formatted": false
+      }
+    },
+    {
+      "name": "a code block with a blank line inside is one block and is never cut",
+      "args": [
+        "An opening.\n\n```ts\nline 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\n\nmore\n```\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\n\nThe conclusion is this."
+      ],
+      "answer": {
+        "markup": "An opening.\n\n<pre><code class=\"language-ts\">line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\n\nmore</code></pre>\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\n\nThe conclusion is this.",
+        "plain": "An opening.\n\nline 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\n\nmore\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\n\nThe conclusion is this.",
+        "formatted": true
+      }
+    },
+    {
+      "name": "a quote inside the folded part stands without its own quote",
+      "args": [
+        "An opening.\n\n> quoted words body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\n\nThe conclusion is this."
+      ],
+      "answer": {
+        "markup": "An opening.\n\n<blockquote>quoted words body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body</blockquote>\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\n\nThe conclusion is this.",
+        "plain": "An opening.\n\nquoted words body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\n\nThe conclusion is this.",
+        "formatted": true
+      }
+    },
+    {
+      "name": "a conclusion written onto the body with one line break stays out of the quote",
+      "args": [
+        "An opening.\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\nTo end, I will sum it up this way."
+      ],
+      "answer": {
+        "markup": "An opening.\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\nTo end, I will sum it up this way.",
+        "plain": "An opening.\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\nTo end, I will sum it up this way.",
+        "formatted": false
+      }
+    },
+    {
+      "name": "a last line that is not a finished sentence is an item, and stays where it is",
+      "args": [
+        "An opening.\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\n13 a right-click context menu in the chat\n14 the TODO list into the database, and the room's agent asking too"
+      ],
+      "answer": {
+        "markup": "An opening.\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\n13 a right-click context menu in the chat\n14 the TODO list into the database, and the room's agent asking too",
+        "plain": "An opening.\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\n13 a right-click context menu in the chat\n14 the TODO list into the database, and the room's agent asking too",
+        "formatted": false
+      }
+    },
+    {
+      "name": "a code block is never the conclusion",
+      "args": [
+        "An opening.\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\n\n```\nls\n```"
+      ],
+      "answer": {
+        "markup": "An opening.\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\n\n<pre>ls</pre>",
+        "plain": "An opening.\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\n\nls",
+        "formatted": true
+      }
+    },
+    {
+      "name": "leaves a short message as its plain text",
+      "args": [
+        "a short message"
+      ],
+      "answer": {
+        "markup": "a short message",
+        "plain": "a short message",
+        "formatted": false
+      }
+    },
+    {
+      "name": "sends a short message's formatting unfolded",
+      "args": [
+        "a short `value` message"
+      ],
+      "answer": {
+        "markup": "a short <code>value</code> message",
+        "plain": "a short value message",
+        "formatted": true
+      }
+    },
+    {
+      "name": "folds a long one and escapes both halves",
+      "args": [
+        "An opening a < b\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body "
+      ],
+      "answer": {
+        "markup": "An opening a &lt; b\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body ",
+        "plain": "An opening a < b\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body ",
+        "formatted": false
+      }
+    },
+    {
+      "name": "is divided at a pause, and the parts put back together are the text",
+      "args": [
+        "paragraph 0 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 1 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 2 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 3 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\n"
+      ],
+      "answer": {
+        "markup": "paragraph 0 <b>bold</b> nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 1 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 2 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 3 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",
+        "plain": "paragraph 0 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 1 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 2 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 3 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",
+        "formatted": true
+      }
+    },
+    {
+      "name": "is divided at a pause, and the parts put back together are the text, 2",
+      "args": [
+        "paragraph 4 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 5 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 6 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 7 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\n"
+      ],
+      "answer": {
+        "markup": "paragraph 4 <b>bold</b> nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 5 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 6 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 7 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",
+        "plain": "paragraph 4 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 5 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 6 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 7 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",
+        "formatted": true
+      }
+    },
+    {
+      "name": "is divided at a pause, and the parts put back together are the text, 3",
+      "args": [
+        "paragraph 8 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 9 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 10 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 11 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\n"
+      ],
+      "answer": {
+        "markup": "paragraph 8 <b>bold</b> nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 9 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 10 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 11 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",
+        "plain": "paragraph 8 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 9 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 10 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 11 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",
+        "formatted": true
+      }
+    },
+    {
+      "name": "is divided at a pause, and the parts put back together are the text, 4",
+      "args": [
+        "paragraph 12 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 13 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 14 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 15 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\n"
+      ],
+      "answer": {
+        "markup": "paragraph 12 <b>bold</b> nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 13 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 14 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 15 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",
+        "plain": "paragraph 12 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 13 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 14 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 15 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",
+        "formatted": true
+      }
+    },
+    {
+      "name": "is divided at a pause, and the parts put back together are the text, 5",
+      "args": [
+        "paragraph 16 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 17 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 18 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 19 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\n"
+      ],
+      "answer": {
+        "markup": "paragraph 16 <b>bold</b> nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 17 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 18 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 19 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",
+        "plain": "paragraph 16 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 17 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 18 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 19 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",
+        "formatted": true
+      }
+    },
+    {
+      "name": "is divided at a pause, and the parts put back together are the text, 6",
+      "args": [
+        "paragraph 20 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 21 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 22 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 23 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\n"
+      ],
+      "answer": {
+        "markup": "paragraph 20 <b>bold</b> nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 21 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 22 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 23 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",
+        "plain": "paragraph 20 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 21 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 22 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 23 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",
+        "formatted": true
+      }
+    },
+    {
+      "name": "is divided at a pause, and the parts put back together are the text, 7",
+      "args": [
+        "paragraph 24 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 25 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 26 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 27 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\n"
+      ],
+      "answer": {
+        "markup": "paragraph 24 <b>bold</b> nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 25 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 26 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 27 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",
+        "plain": "paragraph 24 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 25 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 26 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 27 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",
+        "formatted": true
+      }
+    },
+    {
+      "name": "is divided at a pause, and the parts put back together are the text, 8",
+      "args": [
+        "paragraph 28 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 29 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn"
+      ],
+      "answer": {
+        "markup": "paragraph 28 <b>bold</b> nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 29 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",
+        "plain": "paragraph 28 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 29 bold nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",
+        "formatted": true
+      }
+    },
+    {
+      "name": "a code block across the boundary is closed in one part and opened again in the next",
+      "args": [
+        "An explanation.\n\n"
+      ],
+      "answer": {
+        "markup": "An explanation.",
+        "plain": "An explanation.",
+        "formatted": false
+      }
+    },
+    {
+      "name": "a code block across the boundary is closed in one part and opened again in the next, 2",
+      "args": [
+        "```ts\nconst value0 = 0 < 10 && ok;\nconst value1 = 1 < 10 && ok;\nconst value2 = 2 < 10 && ok;\nconst value3 = 3 < 10 && ok;\nconst value4 = 4 < 10 && ok;\nconst value5 = 5 < 10 && ok;\nconst value6 = 6 < 10 && ok;\nconst value7 = 7 < 10 && ok;\nconst value8 = 8 < 10 && ok;\nconst value9 = 9 < 10 && ok;\nconst value10 = 10 < 10 && ok;\nconst value11 = 11 < 10 && ok;\nconst value12 = 12 < 10 && ok;\n```"
+      ],
+      "answer": {
+        "markup": "<pre><code class=\"language-ts\">const value0 = 0 &lt; 10 &amp;&amp; ok;\nconst value1 = 1 &lt; 10 &amp;&amp; ok;\nconst value2 = 2 &lt; 10 &amp;&amp; ok;\nconst value3 = 3 &lt; 10 &amp;&amp; ok;\nconst value4 = 4 &lt; 10 &amp;&amp; ok;\nconst value5 = 5 &lt; 10 &amp;&amp; ok;\nconst value6 = 6 &lt; 10 &amp;&amp; ok;\nconst value7 = 7 &lt; 10 &amp;&amp; ok;\nconst value8 = 8 &lt; 10 &amp;&amp; ok;\nconst value9 = 9 &lt; 10 &amp;&amp; ok;\nconst value10 = 10 &lt; 10 &amp;&amp; ok;\nconst value11 = 11 &lt; 10 &amp;&amp; ok;\nconst value12 = 12 &lt; 10 &amp;&amp; ok;</code></pre>",
+        "plain": "const value0 = 0 < 10 && ok;\nconst value1 = 1 < 10 && ok;\nconst value2 = 2 < 10 && ok;\nconst value3 = 3 < 10 && ok;\nconst value4 = 4 < 10 && ok;\nconst value5 = 5 < 10 && ok;\nconst value6 = 6 < 10 && ok;\nconst value7 = 7 < 10 && ok;\nconst value8 = 8 < 10 && ok;\nconst value9 = 9 < 10 && ok;\nconst value10 = 10 < 10 && ok;\nconst value11 = 11 < 10 && ok;\nconst value12 = 12 < 10 && ok;",
+        "formatted": true
+      }
+    },
+    {
+      "name": "a code block across the boundary is closed in one part and opened again in the next, 3",
+      "args": [
+        "```ts\nconst value13 = 13 < 10 && ok;\nconst value14 = 14 < 10 && ok;\nconst value15 = 15 < 10 && ok;\nconst value16 = 16 < 10 && ok;\nconst value17 = 17 < 10 && ok;\nconst value18 = 18 < 10 && ok;\nconst value19 = 19 < 10 && ok;\nconst value20 = 20 < 10 && ok;\nconst value21 = 21 < 10 && ok;\nconst value22 = 22 < 10 && ok;\nconst value23 = 23 < 10 && ok;\nconst value24 = 24 < 10 && ok;\n```"
+      ],
+      "answer": {
+        "markup": "<pre><code class=\"language-ts\">const value13 = 13 &lt; 10 &amp;&amp; ok;\nconst value14 = 14 &lt; 10 &amp;&amp; ok;\nconst value15 = 15 &lt; 10 &amp;&amp; ok;\nconst value16 = 16 &lt; 10 &amp;&amp; ok;\nconst value17 = 17 &lt; 10 &amp;&amp; ok;\nconst value18 = 18 &lt; 10 &amp;&amp; ok;\nconst value19 = 19 &lt; 10 &amp;&amp; ok;\nconst value20 = 20 &lt; 10 &amp;&amp; ok;\nconst value21 = 21 &lt; 10 &amp;&amp; ok;\nconst value22 = 22 &lt; 10 &amp;&amp; ok;\nconst value23 = 23 &lt; 10 &amp;&amp; ok;\nconst value24 = 24 &lt; 10 &amp;&amp; ok;</code></pre>",
+        "plain": "const value13 = 13 < 10 && ok;\nconst value14 = 14 < 10 && ok;\nconst value15 = 15 < 10 && ok;\nconst value16 = 16 < 10 && ok;\nconst value17 = 17 < 10 && ok;\nconst value18 = 18 < 10 && ok;\nconst value19 = 19 < 10 && ok;\nconst value20 = 20 < 10 && ok;\nconst value21 = 21 < 10 && ok;\nconst value22 = 22 < 10 && ok;\nconst value23 = 23 < 10 && ok;\nconst value24 = 24 < 10 && ok;",
+        "formatted": true
+      }
+    },
+    {
+      "name": "a code block across the boundary is closed in one part and opened again in the next, 4",
+      "args": [
+        "```ts\nconst value25 = 25 < 10 && ok;\nconst value26 = 26 < 10 && ok;\nconst value27 = 27 < 10 && ok;\nconst value28 = 28 < 10 && ok;\nconst value29 = 29 < 10 && ok;\nconst value30 = 30 < 10 && ok;\nconst value31 = 31 < 10 && ok;\nconst value32 = 32 < 10 && ok;\nconst value33 = 33 < 10 && ok;\nconst value34 = 34 < 10 && ok;\nconst value35 = 35 < 10 && ok;\nconst value36 = 36 < 10 && ok;\n```"
+      ],
+      "answer": {
+        "markup": "<pre><code class=\"language-ts\">const value25 = 25 &lt; 10 &amp;&amp; ok;\nconst value26 = 26 &lt; 10 &amp;&amp; ok;\nconst value27 = 27 &lt; 10 &amp;&amp; ok;\nconst value28 = 28 &lt; 10 &amp;&amp; ok;\nconst value29 = 29 &lt; 10 &amp;&amp; ok;\nconst value30 = 30 &lt; 10 &amp;&amp; ok;\nconst value31 = 31 &lt; 10 &amp;&amp; ok;\nconst value32 = 32 &lt; 10 &amp;&amp; ok;\nconst value33 = 33 &lt; 10 &amp;&amp; ok;\nconst value34 = 34 &lt; 10 &amp;&amp; ok;\nconst value35 = 35 &lt; 10 &amp;&amp; ok;\nconst value36 = 36 &lt; 10 &amp;&amp; ok;</code></pre>",
+        "plain": "const value25 = 25 < 10 && ok;\nconst value26 = 26 < 10 && ok;\nconst value27 = 27 < 10 && ok;\nconst value28 = 28 < 10 && ok;\nconst value29 = 29 < 10 && ok;\nconst value30 = 30 < 10 && ok;\nconst value31 = 31 < 10 && ok;\nconst value32 = 32 < 10 && ok;\nconst value33 = 33 < 10 && ok;\nconst value34 = 34 < 10 && ok;\nconst value35 = 35 < 10 && ok;\nconst value36 = 36 < 10 && ok;",
+        "formatted": true
+      }
+    },
+    {
+      "name": "a code block across the boundary is closed in one part and opened again in the next, 5",
+      "args": [
+        "```ts\nconst value37 = 37 < 10 && ok;\nconst value38 = 38 < 10 && ok;\nconst value39 = 39 < 10 && ok;\n```\n\nThe end."
+      ],
+      "answer": {
+        "markup": "<pre><code class=\"language-ts\">const value37 = 37 &lt; 10 &amp;&amp; ok;\nconst value38 = 38 &lt; 10 &amp;&amp; ok;\nconst value39 = 39 &lt; 10 &amp;&amp; ok;</code></pre>\n\nThe end.",
+        "plain": "const value37 = 37 < 10 && ok;\nconst value38 = 38 < 10 && ok;\nconst value39 = 39 < 10 && ok;\n\nThe end.",
+        "formatted": true
+      }
+    },
+    {
+      "name": "a line cut at a space never cuts through a code span or a bold",
+      "args": [
+        "a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a "
+      ],
+      "answer": {
+        "markup": "a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a ",
+        "plain": "a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a ",
+        "formatted": false
+      }
+    },
+    {
+      "name": "a line cut at a space never cuts through a code span or a bold, 2",
+      "args": [
+        "`v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v` The end."
+      ],
+      "answer": {
+        "markup": "<code>v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v</code> The end.",
+        "plain": "v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v The end.",
+        "formatted": true
+      }
+    },
+    {
+      "name": "a line cut at a space never cuts through a code span or a bold, 3",
+      "args": [
+        "**v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v** The end."
+      ],
+      "answer": {
+        "markup": "<b>v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v</b> The end.",
+        "plain": "v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v The end.",
+        "formatted": true
+      }
+    },
+    {
+      "name": "pairs, codes and links become their tags",
+      "args": [
+        "**b** _i_ ~~s~~ ||sp|| a `x < y` b [site](https://example.com)"
+      ],
+      "answer": {
+        "markup": "<b>b</b> _i_ <s>s</s> <tg-spoiler>sp</tg-spoiler> a <code>x &lt; y</code> b <a href=\"https://example.com\">site</a>",
+        "plain": "b _i_ s sp a x < y b site (https://example.com)",
+        "formatted": true
+      }
+    },
+    {
+      "name": "stars that are no pair stay",
+      "args": [
+        "2**3 and server/**/*.ts"
+      ],
+      "answer": {
+        "markup": "2**3 and server/**/*.ts",
+        "plain": "2**3 and server/**/*.ts",
+        "formatted": false
+      }
+    },
+    {
+      "name": "a code inside a bold splits the bold around it",
+      "args": [
+        "**a `b` c**"
+      ],
+      "answer": {
+        "markup": "<b>a </b><code>b</code><b> c</b>",
+        "plain": "a b c",
+        "formatted": true
+      }
+    },
+    {
+      "name": "blocks are laid flat and spaced as written",
+      "args": [
+        "# Title\n\n- one\n- two\n\n---\n\n> quoted\n\n```rust\nfn x() {}\n```"
+      ],
+      "answer": {
+        "markup": "Title\n\n• one\n• two\n\n<blockquote>quoted</blockquote>\n\n<pre><code class=\"language-rust\">fn x() {}</code></pre>",
+        "plain": "Title\n\n• one\n• two\n\nquoted\n\nfn x() {}",
+        "formatted": true
+      }
+    },
+    {
+      "name": "a table is laid flat into its cells",
+      "args": [
+        "| a | b |\n|---|---|\n| `x|y` | 2 |"
+      ],
+      "answer": {
+        "markup": "a · b\n<code>x|y</code> · 2",
+        "plain": "a · b\nx|y · 2",
+        "formatted": true
+      }
+    },
+    {
+      "name": "only the first bold stands",
+      "args": [
+        "**a** and **b**"
+      ],
+      "answer": {
+        "markup": "<b>a</b> and b",
+        "plain": "a and b",
+        "formatted": true
+      }
+    },
+    {
+      "name": "each bold a whole line stands",
+      "args": [
+        "- **a**\n- **b**"
+      ],
+      "answer": {
+        "markup": "• <b>a</b>\n• <b>b</b>",
+        "plain": "• a\n• b",
+        "formatted": true
+      }
+    },
+    {
+      "name": "Hangul pairs and an emoji",
+      "args": [
+        "**굵게**와 _기울임_ 🙂 `코드`"
+      ],
+      "answer": {
+        "markup": "<b>굵게</b>와 _기울임_ 🙂 <code>코드</code>",
+        "plain": "굵게와 _기울임_ 🙂 코드",
+        "formatted": true
+      }
+    },
+    {
+      "name": "carriage returns",
+      "args": [
+        "line one\r\n**two**\r\n"
+      ],
+      "answer": {
+        "markup": "line one\n<b>two</b>",
+        "plain": "line one\ntwo",
+        "formatted": true
+      }
+    }
+  ],
+  "foldBlocks": [
+    {
+      "name": "too little to hide is no fold",
+      "args": [
+        "An opening.\n\nOne line more."
+      ],
+      "answer": null
+    },
+    {
+      "name": "too little to hide is no fold, 2",
+      "args": [
+        "A short word of one paragraph."
+      ],
+      "answer": null
+    },
+    {
+      "name": "a last line that is not a finished sentence is an item, and stays where it is",
+      "args": [
+        "An opening.\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\n13 a right-click context menu in the chat\n14 the TODO list into the database, and the room's agent asking too"
+      ],
+      "answer": {
+        "opening": {
+          "kind": "lines",
+          "lines": [
+            [
+              {
+                "kind": "text",
+                "text": "An opening."
+              }
+            ]
+          ]
+        },
+        "openingGap": "\n\n",
+        "hidden": [
+          {
+            "kind": "lines",
+            "lines": [
+              [
+                {
+                  "kind": "text",
+                  "text": "body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "text": "13 a right-click context menu in the chat"
+                }
+              ],
+              [
+                {
+                  "kind": "text",
+                  "text": "14 the TODO list into the database, and the room's agent asking too"
+                }
+              ]
+            ]
+          }
+        ],
+        "hiddenGaps": [
+          ""
+        ],
+        "closing": null,
+        "closingGap": ""
+      }
+    },
+    {
+      "name": "a code block is never the conclusion",
+      "args": [
+        "An opening.\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\n\n```\nls\n```"
+      ],
+      "answer": {
+        "opening": {
+          "kind": "lines",
+          "lines": [
+            [
+              {
+                "kind": "text",
+                "text": "An opening."
+              }
+            ]
+          ]
+        },
+        "openingGap": "\n\n",
+        "hidden": [
+          {
+            "kind": "lines",
+            "lines": [
+              [
+                {
+                  "kind": "text",
+                  "text": "body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body"
+                }
+              ]
+            ]
+          },
+          {
+            "kind": "pre",
+            "language": null,
+            "text": "ls"
+          }
+        ],
+        "hiddenGaps": [
+          "",
+          "\n\n"
+        ],
+        "closing": null,
+        "closingGap": ""
+      }
+    },
+    {
+      "name": "a long text folds with its conclusion open",
+      "args": [
+        "Opening line.\n\nParagraph 0 has a sentence of ordinary words in it.\n\nParagraph 1 has a sentence of ordinary words in it.\n\nParagraph 2 has a sentence of ordinary words in it.\n\nParagraph 3 has a sentence of ordinary words in it.\n\nParagraph 4 has a sentence of ordinary words in it.\n\nParagraph 5 has a sentence of ordinary words in it.\n\nParagraph 6 has a sentence of ordinary words in it.\n\nParagraph 7 has a sentence of ordinary words in it.\n\nParagraph 8 has a sentence of ordinary words in it.\n\nParagraph 9 has a sentence of ordinary words in it.\n\nParagraph 10 has a sentence of ordinary words in it.\n\nParagraph 11 has a sentence of ordinary words in it.\n\nThe end."
+      ],
+      "answer": {
+        "opening": {
+          "kind": "lines",
+          "lines": [
+            [
+              {
+                "kind": "text",
+                "text": "Opening line."
+              }
+            ]
+          ]
+        },
+        "openingGap": "\n\n",
+        "hidden": [
+          {
+            "kind": "lines",
+            "lines": [
+              [
+                {
+                  "kind": "text",
+                  "text": "Paragraph 0 has a sentence of ordinary words in it."
+                }
+              ]
+            ]
+          },
+          {
+            "kind": "lines",
+            "lines": [
+              [
+                {
+                  "kind": "text",
+                  "text": "Paragraph 1 has a sentence of ordinary words in it."
+                }
+              ]
+            ]
+          },
+          {
+            "kind": "lines",
+            "lines": [
+              [
+                {
+                  "kind": "text",
+                  "text": "Paragraph 2 has a sentence of ordinary words in it."
+                }
+              ]
+            ]
+          },
+          {
+            "kind": "lines",
+            "lines": [
+              [
+                {
+                  "kind": "text",
+                  "text": "Paragraph 3 has a sentence of ordinary words in it."
+                }
+              ]
+            ]
+          },
+          {
+            "kind": "lines",
+            "lines": [
+              [
+                {
+                  "kind": "text",
+                  "text": "Paragraph 4 has a sentence of ordinary words in it."
+                }
+              ]
+            ]
+          },
+          {
+            "kind": "lines",
+            "lines": [
+              [
+                {
+                  "kind": "text",
+                  "text": "Paragraph 5 has a sentence of ordinary words in it."
+                }
+              ]
+            ]
+          },
+          {
+            "kind": "lines",
+            "lines": [
+              [
+                {
+                  "kind": "text",
+                  "text": "Paragraph 6 has a sentence of ordinary words in it."
+                }
+              ]
+            ]
+          },
+          {
+            "kind": "lines",
+            "lines": [
+              [
+                {
+                  "kind": "text",
+                  "text": "Paragraph 7 has a sentence of ordinary words in it."
+                }
+              ]
+            ]
+          },
+          {
+            "kind": "lines",
+            "lines": [
+              [
+                {
+                  "kind": "text",
+                  "text": "Paragraph 8 has a sentence of ordinary words in it."
+                }
+              ]
+            ]
+          },
+          {
+            "kind": "lines",
+            "lines": [
+              [
+                {
+                  "kind": "text",
+                  "text": "Paragraph 9 has a sentence of ordinary words in it."
+                }
+              ]
+            ]
+          },
+          {
+            "kind": "lines",
+            "lines": [
+              [
+                {
+                  "kind": "text",
+                  "text": "Paragraph 10 has a sentence of ordinary words in it."
+                }
+              ]
+            ]
+          },
+          {
+            "kind": "lines",
+            "lines": [
+              [
+                {
+                  "kind": "text",
+                  "text": "Paragraph 11 has a sentence of ordinary words in it."
+                }
+              ]
+            ]
+          }
+        ],
+        "hiddenGaps": [
+          "",
+          "\n\n",
+          "\n\n",
+          "\n\n",
+          "\n\n",
+          "\n\n",
+          "\n\n",
+          "\n\n",
+          "\n\n",
+          "\n\n",
+          "\n\n",
+          "\n\n"
+        ],
+        "closing": {
+          "kind": "lines",
+          "lines": [
+            [
+              {
+                "kind": "text",
+                "text": "The end."
+              }
+            ]
+          ]
+        },
+        "closingGap": "\n\n"
+      }
+    },
+    {
+      "name": "a short text has no fold",
+      "args": [
+        "one\n\ntwo"
+      ],
+      "answer": null
+    }
+  ],
+  "foldedMarkup": [
+    {
+      "name": "a long report converts with sound tags and no marker beside a tag",
+      "args": [
+        "A summary of the checks that ran overnight is done. I grouped the failures by kind, found the causes, and closed the two that kept returning in code, deployed.\n\nWhat I counted\nThe 17 cases of a pair beside a tag came from the reader taking the backticks off and leaving the star pairs. 1~3, refused three times this round, are those, and 16 of them came after the second run.\nOf the 44 backtick cases, 39 were already closed by the change on the fifth. What was left is the flaw of one value wrapped in backticks several times becoming code in one place only and the code blocks of many lines.\nSeveral bold runs, fold borders, quoted messages, nested tags and the checker's answer shape all came before the fifth, and none since.\nThe other 46 are the first stage picking the wrong piece or the checker misjudging: 5 refused for the number of bold runs, 13 with formatting on the wrong piece, and 28 others.\nChecking the same attempt three times wasted 29 of 173 runs.\n\nWhat I fixed\nThe star pairs and backtick pairs an answer writes are now taken off where they are written, before any tag is put on. Bold or code goes in their place, so a star and a tag can no longer overlap. Backticks wrapping the same value several times become code in each place. 2**3, server/**/*.ts, stars inside backticks and stars with no pair stay as written.\nAn attempt the same as one already refused is no longer sent to the checker; it ends with the earlier verdict kept as its reason in the record.\nThe output rulebook and the checker's instruction were fixed first, and the code was made to match.\nThe side writing the answers is not stopped on its own. The manual already says not to write markup and it came in anyway, and since formatting is made in one place only, taking it off there shuts every path.\n\nWhat I checked\nI ran the 20 star cases and 1~3 again on the deployed code: 0 stars or backticks left, 0 tag structure faults, and the words as written.\nI added 13 regression tests. The typecheck passed, and so did the 183 format, gate and agent tests.\nOf the whole suite's 228 files, 3 failed. I fixed the agent test this change broke. A web test added for the change made its own temporary folder, and I fixed that in a commit of its own.\nThe last one is the code graph check, which fails on files another job has not committed yet.\nAfter the deployment the service came up healthy.\n\nWhat I left\nTurning a code block of many lines ``` into <pre> is not done. It is a feature of its own, and it happened once.\nA checker misjudging a rule the code already keeps is cut off only where the attempt is the same. A different attempt still goes through the checker.\nThe stars of a message that goes without formatting (PLAIN, one short line) go as written, the same rule as the backticks.\n\n1 done · 344 cases sorted · 183 tests passed · 225 of 228 passed · 9 files changed · 2 commits · 1 deployment\n\nUncommitted changes of earlier work were kept: docs/guide.md, docs/deploy.md, docs/web.md, scripts/deploy.ts, scripts/check.ts and 33 more"
+      ],
+      "answer": "A summary of the checks that ran overnight is done. I grouped the failures by kind, found the causes, and closed the two that kept returning in code, deployed.\n\n<blockquote expandable>What I counted\nThe 17 cases of a pair beside a tag came from the reader taking the backticks off and leaving the star pairs. 1~3, refused three times this round, are those, and 16 of them came after the second run.\nOf the 44 backtick cases, 39 were already closed by the change on the fifth. What was left is the flaw of one value wrapped in backticks several times becoming code in one place only and the code blocks of many lines.\nSeveral bold runs, fold borders, quoted messages, nested tags and the checker's answer shape all came before the fifth, and none since.\nThe other 46 are the first stage picking the wrong piece or the checker misjudging: 5 refused for the number of bold runs, 13 with formatting on the wrong piece, and 28 others.\nChecking the same attempt three times wasted 29 of 173 runs.\n\nWhat I fixed\nThe star pairs and backtick pairs an answer writes are now taken off where they are written, before any tag is put on. Bold or code goes in their place, so a star and a tag can no longer overlap. Backticks wrapping the same value several times become code in each place. 2**3, server/**/*.ts, stars inside backticks and stars with no pair stay as written.\nAn attempt the same as one already refused is no longer sent to the checker; it ends with the earlier verdict kept as its reason in the record.\nThe output rulebook and the checker's instruction were fixed first, and the code was made to match.\nThe side writing the answers is not stopped on its own. The manual already says not to write markup and it came in anyway, and since formatting is made in one place only, taking it off there shuts every path.\n\nWhat I checked\nI ran the 20 star cases and 1~3 again on the deployed code: 0 stars or backticks left, 0 tag structure faults, and the words as written.\nI added 13 regression tests. The typecheck passed, and so did the 183 format, gate and agent tests.\nOf the whole suite's 228 files, 3 failed. I fixed the agent test this change broke. A web test added for the change made its own temporary folder, and I fixed that in a commit of its own.\nThe last one is the code graph check, which fails on files another job has not committed yet.\nAfter the deployment the service came up healthy.\n\nWhat I left\nTurning a code block of many lines ``` into &lt;pre&gt; is not done. It is a feature of its own, and it happened once.\nA checker misjudging a rule the code already keeps is cut off only where the attempt is the same. A different attempt still goes through the checker.\nThe stars of a message that goes without formatting (PLAIN, one short line) go as written, the same rule as the backticks.\n\n1 done · 344 cases sorted · 183 tests passed · 225 of 228 passed · 9 files changed · 2 commits · 1 deployment</blockquote>\n\nUncommitted changes of earlier work were kept: docs/guide.md, docs/deploy.md, docs/web.md, scripts/deploy.ts, scripts/check.ts and 33 more"
+    },
+    {
+      "name": "a long report converts with sound tags and no marker beside a tag, 2",
+      "args": [
+        "The way to reopen a finished report with its earlier results kept is finished. A finished report can now be opened again from the command or the console, and what the earlier round did and its result documents stay, for the new plan to read and carry on.\n\nWhat I fixed\nI made the command run report --todo <number> --reopen and the console's \"Open again\" button on a report. Opening it again moves every finished step, with its result and document path, into history, named r1-plan, r1-step-0-0 and so on, and keeps that round's purpose and instruction apart. Then the report goes back to draft and the entry back to waiting.\nChanges to the purpose, the instruction and the model are taken in the same request that opens it again. The moment an entry goes back to waiting the queue may pick it, so a change made after opening could have the plan start on the instruction from before.\nThe new round's building turn takes the earlier round's purpose, instruction and results as input, with the word not to search again what still holds. Each step's earlier result carries its first 2,000 characters only and points to its document for the rest. On a copy of the record the planning prompt went from 120,000 to 59,000 characters.\nUnits, side workers, prompts and result document names carry the round (r2-plan and so on), so no earlier document is overwritten and no row or launch count is mixed. The console's tag reads \"round 2 step 1-1\" too.\nWhen the command refuses a finished report it now points to --reopen. The documents guide.md and web.md and the manual are fixed, and the manual is reloaded.\n\nWhat I checked\nI added tests. Running one round to the end and opening it again puts the earlier study, build and final results and the old purpose and instruction into the new planning prompt. Names stand as r2- and the earlier documents stay. There are tests for the control API's reopening and the console panel as well.\nThe typecheck passed at the root and in the web, and the 176 tests I touched passed. Of the whole suite's 222 files 221 passed. The one that failed is graph.test, on new files another job has not committed. On a tree holding my commits alone, the typecheck and 174 tests passed.\nI ran the script's --reopen on a copy of the live database. On a development console started on that copy and a stand-in control API, reopening by the button worked.\nAfter the deployment the service came up healthy, and the real control API refused reopening an unfinished report with 409. The new console bundle carries the button.\n\nWhat I left\nThe uncommitted changes of another job are untouched; I picked my own hunks to commit. No migration changes the schema. The temporary login was made in the copy only and went with it. The original report itself was not opened again.\n\n1 done · 0 open · 176 touched tests passed · 221/222 files passed (the 1 failure is another job's) · 18 files changed\n\nUncommitted changes of earlier work were kept: docs/guide.md, docs/deploy.md, docs/web.md, scripts/deploy.ts, scripts/check.ts and 32 more"
+      ],
+      "answer": "The way to reopen a finished report with its earlier results kept is finished. A finished report can now be opened again from the command or the console, and what the earlier round did and its result documents stay, for the new plan to read and carry on.\n\n<blockquote expandable>What I fixed\nI made the command run report --todo &lt;number&gt; --reopen and the console's \"Open again\" button on a report. Opening it again moves every finished step, with its result and document path, into history, named r1-plan, r1-step-0-0 and so on, and keeps that round's purpose and instruction apart. Then the report goes back to draft and the entry back to waiting.\nChanges to the purpose, the instruction and the model are taken in the same request that opens it again. The moment an entry goes back to waiting the queue may pick it, so a change made after opening could have the plan start on the instruction from before.\nThe new round's building turn takes the earlier round's purpose, instruction and results as input, with the word not to search again what still holds. Each step's earlier result carries its first 2,000 characters only and points to its document for the rest. On a copy of the record the planning prompt went from 120,000 to 59,000 characters.\nUnits, side workers, prompts and result document names carry the round (r2-plan and so on), so no earlier document is overwritten and no row or launch count is mixed. The console's tag reads \"round 2 step 1-1\" too.\nWhen the command refuses a finished report it now points to --reopen. The documents guide.md and web.md and the manual are fixed, and the manual is reloaded.\n\nWhat I checked\nI added tests. Running one round to the end and opening it again puts the earlier study, build and final results and the old purpose and instruction into the new planning prompt. Names stand as r2- and the earlier documents stay. There are tests for the control API's reopening and the console panel as well.\nThe typecheck passed at the root and in the web, and the 176 tests I touched passed. Of the whole suite's 222 files 221 passed. The one that failed is graph.test, on new files another job has not committed. On a tree holding my commits alone, the typecheck and 174 tests passed.\nI ran the script's --reopen on a copy of the live database. On a development console started on that copy and a stand-in control API, reopening by the button worked.\nAfter the deployment the service came up healthy, and the real control API refused reopening an unfinished report with 409. The new console bundle carries the button.\n\nWhat I left\nThe uncommitted changes of another job are untouched; I picked my own hunks to commit. No migration changes the schema. The temporary login was made in the copy only and went with it. The original report itself was not opened again.\n\n1 done · 0 open · 176 touched tests passed · 221/222 files passed (the 1 failure is another job's) · 18 files changed</blockquote>\n\nUncommitted changes of earlier work were kept: docs/guide.md, docs/deploy.md, docs/web.md, scripts/deploy.ts, scripts/check.ts and 32 more"
+    },
+    {
+      "name": "a long report converts with sound tags and no marker beside a tag, 3",
+      "args": [
+        "This run spent no tokens of its own.\n\nThe \"four checkouts\" in the alert are temporary folders named tmp-run-…-checkout. The overnight job ran its tests just before deploying (06:15, 06:21, 06:24), and the fake runner inside the tests wrote fake session records under the state folder. The watcher read those records as real sessions.\n\nThere are three reasons.\n① runner.test.ts uses a fake engine and a fake runner instead of the real ones, and is meant to remove the runner- records when it ends.\n② The \"usage limit reached\" line in the watcher's log is the same as the test phrase in queue.test.ts and runner.test.ts.\n③ The usage record shows no such burst at that time.\n\nWhat was really spent in the same window (05:50~06:30):\novernight job: 18.3M tokens, about $13, mostly cache reads\nearlier job: 14.8M tokens, about $11\nthe chat agent: 25 turns, 12.5M tokens\n\nThe same false alert came at 05:54 as well. It looks to have begun when the tests started imitating the runner's records, and it will ring again each time the tests run. Shall I file an entry to have the tests write their fake records outside the state folder, or the watcher pass over this temporary folder?"
+      ],
+      "answer": "This run spent no tokens of its own.\n\n<blockquote expandable>The \"four checkouts\" in the alert are temporary folders named tmp-run-…-checkout. The overnight job ran its tests just before deploying (06:15, 06:21, 06:24), and the fake runner inside the tests wrote fake session records under the state folder. The watcher read those records as real sessions.\n\nThere are three reasons.\n① runner.test.ts uses a fake engine and a fake runner instead of the real ones, and is meant to remove the runner- records when it ends.\n② The \"usage limit reached\" line in the watcher's log is the same as the test phrase in queue.test.ts and runner.test.ts.\n③ The usage record shows no such burst at that time.\n\nWhat was really spent in the same window (05:50~06:30):\novernight job: 18.3M tokens, about $13, mostly cache reads\nearlier job: 14.8M tokens, about $11\nthe chat agent: 25 turns, 12.5M tokens\n\nThe same false alert came at 05:54 as well. It looks to have begun when the tests started imitating the runner's records, and it will ring again each time the tests run. Shall I file an entry to have the tests write their fake records outside the state folder, or the watcher pass over this temporary folder?</blockquote>"
+    },
+    {
+      "name": "a long report converts with sound tags and no marker beside a tag, 4",
+      "args": [
+        "I added the requester's words, as they were, to the entry. It is the work that changes where an editor's model and harness are chosen, so it went there, and nothing has run for it yet, so they reach the next run's prompt as they are.\n\nThis is how the editors run now.\nThe digest and the writer are both tied to one editor line and run on one model. The writer is on high effort and keeps its session.\nThe gates have a model set per agent, mostly a local model, and take one request and end.\n\nI read \"a single agent like the gates\" this way:\n① Each agent can have its own model.\n② It takes one request and ends instead of keeping a session.\n③ The default is a mid model, matched by a model of the same level on the other providers.\n\nOnce ② is done, the session problem carried over from the earlier entry is solved and running it on another machine gets easier too. If it was not meant to go as far as running without a session, say so."
+      ],
+      "answer": "I added the requester's words, as they were, to the entry. It is the work that changes where an editor's model and harness are chosen, so it went there, and nothing has run for it yet, so they reach the next run's prompt as they are.\n\n<blockquote expandable>This is how the editors run now.\nThe digest and the writer are both tied to one editor line and run on one model. The writer is on high effort and keeps its session.\nThe gates have a model set per agent, mostly a local model, and take one request and end.\n\nI read \"a single agent like the gates\" this way:\n① Each agent can have its own model.\n② It takes one request and ends instead of keeping a session.\n③ The default is a mid model, matched by a model of the same level on the other providers.\n\nOnce ② is done, the session problem carried over from the earlier entry is solved and running it on another machine gets easier too. If it was not meant to go as far as running without a session, say so.</blockquote>"
+    },
+    {
+      "name": "a long report converts with sound tags and no marker beside a tag, 5",
+      "args": [
+        "The two processes read different material and write to different places.\n\n① The digest\nMaterial: the notes the agent left with note.ts\nWhat it does: sorts each note into one of three. Written as a room's rule it goes into the rules folder, written as knowledge into the knowledge folder, and neither is dropped. It runs every hour, and at once when the requester says \"sort it now\".\n\n② The writer\nMaterial: a room's conversation as written, one batch at a time\nWhat it does: writes pieces by subject for each speaker, such as character, way of speaking and relations, into the people folder and keeps the index in step. Then the summariser makes the standing summary out of those pieces.\n\nThe digest sorts the notes the agent wrote into rules or knowledge, and the writer reads the conversation itself and writes about the people.\n\nThe digest's instruction already has the knowledge documents. It tags a note as one room's own or shared, and keeps shared only what the requester said may be shared. Making the new knowledge documents and the knowledge sorter may overlap with this."
+      ],
+      "answer": "The two processes read different material and write to different places.\n\n<blockquote expandable>① The digest\nMaterial: the notes the agent left with note.ts\nWhat it does: sorts each note into one of three. Written as a room's rule it goes into the rules folder, written as knowledge into the knowledge folder, and neither is dropped. It runs every hour, and at once when the requester says \"sort it now\".\n\n② The writer\nMaterial: a room's conversation as written, one batch at a time\nWhat it does: writes pieces by subject for each speaker, such as character, way of speaking and relations, into the people folder and keeps the index in step. Then the summariser makes the standing summary out of those pieces.\n\nThe digest sorts the notes the agent wrote into rules or knowledge, and the writer reads the conversation itself and writes about the people.\n\nThe digest's instruction already has the knowledge documents. It tags a note as one room's own or shared, and keeps shared only what the requester said may be shared. Making the new knowledge documents and the knowledge sorter may overlap with this.</blockquote>"
+    },
+    {
+      "name": "a long report converts with sound tags and no marker beside a tag, 6",
+      "args": [
+        "Log in to the host over SSH and type `relay`, and that is it.\n\n```\nssh user@example-host\n/usr/local/bin/relay\n```\n\nThe relay service keeps `relay server` up as the default session, on the default settings path, so typing it with no argument joins that session. Where /usr/local/bin is not on the PATH, type the whole path as above.\n\nBefore joining, `relay status` shows whether the server is up.\nTo leave, press `ctrl+b` then `q` — the window alone goes, and the jobs running inside stay alive.\n\nTo join straight from another computer without SSH, `relay --remote user@example-host` works too. That computer needs relay installed as well."
+      ],
+      "answer": "Log in to the host over SSH and type <code>relay</code>, and that is it.\n\n<blockquote expandable><pre>ssh user@example-host\n/usr/local/bin/relay</pre>\n\nThe relay service keeps <code>relay server</code> up as the default session, on the default settings path, so typing it with no argument joins that session. Where /usr/local/bin is not on the PATH, type the whole path as above.\n\nBefore joining, <code>relay status</code> shows whether the server is up.\nTo leave, press <code>ctrl+b</code> then <code>q</code> — the window alone goes, and the jobs running inside stay alive.</blockquote>\n\nTo join straight from another computer without SSH, <code>relay --remote user@example-host</code> works too. That computer needs relay installed as well."
+    },
+    {
+      "name": "keeps the first block and a short last block in the open",
+      "args": [
+        "An opening.\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\n\nThe conclusion is this."
+      ],
+      "answer": "An opening.\n\n<blockquote expandable>body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body</blockquote>\n\nThe conclusion is this."
+    },
+    {
+      "name": "a code block with a blank line inside is one block and is never cut",
+      "args": [
+        "An opening.\n\n```ts\nline 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\n\nmore\n```\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\n\nThe conclusion is this."
+      ],
+      "answer": "An opening.\n\n<blockquote expandable><pre><code class=\"language-ts\">line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\n\nmore</code></pre>\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body</blockquote>\n\nThe conclusion is this."
+    },
+    {
+      "name": "a quote inside the folded part stands without its own quote",
+      "args": [
+        "An opening.\n\n> quoted words body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\n\nThe conclusion is this."
+      ],
+      "answer": "An opening.\n\n<blockquote expandable>quoted words body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body</blockquote>\n\nThe conclusion is this."
+    },
+    {
+      "name": "a conclusion written onto the body with one line break stays out of the quote",
+      "args": [
+        "An opening.\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\nTo end, I will sum it up this way."
+      ],
+      "answer": "An opening.\n\n<blockquote expandable>body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body</blockquote>\nTo end, I will sum it up this way."
+    },
+    {
+      "name": "a long text folds with its conclusion open",
+      "args": [
+        "Opening line.\n\nParagraph 0 has a sentence of ordinary words in it.\n\nParagraph 1 has a sentence of ordinary words in it.\n\nParagraph 2 has a sentence of ordinary words in it.\n\nParagraph 3 has a sentence of ordinary words in it.\n\nParagraph 4 has a sentence of ordinary words in it.\n\nParagraph 5 has a sentence of ordinary words in it.\n\nParagraph 6 has a sentence of ordinary words in it.\n\nParagraph 7 has a sentence of ordinary words in it.\n\nParagraph 8 has a sentence of ordinary words in it.\n\nParagraph 9 has a sentence of ordinary words in it.\n\nParagraph 10 has a sentence of ordinary words in it.\n\nParagraph 11 has a sentence of ordinary words in it.\n\nThe end."
+      ],
+      "answer": "Opening line.\n\n<blockquote expandable>Paragraph 0 has a sentence of ordinary words in it.\n\nParagraph 1 has a sentence of ordinary words in it.\n\nParagraph 2 has a sentence of ordinary words in it.\n\nParagraph 3 has a sentence of ordinary words in it.\n\nParagraph 4 has a sentence of ordinary words in it.\n\nParagraph 5 has a sentence of ordinary words in it.\n\nParagraph 6 has a sentence of ordinary words in it.\n\nParagraph 7 has a sentence of ordinary words in it.\n\nParagraph 8 has a sentence of ordinary words in it.\n\nParagraph 9 has a sentence of ordinary words in it.\n\nParagraph 10 has a sentence of ordinary words in it.\n\nParagraph 11 has a sentence of ordinary words in it.</blockquote>\n\nThe end."
+    },
+    {
+      "name": "a short text has no fold",
+      "args": [
+        "one\n\ntwo"
+      ],
+      "answer": null
+    }
+  ],
+  "codeMarkup": [
+    {
+      "name": "leaves a short message as its plain text",
+      "args": [
+        "a short message"
+      ],
+      "answer": null
+    },
+    {
+      "name": "sends a short message's formatting unfolded",
+      "args": [
+        "a short `value` message"
+      ],
+      "answer": "a short <code>value</code> message"
+    },
+    {
+      "name": "folds a long one and escapes both halves",
+      "args": [
+        "An opening a < b\n\nbody body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body "
+      ],
+      "answer": "An opening a &lt; b\n\n<blockquote expandable>body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body body </blockquote>"
+    },
+    {
+      "name": "a long text folds with its conclusion open",
+      "args": [
+        "Opening line.\n\nParagraph 0 has a sentence of ordinary words in it.\n\nParagraph 1 has a sentence of ordinary words in it.\n\nParagraph 2 has a sentence of ordinary words in it.\n\nParagraph 3 has a sentence of ordinary words in it.\n\nParagraph 4 has a sentence of ordinary words in it.\n\nParagraph 5 has a sentence of ordinary words in it.\n\nParagraph 6 has a sentence of ordinary words in it.\n\nParagraph 7 has a sentence of ordinary words in it.\n\nParagraph 8 has a sentence of ordinary words in it.\n\nParagraph 9 has a sentence of ordinary words in it.\n\nParagraph 10 has a sentence of ordinary words in it.\n\nParagraph 11 has a sentence of ordinary words in it.\n\nThe end."
+      ],
+      "answer": "Opening line.\n\n<blockquote expandable>Paragraph 0 has a sentence of ordinary words in it.\n\nParagraph 1 has a sentence of ordinary words in it.\n\nParagraph 2 has a sentence of ordinary words in it.\n\nParagraph 3 has a sentence of ordinary words in it.\n\nParagraph 4 has a sentence of ordinary words in it.\n\nParagraph 5 has a sentence of ordinary words in it.\n\nParagraph 6 has a sentence of ordinary words in it.\n\nParagraph 7 has a sentence of ordinary words in it.\n\nParagraph 8 has a sentence of ordinary words in it.\n\nParagraph 9 has a sentence of ordinary words in it.\n\nParagraph 10 has a sentence of ordinary words in it.\n\nParagraph 11 has a sentence of ordinary words in it.</blockquote>\n\nThe end."
+    },
+    {
+      "name": "a short text has no fold",
+      "args": [
+        "one\n\ntwo"
+      ],
+      "answer": null
+    }
+  ],
+  "markdownParts": [
+    {
+      "name": "is divided at a pause, and the parts put back together are the text",
+      "args": [
+        "paragraph 0 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 1 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 2 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 3 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 4 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 5 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 6 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 7 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 8 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 9 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 10 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 11 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 12 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 13 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 14 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 15 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 16 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 17 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 18 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 19 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 20 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 21 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 22 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 23 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 24 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 25 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 26 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 27 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 28 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 29 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",
+        300
+      ],
+      "answer": [
+        "paragraph 0 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 1 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 2 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 3 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\n",
+        "paragraph 4 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 5 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 6 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 7 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\n",
+        "paragraph 8 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 9 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 10 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 11 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\n",
+        "paragraph 12 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 13 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 14 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 15 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\n",
+        "paragraph 16 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 17 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 18 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 19 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\n",
+        "paragraph 20 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 21 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 22 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 23 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\n",
+        "paragraph 24 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 25 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 26 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 27 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\n",
+        "paragraph 28 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n\nparagraph 29 **bold** nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn"
+      ]
+    },
+    {
+      "name": "a code block across the boundary is closed in one part and opened again in the next",
+      "args": [
+        "An explanation.\n\n```ts\nconst value0 = 0 < 10 && ok;\nconst value1 = 1 < 10 && ok;\nconst value2 = 2 < 10 && ok;\nconst value3 = 3 < 10 && ok;\nconst value4 = 4 < 10 && ok;\nconst value5 = 5 < 10 && ok;\nconst value6 = 6 < 10 && ok;\nconst value7 = 7 < 10 && ok;\nconst value8 = 8 < 10 && ok;\nconst value9 = 9 < 10 && ok;\nconst value10 = 10 < 10 && ok;\nconst value11 = 11 < 10 && ok;\nconst value12 = 12 < 10 && ok;\nconst value13 = 13 < 10 && ok;\nconst value14 = 14 < 10 && ok;\nconst value15 = 15 < 10 && ok;\nconst value16 = 16 < 10 && ok;\nconst value17 = 17 < 10 && ok;\nconst value18 = 18 < 10 && ok;\nconst value19 = 19 < 10 && ok;\nconst value20 = 20 < 10 && ok;\nconst value21 = 21 < 10 && ok;\nconst value22 = 22 < 10 && ok;\nconst value23 = 23 < 10 && ok;\nconst value24 = 24 < 10 && ok;\nconst value25 = 25 < 10 && ok;\nconst value26 = 26 < 10 && ok;\nconst value27 = 27 < 10 && ok;\nconst value28 = 28 < 10 && ok;\nconst value29 = 29 < 10 && ok;\nconst value30 = 30 < 10 && ok;\nconst value31 = 31 < 10 && ok;\nconst value32 = 32 < 10 && ok;\nconst value33 = 33 < 10 && ok;\nconst value34 = 34 < 10 && ok;\nconst value35 = 35 < 10 && ok;\nconst value36 = 36 < 10 && ok;\nconst value37 = 37 < 10 && ok;\nconst value38 = 38 < 10 && ok;\nconst value39 = 39 < 10 && ok;\n```\n\nThe end.",
+        400
+      ],
+      "answer": [
+        "An explanation.\n\n",
+        "```ts\nconst value0 = 0 < 10 && ok;\nconst value1 = 1 < 10 && ok;\nconst value2 = 2 < 10 && ok;\nconst value3 = 3 < 10 && ok;\nconst value4 = 4 < 10 && ok;\nconst value5 = 5 < 10 && ok;\nconst value6 = 6 < 10 && ok;\nconst value7 = 7 < 10 && ok;\nconst value8 = 8 < 10 && ok;\nconst value9 = 9 < 10 && ok;\nconst value10 = 10 < 10 && ok;\nconst value11 = 11 < 10 && ok;\nconst value12 = 12 < 10 && ok;\n```",
+        "```ts\nconst value13 = 13 < 10 && ok;\nconst value14 = 14 < 10 && ok;\nconst value15 = 15 < 10 && ok;\nconst value16 = 16 < 10 && ok;\nconst value17 = 17 < 10 && ok;\nconst value18 = 18 < 10 && ok;\nconst value19 = 19 < 10 && ok;\nconst value20 = 20 < 10 && ok;\nconst value21 = 21 < 10 && ok;\nconst value22 = 22 < 10 && ok;\nconst value23 = 23 < 10 && ok;\nconst value24 = 24 < 10 && ok;\n```",
+        "```ts\nconst value25 = 25 < 10 && ok;\nconst value26 = 26 < 10 && ok;\nconst value27 = 27 < 10 && ok;\nconst value28 = 28 < 10 && ok;\nconst value29 = 29 < 10 && ok;\nconst value30 = 30 < 10 && ok;\nconst value31 = 31 < 10 && ok;\nconst value32 = 32 < 10 && ok;\nconst value33 = 33 < 10 && ok;\nconst value34 = 34 < 10 && ok;\nconst value35 = 35 < 10 && ok;\nconst value36 = 36 < 10 && ok;\n```",
+        "```ts\nconst value37 = 37 < 10 && ok;\nconst value38 = 38 < 10 && ok;\nconst value39 = 39 < 10 && ok;\n```\n\nThe end."
+      ]
+    },
+    {
+      "name": "a line cut at a space never cuts through a code span or a bold",
+      "args": [
+        "a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a `v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v` The end.",
+        400
+      ],
+      "answer": [
+        "a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a ",
+        "`v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v` The end."
+      ]
+    },
+    {
+      "name": "a line cut at a space never cuts through a code span or a bold, 2",
+      "args": [
+        "a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a **v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v** The end.",
+        400
+      ],
+      "answer": [
+        "a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a ",
+        "**v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v v** The end."
+      ]
+    },
+    {
+      "name": "a text that fits is one part, unchanged",
+      "args": [
+        "a short text"
+      ],
+      "answer": [
+        "a short text"
+      ]
+    },
+    {
+      "name": "a fenced block past the limit is closed and opened again",
+      "args": [
+        "Intro\n\n```rust\nlet value_0 = 0;\nlet value_1 = 1;\nlet value_2 = 2;\nlet value_3 = 3;\nlet value_4 = 4;\nlet value_5 = 5;\nlet value_6 = 6;\nlet value_7 = 7;\nlet value_8 = 8;\nlet value_9 = 9;\nlet value_10 = 10;\nlet value_11 = 11;\nlet value_12 = 12;\nlet value_13 = 13;\nlet value_14 = 14;\nlet value_15 = 15;\nlet value_16 = 16;\nlet value_17 = 17;\nlet value_18 = 18;\nlet value_19 = 19;\nlet value_20 = 20;\nlet value_21 = 21;\nlet value_22 = 22;\nlet value_23 = 23;\nlet value_24 = 24;\nlet value_25 = 25;\nlet value_26 = 26;\nlet value_27 = 27;\nlet value_28 = 28;\nlet value_29 = 29;\nlet value_30 = 30;\nlet value_31 = 31;\nlet value_32 = 32;\nlet value_33 = 33;\nlet value_34 = 34;\nlet value_35 = 35;\nlet value_36 = 36;\nlet value_37 = 37;\nlet value_38 = 38;\nlet value_39 = 39;\n```\n\nAfter",
+        300
+      ],
+      "answer": [
+        "Intro\n\n",
+        "```rust\nlet value_0 = 0;\nlet value_1 = 1;\nlet value_2 = 2;\nlet value_3 = 3;\nlet value_4 = 4;\nlet value_5 = 5;\nlet value_6 = 6;\nlet value_7 = 7;\nlet value_8 = 8;\nlet value_9 = 9;\nlet value_10 = 10;\nlet value_11 = 11;\nlet value_12 = 12;\nlet value_13 = 13;\nlet value_14 = 14;\nlet value_15 = 15;\n```",
+        "```rust\nlet value_16 = 16;\nlet value_17 = 17;\nlet value_18 = 18;\nlet value_19 = 19;\nlet value_20 = 20;\nlet value_21 = 21;\nlet value_22 = 22;\nlet value_23 = 23;\nlet value_24 = 24;\nlet value_25 = 25;\nlet value_26 = 26;\nlet value_27 = 27;\nlet value_28 = 28;\nlet value_29 = 29;\nlet value_30 = 30;\n```",
+        "```rust\nlet value_31 = 31;\nlet value_32 = 32;\nlet value_33 = 33;\nlet value_34 = 34;\nlet value_35 = 35;\nlet value_36 = 36;\nlet value_37 = 37;\nlet value_38 = 38;\nlet value_39 = 39;\n```\n\nAfter"
+      ]
+    },
+    {
+      "name": "Hangul and emoji are counted in UTF-16 units",
+      "args": [
+        "가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 🙂🙂🙂",
+        50
+      ],
+      "answer": [
+        "가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 ",
+        "가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 ",
+        "가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 가나다라 ",
+        "🙂🙂🙂"
+      ]
+    }
+  ]
+}

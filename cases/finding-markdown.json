@@ -1,0 +1,425 @@
+{
+  "about": "The cases a search finding's structure lines are held to: drawn as markdown with the default English words or a consumer's own, footnote marks as in-page links, a picture's caption, and the opening prose of a set of findings under a limit in UTF-16 units.",
+  "findingMarkdown": [
+    {
+      "name": "a verdict carrying its words, called by its key",
+      "args": [
+        "VERDICT: yes"
+      ],
+      "answer": "\n**VERDICT** yes"
+    },
+    {
+      "name": "an address with its English label",
+      "args": [
+        "ADDRESS: Riverside"
+      ],
+      "answer": "**Address** Riverside"
+    },
+    {
+      "name": "the consumer's words for a part and a label",
+      "args": [
+        "VERDICT: yes\nADDRESS: Riverside",
+        {
+          "parts": {
+            "VERDICT": "Answer"
+          },
+          "address": "Where",
+          "map": "Map",
+          "streetView": "Street view",
+          "released": "Released",
+          "newer": "Newest model",
+          "productPage": "Product page",
+          "stock": "Stock",
+          "usual": "usually {usual}",
+          "deal": "Deal",
+          "review": "Review",
+          "noRating": "none",
+          "menu": "Menu",
+          "dish": "Dish",
+          "price": "Price",
+          "notes": "Notes"
+        }
+      ],
+      "answer": "\n**Answer** yes\n**Where** Riverside"
+    },
+    {
+      "name": "part labels alone are headings, a name and a section above them",
+      "args": [
+        "TITLE: Lunch spots\nNAME: Corner Kitchen\nSECTION: Prices\nSECTION:\nSUMMARY:\nA noodle house[1].\nINTRO: Opening words\nBODY:\nMORE: folded words\nUNCONFIRMED:"
+      ],
+      "answer": "\n### Lunch spots\n\n\n### Corner Kitchen\n\n\n#### Prices\n\n\n#### SUMMARY\n\nA noodle house[1](#mark-1).\n\n#### INTRO\n\nOpening words\n\n#### BODY\n\n\n#### MORE\n\nfolded words\n\n#### UNCONFIRMED\n"
+    },
+    {
+      "name": "headings the search wrote move under the structure headings",
+      "args": [
+        "NAME: Corner Kitchen\n# Story\n## Detail\n###### Deep"
+      ],
+      "answer": "\n### Corner Kitchen\n\n##### Story\n###### Detail\n###### Deep"
+    },
+    {
+      "name": "headings alone start at the third level",
+      "args": [
+        "# Chapter\n## Section\ntext"
+      ],
+      "answer": "### Chapter\n#### Section\ntext"
+    },
+    {
+      "name": "a fenced block is left as it stands",
+      "args": [
+        "```\nVERDICT: inside\n# not a heading\n```\nVERDICT: outside"
+      ],
+      "answer": "```\nVERDICT: inside\n# not a heading\n```\n\n**VERDICT** outside"
+    },
+    {
+      "name": "a divider is a rule",
+      "args": [
+        "NAME: One\n===ITEM===\nNAME: Two"
+      ],
+      "answer": "\n### One\n\n\n***\n\n\n### Two\n"
+    },
+    {
+      "name": "one picture is a paragraph with its caption",
+      "args": [
+        "IMAGE: https://example.com/a.jpg :: front door :: Corner Kitchen :: night :: official [site]"
+      ],
+      "answer": "\n![front door · night · official \\[site\\]](<https://example.com/a.jpg>)\n"
+    },
+    {
+      "name": "pictures together are one gallery, blank lines between allowed",
+      "args": [
+        "IMAGE: https://example.com/a.jpg :: one\n\nIMAGE: https://example.com/b.jpg :: two\ntext after"
+      ],
+      "answer": "\n::: gallery\n![one](<https://example.com/a.jpg>)\n![two](<https://example.com/b.jpg>)\n:::\n\ntext after"
+    },
+    {
+      "name": "a menu is a folded table with a group row",
+      "args": [
+        "MENU: Prices as posted[2]\n- Noodles\n- cold noodles :: 6,000 won\n1. hot noodles :: 7,000 won :: spicy :: large\n* tea | green :: 2,000 won\nADDRESS: Riverside"
+      ],
+      "answer": "\n::: fold Menu\nPrices as posted[2](#mark-2)\n\n| Dish | Price | Notes |\n| --- | --- | --- |\n| **Noodles** |  |  |\n| cold noodles | 6,000 won |  |\n| hot noodles | 7,000 won | spicy · large |\n| tea \\| green | 2,000 won |  |\n:::\n\n**Address** Riverside"
+    },
+    {
+      "name": "a menu without notes has two columns",
+      "args": [
+        "MENU:\n- soup :: 9,000 won\n\n- rice :: 1,000 won\n# After"
+      ],
+      "answer": "\n::: fold Menu\n| Dish | Price |\n| --- | --- |\n| soup | 9,000 won |\n| rice | 1,000 won |\n:::\n\n### After"
+    },
+    {
+      "name": "an empty menu draws nothing",
+      "args": [
+        "MENU:\nVERDICT: yes"
+      ],
+      "answer": "\n**VERDICT** yes"
+    },
+    {
+      "name": "a map is found by the entry's address, footnotes left out",
+      "args": [
+        "NAME: Corner Kitchen\nMAP: https://map.example.com/search/elsewhere\nADDRESS: 12 River   Road[3]"
+      ],
+      "answer": "\n### Corner Kitchen\n\n\n::: map 12 River Road\n\n[Map](<https://map.example.com/search/elsewhere>)\n**Address** 12 River   Road[3]"
+    },
+    {
+      "name": "a map is found by its link's search where there is no address",
+      "args": [
+        "NAME: Corner Kitchen\nMAP: https://map.example.com/search/Blue%20Door%20Cafe?c=1"
+      ],
+      "answer": "\n### Corner Kitchen\n\n\n::: map Blue Door Cafe\n\n[Map](<https://map.example.com/search/Blue%20Door%20Cafe?c=1>)"
+    },
+    {
+      "name": "an unreadable search falls back to the name",
+      "args": [
+        "NAME: Corner Kitchen\nMAP: https://map.example.com/search/%E0%A4%A"
+      ],
+      "answer": "\n### Corner Kitchen\n\n\n::: map Corner Kitchen\n\n[Map](<https://map.example.com/search/%E0%A4%A>)"
+    },
+    {
+      "name": "a map with nothing to find it by is a link alone",
+      "args": [
+        "MAP: https://map.example.com/place/1"
+      ],
+      "answer": "[Map](<https://map.example.com/place/1>)"
+    },
+    {
+      "name": "each entry finds its own map",
+      "args": [
+        "NAME: One\nADDRESS: First Street\nMAP: https://map.example.com/a\n===ITEM===\nMAP: https://map.example.com/search/Second\nNAME: Two"
+      ],
+      "answer": "\n### One\n\n**Address** First Street\n\n::: map First Street\n\n[Map](<https://map.example.com/a>)\n\n***\n\n\n::: map Second\n\n[Map](<https://map.example.com/search/Second>)\n\n### Two\n"
+    },
+    {
+      "name": "street view, release and newer model",
+      "args": [
+        "ROADVIEW: https://map.example.com/view\nRELEASED: 2024[1]\nNEWER: Model 9"
+      ],
+      "answer": "[Street view](<https://map.example.com/view>)\n**Released** 2024[1](#mark-1)\n**Newest model** Model 9"
+    },
+    {
+      "name": "a stock line with its time and page",
+      "args": [
+        "STOCK: in stock[2] :: read at noon :: https://shop.example.com/p\nSTOCK: sold out"
+      ],
+      "answer": "**Stock** in stock[2](#mark-2) · read at noon [Product page](<https://shop.example.com/p>)\n**Stock** sold out"
+    },
+    {
+      "name": "a deal against the usual price",
+      "args": [
+        "DEAL: 9,000 won :: 12,000 won :: a real cut[4]\nDEAL: 5 dollars"
+      ],
+      "answer": "**Deal** 9,000 won (usually 12,000 won) · a real cut[4](#mark-4)\n**Deal** 5 dollars"
+    },
+    {
+      "name": "the usual price is put in as JavaScript replaces",
+      "args": [
+        "DEAL: now :: $5 and $$ and $& and $1",
+        {
+          "parts": {},
+          "address": "Address",
+          "map": "Map",
+          "streetView": "Street view",
+          "released": "Released",
+          "newer": "Newest model",
+          "productPage": "Product page",
+          "stock": "Stock",
+          "usual": "was {usual} ({usual}) $$ $& $` $'",
+          "deal": "Deal",
+          "review": "Review",
+          "noRating": "none",
+          "menu": "Menu",
+          "dish": "Dish",
+          "price": "Price",
+          "notes": "Notes"
+        }
+      ],
+      "answer": "**Deal** now (was $5 and $ and {usual} and $1 ({usual}) $$ $& $` $')"
+    },
+    {
+      "name": "a review as a quotation, a missing rating left out",
+      "args": [
+        "REVIEW: 4.5 :: Good noodles[1]. :: https://reviews.example.com/1\nREVIEW: none :: Plain words\nREVIEW: :: Only words"
+      ],
+      "answer": "\n> **4.5** Good noodles[1](#mark-1). [Review](<https://reviews.example.com/1>)\n\n\n> Plain words\n\n\n> Only words\n"
+    },
+    {
+      "name": "a line in a finding block's form is escaped",
+      "args": [
+        "::: fold sneaky\n  ::: map somewhere[2]"
+      ],
+      "answer": "\\::: fold sneaky\n  \\::: map somewhere[2](#mark-2)"
+    },
+    {
+      "name": "footnote marks in plain lines, a bracket before an address left alone",
+      "args": [
+        "Prices rose[1] and fell[12†], see [3](https://example.com) and [4]: note"
+      ],
+      "answer": "Prices rose[1](#mark-1) and fell[12†](#mark-12%E2%80%A0), see [3](https://example.com) and [4]: note"
+    },
+    {
+      "name": "structure lines the drawing has no form for are left out",
+      "args": [
+        "SOURCE [1]: https://example.com\nKEYWORDS: a, b\nplain words"
+      ],
+      "answer": "plain words"
+    },
+    {
+      "name": "a structure line ending in a carriage return is plain words",
+      "args": [
+        "VERDICT: yes\r\nADDRESS: Riverside"
+      ],
+      "answer": "VERDICT: yes\r\n**Address** Riverside"
+    },
+    {
+      "name": "Hangul words are drawn as they are",
+      "args": [
+        "NAME: 동네 식당\nSUMMARY: 국수가 맛있습니다[1]."
+      ],
+      "answer": "\n### 동네 식당\n\n\n**SUMMARY** 국수가 맛있습니다[1](#mark-1)."
+    },
+    {
+      "name": "an empty finding is empty",
+      "args": [
+        ""
+      ],
+      "answer": ""
+    }
+  ],
+  "footnoteMarks": [
+    {
+      "name": "a plain mark",
+      "args": [
+        "true[1]"
+      ],
+      "answer": "true[1](#mark-1)"
+    },
+    {
+      "name": "a snippet mark is encoded in its link",
+      "args": [
+        "seen[3†] here"
+      ],
+      "answer": "seen[3†](#mark-3%E2%80%A0) here"
+    },
+    {
+      "name": "four digits are no mark",
+      "args": [
+        "year[2024]"
+      ],
+      "answer": "year[2024]"
+    },
+    {
+      "name": "a mark followed by an address or a colon is a link",
+      "args": [
+        "[1](https://example.com) [2]: definition"
+      ],
+      "answer": "[1](https://example.com) [2]: definition"
+    },
+    {
+      "name": "several marks",
+      "args": [
+        "a[1][2] b[10]"
+      ],
+      "answer": "a[1](#mark-1)[2](#mark-2) b[10](#mark-10)"
+    }
+  ],
+  "pictureCaption": [
+    {
+      "name": "its caption with the shot and the source after it",
+      "args": [
+        "garden group :: Studio A :: outdoor :: official"
+      ],
+      "answer": "garden group · outdoor · official"
+    },
+    {
+      "name": "a caption alone",
+      "args": [
+        "soup 9,000"
+      ],
+      "answer": "soup 9,000"
+    },
+    {
+      "name": "empty fields fall away",
+      "args": [
+        " :: entry ::  :: source "
+      ],
+      "answer": "source"
+    },
+    {
+      "name": "an empty caption",
+      "args": [
+        ""
+      ],
+      "answer": ""
+    }
+  ],
+  "findingExcerpt": [
+    {
+      "name": "the key answer's and the summary's words, without marks or markup",
+      "args": [
+        [
+          "VERDICT: Corner Kitchen[2].\nSUMMARY:\n1. The cheapest place is **Corner Kitchen**[2].\n2. [Blue Door](https://example.com) is `8,000 won`[3†]."
+        ],
+        200
+      ],
+      "answer": "Corner Kitchen. The cheapest place is Corner Kitchen. Blue Door is 8,000 won."
+    },
+    {
+      "name": "what is drawn rather than said and what is folded under MORE are left out",
+      "args": [
+        [
+          "NAME: Corner Kitchen\n# Heading\nIMAGE: https://example.com/p.jpg :: photo\n| menu | price |\n---\nADDRESS: Riverside\nMENU:\n- noodles :: 6,000 won\nSUMMARY: A noodle house.\n> It has a self-serve bar.\nMORE:\na folded story",
+          "next finding"
+        ],
+        200
+      ],
+      "answer": "A noodle house. It has a self-serve bar. next finding"
+    },
+    {
+      "name": "cut at the last space before the limit with an ellipsis",
+      "args": [
+        [
+          "aa b c d ee",
+          "ff"
+        ],
+        12
+      ],
+      "answer": "aa b c d…"
+    },
+    {
+      "name": "a finding of a name alone says nothing",
+      "args": [
+        [
+          "NAME: only a name"
+        ],
+        12
+      ],
+      "answer": ""
+    },
+    {
+      "name": "a cut with no space past half the limit keeps the characters",
+      "args": [
+        [
+          "abcdefghijklmnop qr"
+        ],
+        10
+      ],
+      "answer": "abcdefghi…"
+    },
+    {
+      "name": "a rule of stars or dashes is not prose",
+      "args": [
+        [
+          "* * *\n- - -\n___\nwords"
+        ],
+        50
+      ],
+      "answer": "words"
+    },
+    {
+      "name": "fenced code is not prose",
+      "args": [
+        [
+          "```\ncode words\n```\nprose words"
+        ],
+        50
+      ],
+      "answer": "prose words"
+    },
+    {
+      "name": "Hangul is counted in UTF-16 units",
+      "args": [
+        [
+          "국수가 맛있고 값이 쌉니다 그리고 가깝습니다"
+        ],
+        12
+      ],
+      "answer": "국수가 맛있고 값이…"
+    },
+    {
+      "name": "an emoji counts two units",
+      "args": [
+        [
+          "🙂🙂🙂🙂🙂🙂🙂🙂"
+        ],
+        7
+      ],
+      "answer": "🙂🙂🙂…"
+    },
+    {
+      "name": "JavaScript white space runs become one space",
+      "args": [
+        [
+          "words 　more\twords"
+        ],
+        50
+      ],
+      "answer": "words more words"
+    },
+    {
+      "name": "no findings say nothing",
+      "args": [
+        [],
+        10
+      ],
+      "answer": ""
+    }
+  ]
+}

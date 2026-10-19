@@ -1,0 +1,417 @@
+{
+  "about": "The cases web addresses in running text are held to. An index is the package's, in UTF-16 units of the text; the crate, which reads a run of characters, is held to the same positions counted in its characters.",
+  "addressAsWritten": [
+    {
+      "name": "a closing bracket it did not open and a full stop are the sentence's",
+      "args": [
+        "https://example.com/a)."
+      ],
+      "answer": "https://example.com/a"
+    },
+    {
+      "name": "a pair of brackets it opened stays",
+      "args": [
+        "https://en.wikipedia.org/wiki/A_(b))"
+      ],
+      "answer": "https://en.wikipedia.org/wiki/A_(b)"
+    },
+    {
+      "name": "a Korean letter ends it",
+      "args": [
+        "https://example.com/주소"
+      ],
+      "answer": "https://example.com/"
+    },
+    {
+      "name": "a closing bracket before a Korean letter",
+      "args": [
+        "https://site.example.com/archive/83)에"
+      ],
+      "answer": "https://site.example.com/archive/83"
+    },
+    {
+      "name": "a space ends it",
+      "args": [
+        "https://example.com/a b"
+      ],
+      "answer": "https://example.com/a"
+    },
+    {
+      "name": "trailing punctuation of several kinds",
+      "args": [
+        "https://example.com/a?!,;:'\""
+      ],
+      "answer": "https://example.com/a"
+    },
+    {
+      "name": "a query that ends in a closing bracket it opened",
+      "args": [
+        "https://example.com/?q=(x)"
+      ],
+      "answer": "https://example.com/?q=(x)"
+    }
+  ],
+  "isWebAddress": [
+    {
+      "name": "an https address",
+      "args": [
+        "https://example.com/path"
+      ],
+      "answer": true
+    },
+    {
+      "name": "an http address with a port",
+      "args": [
+        "http://localhost:8080/"
+      ],
+      "answer": true
+    },
+    {
+      "name": "a scheme alone",
+      "args": [
+        "https://"
+      ],
+      "answer": false
+    },
+    {
+      "name": "another scheme",
+      "args": [
+        "ftp://x.example"
+      ],
+      "answer": false
+    },
+    {
+      "name": "plain words",
+      "args": [
+        "example.com"
+      ],
+      "answer": false
+    },
+    {
+      "name": "a capital scheme",
+      "args": [
+        "HTTPS://Example.COM"
+      ],
+      "answer": true
+    },
+    {
+      "name": "an address with a Korean path",
+      "args": [
+        "https://ko.wikipedia.org/wiki/서울"
+      ],
+      "answer": true
+    },
+    {
+      "name": "an address with an IP host",
+      "args": [
+        "http://192.0.2.1/x"
+      ],
+      "answer": true
+    },
+    {
+      "name": "an empty text",
+      "args": [
+        ""
+      ],
+      "answer": false
+    }
+  ],
+  "markdownLinkAt": [
+    {
+      "name": "a link at its opening bracket",
+      "args": [
+        "see [docs](https://a.example/x) now",
+        4
+      ],
+      "answer": {
+        "label": "docs",
+        "url": "https://a.example/x",
+        "end": 31
+      }
+    },
+    {
+      "name": "an address with a space is no link",
+      "args": [
+        "[a](b c)",
+        0
+      ],
+      "answer": null
+    },
+    {
+      "name": "a space between the brackets and the parentheses is no link",
+      "args": [
+        "[a] (b)",
+        0
+      ],
+      "answer": null
+    },
+    {
+      "name": "brackets in the label and parentheses in the address are balanced",
+      "args": [
+        "[a [b]](c(d))",
+        0
+      ],
+      "answer": {
+        "label": "a [b]",
+        "url": "c(d)",
+        "end": 13
+      }
+    },
+    {
+      "name": "an index past an emoji counts its two units",
+      "args": [
+        "🙂 [x](https://a.example/🙂) end",
+        3
+      ],
+      "answer": {
+        "label": "x",
+        "url": "https://a.example/🙂",
+        "end": 28
+      }
+    },
+    {
+      "name": "an index that is no opening bracket",
+      "args": [
+        "[a](b)",
+        1
+      ],
+      "answer": null
+    },
+    {
+      "name": "an unclosed link",
+      "args": [
+        "[a](b",
+        0
+      ],
+      "answer": null
+    }
+  ],
+  "bareAddressAt": [
+    {
+      "name": "an address starting at the index",
+      "args": [
+        "see https://a.example/x. next",
+        4
+      ],
+      "answer": "https://a.example/x"
+    },
+    {
+      "name": "no address at the index",
+      "args": [
+        "see https://a.example/x",
+        3
+      ],
+      "answer": null
+    },
+    {
+      "name": "a scheme alone is none",
+      "args": [
+        "https:// nothing",
+        0
+      ],
+      "answer": null
+    },
+    {
+      "name": "an address cut at a Korean letter",
+      "args": [
+        "주소 https://a.example/83에 있음",
+        3
+      ],
+      "answer": "https://a.example/83"
+    },
+    {
+      "name": "an index past an emoji",
+      "args": [
+        "🙂 http://a.example",
+        3
+      ],
+      "answer": "http://a.example"
+    }
+  ],
+  "gluedAfterAddress": [
+    {
+      "name": "a Korean letter straight after",
+      "args": [
+        "https://a.example/83에",
+        20
+      ],
+      "answer": true
+    },
+    {
+      "name": "a Korean letter after a closing bracket",
+      "args": [
+        "https://a.example/83)에",
+        20
+      ],
+      "answer": true
+    },
+    {
+      "name": "a space before the Korean letter",
+      "args": [
+        "https://a.example/83 에",
+        20
+      ],
+      "answer": false
+    },
+    {
+      "name": "a closing bracket then a space",
+      "args": [
+        "https://a.example/83) 끝",
+        20
+      ],
+      "answer": false
+    },
+    {
+      "name": "punctuation then a Korean letter",
+      "args": [
+        "https://a.example/83.에",
+        20
+      ],
+      "answer": true
+    },
+    {
+      "name": "nothing after",
+      "args": [
+        "https://a.example/83",
+        20
+      ],
+      "answer": false
+    }
+  ],
+  "webAddresses": [
+    {
+      "name": "a markdown link gives the address its parentheses hold",
+      "args": [
+        "결과는 [archive 83](https://site.example.com/archive/83)에 올려 뒀어."
+      ],
+      "answer": [
+        {
+          "start": 17,
+          "end": 52,
+          "url": "https://site.example.com/archive/83",
+          "label": "archive 83"
+        }
+      ]
+    },
+    {
+      "name": "a link keeps a pair of brackets and may hold Korean letters",
+      "args": [
+        "[위키](https://en.wikipedia.org/wiki/Foo_(bar))에 [서울](https://ko.wikipedia.org/wiki/서울)을"
+      ],
+      "answer": [
+        {
+          "start": 5,
+          "end": 44,
+          "url": "https://en.wikipedia.org/wiki/Foo_(bar)",
+          "label": "위키"
+        },
+        {
+          "start": 52,
+          "end": 84,
+          "url": "https://ko.wikipedia.org/wiki/서울",
+          "label": "서울"
+        }
+      ]
+    },
+    {
+      "name": "bare addresses end at a Korean letter, a bracket it did not open and the sentence's punctuation",
+      "args": [
+        "주소 https://a.example/83에 있고 (https://b.example/p_(q))에, https://c.example/x?y=1. 끝"
+      ],
+      "answer": [
+        {
+          "start": 3,
+          "end": 23,
+          "url": "https://a.example/83",
+          "label": null
+        },
+        {
+          "start": 29,
+          "end": 52,
+          "url": "https://b.example/p_(q)",
+          "label": null
+        },
+        {
+          "start": 56,
+          "end": 79,
+          "url": "https://c.example/x?y=1",
+          "label": null
+        }
+      ]
+    },
+    {
+      "name": "a scheme alone, another scheme and plain words name none",
+      "args": [
+        "https:// is no address, [text](ftp://x.example) is not the web, and these are plain words"
+      ],
+      "answer": []
+    },
+    {
+      "name": "a link and a bare address in order",
+      "args": [
+        "see [docs](https://a.example/x) and https://b.example/y."
+      ],
+      "answer": [
+        {
+          "start": 11,
+          "end": 30,
+          "url": "https://a.example/x",
+          "label": "docs"
+        },
+        {
+          "start": 36,
+          "end": 55,
+          "url": "https://b.example/y",
+          "label": null
+        }
+      ]
+    },
+    {
+      "name": "a picture's mark gives its address",
+      "args": [
+        "![chart](https://a.example/c.png) and HTTP://B.example"
+      ],
+      "answer": [
+        {
+          "start": 9,
+          "end": 32,
+          "url": "https://a.example/c.png",
+          "label": "chart"
+        },
+        {
+          "start": 38,
+          "end": 54,
+          "url": "HTTP://B.example",
+          "label": null
+        }
+      ]
+    },
+    {
+      "name": "positions after emoji are counted in UTF-16 units",
+      "args": [
+        "🙂🙂 https://a.example/🙂 and [x](https://b.example)"
+      ],
+      "answer": [
+        {
+          "start": 5,
+          "end": 25,
+          "url": "https://a.example/🙂",
+          "label": null
+        },
+        {
+          "start": 34,
+          "end": 51,
+          "url": "https://b.example",
+          "label": "x"
+        }
+      ]
+    },
+    {
+      "name": "an empty text names none",
+      "args": [
+        ""
+      ],
+      "answer": []
+    }
+  ]
+}

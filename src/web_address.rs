@@ -133,6 +133,8 @@ pub struct FoundAddress {
   pub start: usize,
   pub end: usize,
   pub url: String,
+  /// The words of the markdown link that named it, or none for a bare address.
+  pub label: Option<String>,
 }
 
 /// Every web address a text names, in the order written. A markdown link gives the address in its
@@ -154,6 +156,7 @@ pub fn web_addresses(text: &[char]) -> Vec<FoundAddress> {
           start: link.end - 1 - length,
           end: link.end - 1,
           url: link.url,
+          label: Some(link.label),
         });
       }
 
@@ -170,6 +173,7 @@ pub fn web_addresses(text: &[char]) -> Vec<FoundAddress> {
         start: index,
         end: index + length,
         url,
+        label: None,
       });
       index += length;
       continue;

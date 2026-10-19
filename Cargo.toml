@@ -1,12 +1,18 @@
 [package]
 name = "bmo-markup"
-version = "0.1.0"
+version = "1.0.0"
 description = "Markdown and text as a chat room reads them, written into Telegram's HTML."
 edition = "2024"
 publish = false
 
 [dependencies]
+base64 = "0.23.1"
+fancy-regex = "0.19.2"
+htmlize = { version = "1.1.0", features = ["unescape"] }
+lol_html = "3.0.1"
+percent-encoding = "2.3.2"
 regex = "1.13.1"
+unicode-normalization = "0.1.26"
 unicode-segmentation = "1.13.3"
 url = "2.5.8"
 

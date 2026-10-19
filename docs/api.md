@@ -87,6 +87,8 @@ The crate's own: JavaScript's counting, spaces and trims, which the package has 
 - **`chars`** and **`text`** turn a text into its characters and back; **`find`** and **`rfind`** find a run of
   characters at or after, or at or before, an index.
 - **`bun_hash`** is what Bun's hash answers for a text: Wyhash of its UTF-8 bytes with seed 0.
+- **`encode_uri_component`** and **`decode_uri_component`** are JavaScript's, the decoding none where
+  JavaScript's would throw: an escape that is not two hexadecimal digits, or escaped bytes that are not UTF-8.
 
 ### `markdown`
 
@@ -135,7 +137,8 @@ The markdown an agent writes, read line for line into Telegram's HTML and plain 
 ### `translation_parts`
 
 - **`TextLanguage`**, **`text_language`**, **`TRANSLATION_PART_TOKENS`**, **`translation_parts`** and
-  **`shown_part`** are the package's `translation-parts`, a language being `Ko` or `En`.
+  **`shown_part`** are the package's `translation-parts`, a language being `Ko` or `En` and its `code` the
+  package's `ko` or `en`.
 
 ### `web_address`
 
@@ -149,7 +152,10 @@ The markdown an agent writes, read line for line into Telegram's HTML and plain 
 - **`glued_after_address`** answers whether the sentence runs on straight after an address, a Korean letter
   following it or the brackets and punctuation it left.
 - **`FoundAddress`**, **`web_addresses`** and **`web_addresses_in`** give every address a text names, in order,
-  with where it stands; a markdown link gives the address in its parentheses alone.
+  with where it stands and the words of the markdown link that named it; a markdown link gives the address in
+  its parentheses alone.
+- The module reads a run of characters, so an index it takes or gives counts characters of that run, where
+  the package's counts UTF-16 units of its string; the two name the same places.
 
 ### `wording`
 
@@ -240,6 +246,9 @@ rest) turned into the markdown they stand for.
   (headings with their level, a list item a dash, each block a line, scripts and styles left out), and every
   picture written inside it as data taken out as a file named from the given stem, an outside picture kept by
   its address. **`HtmlReading`** and **`HtmlPicture`** are that reading and one picture's name, type and bytes.
+  It reads any page without throwing: an element that cannot hold content, such as a self-closing one in SVG,
+  hides nothing after it, and a picture whose percent escapes are not well formed keeps its payload's bytes as
+  they stand.
 
 ### `markdown-structure`
 

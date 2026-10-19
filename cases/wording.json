@@ -1,0 +1,830 @@
+{
+  "about": "The cases a glossary of banned terms is held to: its document read, terms found on lines of their own language, terms named in a text being written, and new lines added. A refusal is its sentence under `error`; the terms a text uses are found against the banned list alone.",
+  "lineLanguage": [
+    {
+      "name": "Hangul is Korean",
+      "args": [
+        "툴바를 눌러"
+      ],
+      "answer": "ko"
+    },
+    {
+      "name": "kana alone is Japanese",
+      "args": [
+        "ツールバー"
+      ],
+      "answer": "ja"
+    },
+    {
+      "name": "anything else is English",
+      "args": [
+        "press the toolbar"
+      ],
+      "answer": "en"
+    },
+    {
+      "name": "kana beside Hangul is Korean",
+      "args": [
+        "ツール 툴"
+      ],
+      "answer": "ko"
+    },
+    {
+      "name": "a compatibility jamo is Korean",
+      "args": [
+        "ㄱ"
+      ],
+      "answer": "ko"
+    },
+    {
+      "name": "an empty line is English",
+      "args": [
+        ""
+      ],
+      "answer": "en"
+    }
+  ],
+  "parseGlossary": [
+    {
+      "name": "entries are read from their own sections and the explanation bullets are not",
+      "args": [
+        "# Wording\n\n## Banned terms\n\n- Each line is `<language code> · <banned term> → <what to write>`.\n- en · tool strip → toolbar\n- en · fixing → editing — when it means editing\n- en · slot → position\n\n## Uses in the word's own sense\n\n- Each line is `<language code> · <banned term> · <a phrase holding the term>`.\n- en · slot · slot machine — a machine\n- en · slot · coin slot — an opening\n\n## Allowed uses\n\n- en · fixing · docs/a.md · bike fixing — a repair"
+      ],
+      "answer": {
+        "banned": [
+          {
+            "lang": "en",
+            "term": "tool strip",
+            "instead": "toolbar"
+          },
+          {
+            "lang": "en",
+            "term": "fixing",
+            "instead": "editing",
+            "when": "when it means editing"
+          },
+          {
+            "lang": "en",
+            "term": "slot",
+            "instead": "position",
+            "keeps": [
+              "slot machine",
+              "coin slot"
+            ]
+          }
+        ],
+        "allowed": [
+          {
+            "lang": "en",
+            "term": "fixing",
+            "path": "docs/a.md",
+            "excerpt": "bike fixing"
+          }
+        ]
+      }
+    },
+    {
+      "name": "an unknown language code is refused",
+      "args": [
+        "## Banned terms\n- kr · built in → built-in"
+      ],
+      "answer": {
+        "error": "WORDING.md: unknown language code \"kr\" in: - kr · built in → built-in"
+      }
+    },
+    {
+      "name": "a phrase of a word's own sense that holds no banned term is refused",
+      "args": [
+        "## Banned terms\n- en · slot → position\n## Uses in the word's own sense\n- en · slot · seat booking — a seat"
+      ],
+      "answer": {
+        "error": "WORDING.md: a phrase of a word's own sense must hold a banned term listed above it: - en · slot · seat booking — a seat"
+      }
+    },
+    {
+      "name": "a phrase of a word's own sense naming a term not banned is refused",
+      "args": [
+        "## Banned terms\n- en · slot → position\n## Uses in the word's own sense\n- en · seat · seat booking — a seat"
+      ],
+      "answer": {
+        "error": "WORDING.md: a phrase of a word's own sense must hold a banned term listed above it: - en · seat · seat booking — a seat"
+      }
+    },
+    {
+      "name": "a Korean entry",
+      "args": [
+        "## Banned terms\n- ko · 고치기 → 수정 — 문서를 고칠 때"
+      ],
+      "answer": {
+        "banned": [
+          {
+            "lang": "ko",
+            "term": "고치기",
+            "instead": "수정",
+            "when": "문서를 고칠 때"
+          }
+        ],
+        "allowed": []
+      }
+    },
+    {
+      "name": "an empty document",
+      "args": [
+        ""
+      ],
+      "answer": {
+        "banned": [],
+        "allowed": []
+      }
+    }
+  ],
+  "findBanned": [
+    {
+      "name": "a term is found only on lines of its own language",
+      "args": [
+        "x.md",
+        "위에 tool strip 있음\nthe tool strip above",
+        [
+          {
+            "lang": "en",
+            "term": "tool strip",
+            "instead": "toolbar"
+          }
+        ]
+      ],
+      "answer": [
+        {
+          "path": "x.md",
+          "line": 2,
+          "text": "the tool strip above",
+          "term": {
+            "lang": "en",
+            "term": "tool strip",
+            "instead": "toolbar"
+          }
+        }
+      ]
+    },
+    {
+      "name": "a Korean term standing on its own is found",
+      "args": [
+        "x.md",
+        "협업으로 돌리기",
+        [
+          {
+            "lang": "ko",
+            "term": "돌리기",
+            "instead": "실행"
+          }
+        ]
+      ],
+      "answer": [
+        {
+          "path": "x.md",
+          "line": 1,
+          "text": "협업으로 돌리기",
+          "term": {
+            "lang": "ko",
+            "term": "돌리기",
+            "instead": "실행"
+          }
+        }
+      ]
+    },
+    {
+      "name": "a Korean term a syllable runs into from the left is that longer word",
+      "args": [
+        "x.md",
+        "결재를 되돌리기",
+        [
+          {
+            "lang": "ko",
+            "term": "돌리기",
+            "instead": "실행"
+          }
+        ]
+      ],
+      "answer": []
+    },
+    {
+      "name": "a Korean term with an ending after it is still found",
+      "args": [
+        "x.md",
+        "돌리기도 한다",
+        [
+          {
+            "lang": "ko",
+            "term": "돌리기",
+            "instead": "실행"
+          }
+        ]
+      ],
+      "answer": [
+        {
+          "path": "x.md",
+          "line": 1,
+          "text": "돌리기도 한다",
+          "term": {
+            "lang": "ko",
+            "term": "돌리기",
+            "instead": "실행"
+          }
+        }
+      ]
+    },
+    {
+      "name": "a line with both forms is reported for the one that stands alone",
+      "args": [
+        "x.md",
+        "되돌리기와 다시 돌리기",
+        [
+          {
+            "lang": "ko",
+            "term": "돌리기",
+            "instead": "실행"
+          }
+        ]
+      ],
+      "answer": [
+        {
+          "path": "x.md",
+          "line": 1,
+          "text": "되돌리기와 다시 돌리기",
+          "term": {
+            "lang": "ko",
+            "term": "돌리기",
+            "instead": "실행"
+          }
+        }
+      ]
+    },
+    {
+      "name": "a term inside a phrase of its own sense passes",
+      "args": [
+        "x.md",
+        "the slot machine paid out",
+        [
+          {
+            "lang": "en",
+            "term": "tool strip",
+            "instead": "toolbar"
+          },
+          {
+            "lang": "en",
+            "term": "fixing",
+            "instead": "editing",
+            "when": "when it means editing"
+          },
+          {
+            "lang": "en",
+            "term": "slot",
+            "instead": "position",
+            "keeps": [
+              "slot machine",
+              "coin slot"
+            ]
+          }
+        ]
+      ],
+      "answer": []
+    },
+    {
+      "name": "a term inside another phrase of its own sense passes",
+      "args": [
+        "x.md",
+        "drop it in the coin slot",
+        [
+          {
+            "lang": "en",
+            "term": "tool strip",
+            "instead": "toolbar"
+          },
+          {
+            "lang": "en",
+            "term": "fixing",
+            "instead": "editing",
+            "when": "when it means editing"
+          },
+          {
+            "lang": "en",
+            "term": "slot",
+            "instead": "position",
+            "keeps": [
+              "slot machine",
+              "coin slot"
+            ]
+          }
+        ]
+      ],
+      "answer": []
+    },
+    {
+      "name": "the term outside its phrases is found",
+      "args": [
+        "x.md",
+        "the slot where it stopped",
+        [
+          {
+            "lang": "en",
+            "term": "tool strip",
+            "instead": "toolbar"
+          },
+          {
+            "lang": "en",
+            "term": "fixing",
+            "instead": "editing",
+            "when": "when it means editing"
+          },
+          {
+            "lang": "en",
+            "term": "slot",
+            "instead": "position",
+            "keeps": [
+              "slot machine",
+              "coin slot"
+            ]
+          }
+        ]
+      ],
+      "answer": [
+        {
+          "path": "x.md",
+          "line": 1,
+          "text": "the slot where it stopped",
+          "term": {
+            "lang": "en",
+            "term": "slot",
+            "instead": "position",
+            "keeps": [
+              "slot machine",
+              "coin slot"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "a line with the phrase and the term alone is found",
+      "args": [
+        "x.md",
+        "a coin slot and the slot where it stopped",
+        [
+          {
+            "lang": "en",
+            "term": "tool strip",
+            "instead": "toolbar"
+          },
+          {
+            "lang": "en",
+            "term": "fixing",
+            "instead": "editing",
+            "when": "when it means editing"
+          },
+          {
+            "lang": "en",
+            "term": "slot",
+            "instead": "position",
+            "keeps": [
+              "slot machine",
+              "coin slot"
+            ]
+          }
+        ]
+      ],
+      "answer": [
+        {
+          "path": "x.md",
+          "line": 1,
+          "text": "a coin slot and the slot where it stopped",
+          "term": {
+            "lang": "en",
+            "term": "slot",
+            "instead": "position",
+            "keeps": [
+              "slot machine",
+              "coin slot"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "several lines and several terms",
+      "args": [
+        "docs/b.md",
+        "bike fixing\nclick the tool strip\nno term here\nTOOL STRIP in capitals",
+        [
+          {
+            "lang": "en",
+            "term": "tool strip",
+            "instead": "toolbar"
+          },
+          {
+            "lang": "en",
+            "term": "fixing",
+            "instead": "editing",
+            "when": "when it means editing"
+          },
+          {
+            "lang": "en",
+            "term": "slot",
+            "instead": "position",
+            "keeps": [
+              "slot machine",
+              "coin slot"
+            ]
+          }
+        ]
+      ],
+      "answer": [
+        {
+          "path": "docs/b.md",
+          "line": 1,
+          "text": "bike fixing",
+          "term": {
+            "lang": "en",
+            "term": "fixing",
+            "instead": "editing",
+            "when": "when it means editing"
+          }
+        },
+        {
+          "path": "docs/b.md",
+          "line": 2,
+          "text": "click the tool strip",
+          "term": {
+            "lang": "en",
+            "term": "tool strip",
+            "instead": "toolbar"
+          }
+        }
+      ]
+    }
+  ],
+  "bannedTermsIn": [
+    {
+      "name": "a term is named once however often it is used",
+      "args": [
+        "click the tool strip, then the tool strip again",
+        [
+          {
+            "lang": "en",
+            "term": "tool strip",
+            "instead": "toolbar"
+          },
+          {
+            "lang": "en",
+            "term": "fixing",
+            "instead": "editing",
+            "when": "when it means editing"
+          },
+          {
+            "lang": "en",
+            "term": "slot",
+            "instead": "position",
+            "keeps": [
+              "slot machine",
+              "coin slot"
+            ]
+          }
+        ]
+      ],
+      "answer": [
+        {
+          "lang": "en",
+          "term": "tool strip",
+          "instead": "toolbar"
+        }
+      ]
+    },
+    {
+      "name": "a term in double quotes passes",
+      "args": [
+        "toolbar, not \"tool strip\"",
+        [
+          {
+            "lang": "en",
+            "term": "tool strip",
+            "instead": "toolbar"
+          },
+          {
+            "lang": "en",
+            "term": "fixing",
+            "instead": "editing",
+            "when": "when it means editing"
+          },
+          {
+            "lang": "en",
+            "term": "slot",
+            "instead": "position",
+            "keeps": [
+              "slot machine",
+              "coin slot"
+            ]
+          }
+        ]
+      ],
+      "answer": []
+    },
+    {
+      "name": "a term in backticks passes",
+      "args": [
+        "`tool strip` is the old name",
+        [
+          {
+            "lang": "en",
+            "term": "tool strip",
+            "instead": "toolbar"
+          },
+          {
+            "lang": "en",
+            "term": "fixing",
+            "instead": "editing",
+            "when": "when it means editing"
+          },
+          {
+            "lang": "en",
+            "term": "slot",
+            "instead": "position",
+            "keeps": [
+              "slot machine",
+              "coin slot"
+            ]
+          }
+        ]
+      ],
+      "answer": []
+    },
+    {
+      "name": "a term in corner brackets passes",
+      "args": [
+        "「tool strip」 is not what it is called",
+        [
+          {
+            "lang": "en",
+            "term": "tool strip",
+            "instead": "toolbar"
+          },
+          {
+            "lang": "en",
+            "term": "fixing",
+            "instead": "editing",
+            "when": "when it means editing"
+          },
+          {
+            "lang": "en",
+            "term": "slot",
+            "instead": "position",
+            "keeps": [
+              "slot machine",
+              "coin slot"
+            ]
+          }
+        ]
+      ],
+      "answer": []
+    },
+    {
+      "name": "a term in single quotes passes",
+      "args": [
+        "'fixing' is not editing",
+        [
+          {
+            "lang": "en",
+            "term": "tool strip",
+            "instead": "toolbar"
+          },
+          {
+            "lang": "en",
+            "term": "fixing",
+            "instead": "editing",
+            "when": "when it means editing"
+          },
+          {
+            "lang": "en",
+            "term": "slot",
+            "instead": "position",
+            "keeps": [
+              "slot machine",
+              "coin slot"
+            ]
+          }
+        ]
+      ],
+      "answer": []
+    },
+    {
+      "name": "terms are named in the glossary's order",
+      "args": [
+        "the slot, the fixing and the tool strip",
+        [
+          {
+            "lang": "en",
+            "term": "tool strip",
+            "instead": "toolbar"
+          },
+          {
+            "lang": "en",
+            "term": "fixing",
+            "instead": "editing",
+            "when": "when it means editing"
+          },
+          {
+            "lang": "en",
+            "term": "slot",
+            "instead": "position",
+            "keeps": [
+              "slot machine",
+              "coin slot"
+            ]
+          }
+        ]
+      ],
+      "answer": [
+        {
+          "lang": "en",
+          "term": "tool strip",
+          "instead": "toolbar"
+        },
+        {
+          "lang": "en",
+          "term": "fixing",
+          "instead": "editing",
+          "when": "when it means editing"
+        },
+        {
+          "lang": "en",
+          "term": "slot",
+          "instead": "position",
+          "keeps": [
+            "slot machine",
+            "coin slot"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "a Korean term a syllable runs into passes",
+      "args": [
+        "설계를 뜯어고치기",
+        [
+          {
+            "lang": "ko",
+            "term": "고치기",
+            "instead": "수정"
+          }
+        ]
+      ],
+      "answer": []
+    },
+    {
+      "name": "a Korean term standing alone is named",
+      "args": [
+        "문서 고치기",
+        [
+          {
+            "lang": "ko",
+            "term": "고치기",
+            "instead": "수정"
+          }
+        ]
+      ],
+      "answer": [
+        {
+          "lang": "ko",
+          "term": "고치기",
+          "instead": "수정"
+        }
+      ]
+    }
+  ],
+  "bannedTermsLine": [
+    {
+      "name": "one term beside what to write",
+      "args": [
+        [
+          {
+            "lang": "en",
+            "term": "tool strip",
+            "instead": "toolbar"
+          }
+        ]
+      ],
+      "answer": "\"tool strip\" → toolbar"
+    },
+    {
+      "name": "several terms",
+      "args": [
+        [
+          {
+            "lang": "en",
+            "term": "tool strip",
+            "instead": "toolbar"
+          },
+          {
+            "lang": "en",
+            "term": "fixing",
+            "instead": "editing",
+            "when": "when it means editing"
+          }
+        ]
+      ],
+      "answer": "\"tool strip\" → toolbar; \"fixing\" → editing"
+    },
+    {
+      "name": "no terms",
+      "args": [
+        []
+      ],
+      "answer": ""
+    }
+  ],
+  "addBannedTerms": [
+    {
+      "name": "a new line goes after the last entry and a term already banned is passed over",
+      "args": [
+        "# Wording\n\n## Banned terms\n\n- Each line is `<language code> · <banned term> → <what to write>`.\n- en · tool strip → toolbar\n- en · fixing → editing — when it means editing\n- en · slot → position\n\n## Uses in the word's own sense\n\n- Each line is `<language code> · <banned term> · <a phrase holding the term>`.\n- en · slot · slot machine — a machine\n- en · slot · coin slot — an opening\n\n## Allowed uses\n\n- en · fixing · docs/a.md · bike fixing — a repair",
+        [
+          {
+            "lang": "en",
+            "term": "stashing",
+            "instead": "saving, capturing",
+            "when": "when it means saving"
+          },
+          {
+            "lang": "en",
+            "term": "slot",
+            "instead": "position"
+          }
+        ]
+      ],
+      "answer": {
+        "text": "# Wording\n\n## Banned terms\n\n- Each line is `<language code> · <banned term> → <what to write>`.\n- en · tool strip → toolbar\n- en · fixing → editing — when it means editing\n- en · slot → position\n- en · stashing → saving, capturing — when it means saving\n\n## Uses in the word's own sense\n\n- Each line is `<language code> · <banned term> · <a phrase holding the term>`.\n- en · slot · slot machine — a machine\n- en · slot · coin slot — an opening\n\n## Allowed uses\n\n- en · fixing · docs/a.md · bike fixing — a repair",
+        "added": [
+          {
+            "lang": "en",
+            "term": "stashing",
+            "instead": "saving, capturing",
+            "when": "when it means saving"
+          }
+        ]
+      }
+    },
+    {
+      "name": "adding only a term already banned leaves the document as it was",
+      "args": [
+        "# Wording\n\n## Banned terms\n\n- Each line is `<language code> · <banned term> → <what to write>`.\n- en · tool strip → toolbar\n- en · fixing → editing — when it means editing\n- en · slot → position\n\n## Uses in the word's own sense\n\n- Each line is `<language code> · <banned term> · <a phrase holding the term>`.\n- en · slot · slot machine — a machine\n- en · slot · coin slot — an opening\n\n## Allowed uses\n\n- en · fixing · docs/a.md · bike fixing — a repair",
+        [
+          {
+            "lang": "en",
+            "term": "slot",
+            "instead": "position"
+          }
+        ]
+      ],
+      "answer": {
+        "text": "# Wording\n\n## Banned terms\n\n- Each line is `<language code> · <banned term> → <what to write>`.\n- en · tool strip → toolbar\n- en · fixing → editing — when it means editing\n- en · slot → position\n\n## Uses in the word's own sense\n\n- Each line is `<language code> · <banned term> · <a phrase holding the term>`.\n- en · slot · slot machine — a machine\n- en · slot · coin slot — an opening\n\n## Allowed uses\n\n- en · fixing · docs/a.md · bike fixing — a repair",
+        "added": []
+      }
+    },
+    {
+      "name": "a line that would read back otherwise is refused",
+      "args": [
+        "# Wording\n\n## Banned terms\n\n- Each line is `<language code> · <banned term> → <what to write>`.\n- en · tool strip → toolbar\n- en · fixing → editing — when it means editing\n- en · slot → position\n\n## Uses in the word's own sense\n\n- Each line is `<language code> · <banned term> · <a phrase holding the term>`.\n- en · slot · slot machine — a machine\n- en · slot · coin slot — an opening\n\n## Allowed uses\n\n- en · fixing · docs/a.md · bike fixing — a repair",
+        [
+          {
+            "lang": "en",
+            "term": "a → b",
+            "instead": "c"
+          }
+        ]
+      ],
+      "answer": {
+        "error": "WORDING.md: the line for \"a → b\" would not read back as written"
+      }
+    },
+    {
+      "name": "a Korean term is added",
+      "args": [
+        "# Wording\n\n## Banned terms\n\n- Each line is `<language code> · <banned term> → <what to write>`.\n- en · tool strip → toolbar\n- en · fixing → editing — when it means editing\n- en · slot → position\n\n## Uses in the word's own sense\n\n- Each line is `<language code> · <banned term> · <a phrase holding the term>`.\n- en · slot · slot machine — a machine\n- en · slot · coin slot — an opening\n\n## Allowed uses\n\n- en · fixing · docs/a.md · bike fixing — a repair",
+        [
+          {
+            "lang": "ko",
+            "term": "고치기",
+            "instead": "수정"
+          }
+        ]
+      ],
+      "answer": {
+        "text": "# Wording\n\n## Banned terms\n\n- Each line is `<language code> · <banned term> → <what to write>`.\n- en · tool strip → toolbar\n- en · fixing → editing — when it means editing\n- en · slot → position\n- ko · 고치기 → 수정\n\n## Uses in the word's own sense\n\n- Each line is `<language code> · <banned term> · <a phrase holding the term>`.\n- en · slot · slot machine — a machine\n- en · slot · coin slot — an opening\n\n## Allowed uses\n\n- en · fixing · docs/a.md · bike fixing — a repair",
+        "added": [
+          {
+            "lang": "ko",
+            "term": "고치기",
+            "instead": "수정"
+          }
+        ]
+      }
+    }
+  ]
+}

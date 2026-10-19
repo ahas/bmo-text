@@ -1,0 +1,68 @@
+{
+  "about": "The cases whether an answer holds Korean is held to: any Hangul syllable counts, and nothing else does.",
+  "holdsKorean": [
+    {
+      "name": "an English answer holds none",
+      "args": [
+        "The run finished and the tests passed."
+      ],
+      "answer": false
+    },
+    {
+      "name": "an empty answer holds none",
+      "args": [
+        ""
+      ],
+      "answer": false
+    },
+    {
+      "name": "one syllable in English is enough",
+      "args": [
+        "The word 가 stands alone."
+      ],
+      "answer": true
+    },
+    {
+      "name": "a Korean sentence holds it",
+      "args": [
+        "작업을 마쳤습니다."
+      ],
+      "answer": true
+    },
+    {
+      "name": "the first syllable of the range",
+      "args": [
+        "가"
+      ],
+      "answer": true
+    },
+    {
+      "name": "the last syllable of the range",
+      "args": [
+        "힣"
+      ],
+      "answer": true
+    },
+    {
+      "name": "a lone jamo is not a syllable",
+      "args": [
+        "ㄱ ㅏ"
+      ],
+      "answer": false
+    },
+    {
+      "name": "kana and ideographs are not Hangul",
+      "args": [
+        "かな 漢字"
+      ],
+      "answer": false
+    },
+    {
+      "name": "an emoji is not Hangul",
+      "args": [
+        "🙂 done"
+      ],
+      "answer": false
+    }
+  ]
+}

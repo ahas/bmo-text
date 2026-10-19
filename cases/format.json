@@ -1,0 +1,531 @@
+{
+  "about": "The cases Telegram's HTML mode is held to: escaping, the visible text of markup, the expandable quote, and the structure check's first fault and its English reason. A fault is the package's tagged union by its kind.",
+  "escapeHtml": [
+    {
+      "name": "the three characters HTML mode reads",
+      "args": [
+        "a < b & c > d"
+      ],
+      "answer": "a &lt; b &amp; c &gt; d"
+    },
+    {
+      "name": "the ampersand first, so an escape is escaped again",
+      "args": [
+        "&lt;"
+      ],
+      "answer": "&amp;lt;"
+    },
+    {
+      "name": "markup is left as literal characters",
+      "args": [
+        "<b>bold</b> & <blockquote expandable>expanded</blockquote>"
+      ],
+      "answer": "&lt;b&gt;bold&lt;/b&gt; &amp; &lt;blockquote expandable&gt;expanded&lt;/blockquote&gt;"
+    },
+    {
+      "name": "quotes stay",
+      "args": [
+        "\"quoted\" 'single'"
+      ],
+      "answer": "\"quoted\" 'single'"
+    },
+    {
+      "name": "an empty text",
+      "args": [
+        ""
+      ],
+      "answer": ""
+    }
+  ],
+  "escapeAttribute": [
+    {
+      "name": "the double quote as well",
+      "args": [
+        "say \"hi\" & <go>"
+      ],
+      "answer": "say &quot;hi&quot; &amp; &lt;go&gt;"
+    },
+    {
+      "name": "a single quote stays",
+      "args": [
+        "it's"
+      ],
+      "answer": "it's"
+    }
+  ],
+  "isLinkable": [
+    {
+      "name": "an https address",
+      "args": [
+        "https://example.com/a"
+      ],
+      "answer": true
+    },
+    {
+      "name": "an http address",
+      "args": [
+        "http://example.com"
+      ],
+      "answer": true
+    },
+    {
+      "name": "a space is not linkable",
+      "args": [
+        "https://example.com/a b"
+      ],
+      "answer": false
+    },
+    {
+      "name": "another scheme",
+      "args": [
+        "ftp://example.com"
+      ],
+      "answer": false
+    },
+    {
+      "name": "a relative address",
+      "args": [
+        "/path/only"
+      ],
+      "answer": false
+    },
+    {
+      "name": "an empty text",
+      "args": [
+        ""
+      ],
+      "answer": false
+    }
+  ],
+  "visibleText": [
+    {
+      "name": "the words without the tags",
+      "args": [
+        "<b>bold</b> and <code>code</code>"
+      ],
+      "answer": "bold and code"
+    },
+    {
+      "name": "a folded quote's words",
+      "args": [
+        "<blockquote expandable>folded words</blockquote>"
+      ],
+      "answer": "folded words"
+    },
+    {
+      "name": "the escapes put back",
+      "args": [
+        "&lt;words that look like a tag&gt; &amp; after them"
+      ],
+      "answer": "<words that look like a tag> & after them"
+    },
+    {
+      "name": "an empty tag reads as nothing",
+      "args": [
+        "<b></b>"
+      ],
+      "answer": ""
+    },
+    {
+      "name": "an escaped tag inside bold",
+      "args": [
+        "<b>a &lt;b&gt; &amp;</b>"
+      ],
+      "answer": "a <b> &"
+    },
+    {
+      "name": "a link's words",
+      "args": [
+        "<a href=\"https://example.com\">here</a> now"
+      ],
+      "answer": "here now"
+    },
+    {
+      "name": "an empty text",
+      "args": [
+        ""
+      ],
+      "answer": ""
+    }
+  ],
+  "expandableMarkup": [
+    {
+      "name": "markup already built is wrapped as it is",
+      "args": [
+        "<b>bold</b> &amp; more"
+      ],
+      "answer": "<blockquote expandable><b>bold</b> &amp; more</blockquote>"
+    },
+    {
+      "name": "an empty markup",
+      "args": [
+        ""
+      ],
+      "answer": "<blockquote expandable></blockquote>"
+    }
+  ],
+  "expandable": [
+    {
+      "name": "a text is escaped first",
+      "args": [
+        "a < b & c > d"
+      ],
+      "answer": "<blockquote expandable>a &lt; b &amp; c &gt; d</blockquote>"
+    },
+    {
+      "name": "Hangul is wrapped as it is",
+      "args": [
+        "접힌 글"
+      ],
+      "answer": "<blockquote expandable>접힌 글</blockquote>"
+    }
+  ],
+  "markupFault": [
+    {
+      "name": "bold is sound",
+      "args": [
+        "<b>title</b>"
+      ],
+      "answer": null
+    },
+    {
+      "name": "escaped code is sound",
+      "args": [
+        "<code>a &lt; b &amp; c &gt; d</code>"
+      ],
+      "answer": null
+    },
+    {
+      "name": "a link with escaped quotes in its address is sound",
+      "args": [
+        "<a href=\"https://example.com/?a=1&amp;b=&quot;2&quot;\">here</a>"
+      ],
+      "answer": null
+    },
+    {
+      "name": "an expandable quote is sound",
+      "args": [
+        "<blockquote expandable>folded words</blockquote>"
+      ],
+      "answer": null
+    },
+    {
+      "name": "formatting inside an expandable quote is sound",
+      "args": [
+        "<blockquote expandable><b>title</b>\n<code>value</code></blockquote>"
+      ],
+      "answer": null
+    },
+    {
+      "name": "a code block naming its language is sound",
+      "args": [
+        "<pre><code class=\"language-python\">print(1)</code></pre>"
+      ],
+      "answer": null
+    },
+    {
+      "name": "a spoiler is sound",
+      "args": [
+        "<span class=\"tg-spoiler\">ending</span>"
+      ],
+      "answer": null
+    },
+    {
+      "name": "plain escaped words are sound",
+      "args": [
+        "plain &amp; simple"
+      ],
+      "answer": null
+    },
+    {
+      "name": "bold holding italic is sound",
+      "args": [
+        "<b>bold <i>both</i></b>"
+      ],
+      "answer": null
+    },
+    {
+      "name": "every entity Telegram reads is sound",
+      "args": [
+        "&lt;a&gt; &amp; &quot; &#39; &#x1F600;"
+      ],
+      "answer": null
+    },
+    {
+      "name": "an empty text is sound",
+      "args": [
+        ""
+      ],
+      "answer": null
+    },
+    {
+      "name": "Hangul inside tags is sound",
+      "args": [
+        "<b>제목</b> 본문 <i>기울임</i>"
+      ],
+      "answer": null
+    },
+    {
+      "name": "a long reply once turned down as broken is sound, 1",
+      "args": [
+        "An update, in short. The checks are done and the two faults that kept returning are closed.\n\nWhat I counted\n<code>17</code> of the failures came from one reader; the rest were spread across four stages.\n\nWhat I fixed\nOne place now takes the markers off before any tag is put on, so a marker and a tag can no longer overlap."
+      ],
+      "answer": null
+    },
+    {
+      "name": "a long reply once turned down as broken is sound, 2",
+      "args": [
+        "A finished report can now be opened again with its earlier results kept. The earlier round's result documents stay, and the new plan reads them before it starts.\n\nWhat I checked\n<blockquote expandable>The command was run on a copy of the record, and the console's button was tried on that copy. Both opened the report again with the earlier round kept apart.</blockquote>\n\nNothing else changed."
+      ],
+      "answer": null
+    },
+    {
+      "name": "a long reply once turned down as broken is sound, 3",
+      "args": [
+        "The alert was a false one. The temporary folders the tests make were read as real runs.\n\nThere are three reasons.\n1. The tests use a fake runner and remove its records when they end.\n2. The log line that raised the alert is the same as a test phrase.\n3. The usage record shows no such burst at that time.\n\nWhat was really spent in the same window was small, and no run of the last hour went cold."
+      ],
+      "answer": null
+    },
+    {
+      "name": "code inside bold",
+      "args": [
+        "<b>title <code>value</code></b>"
+      ],
+      "answer": {
+        "kind": "nested",
+        "tag": "code",
+        "inside": "b"
+      }
+    },
+    {
+      "name": "bold inside code",
+      "args": [
+        "<code>value <b>bold</b></code>"
+      ],
+      "answer": {
+        "kind": "nested",
+        "tag": "b",
+        "inside": "code"
+      }
+    },
+    {
+      "name": "code inside a link",
+      "args": [
+        "<a href=\"https://example.com/\">here <code>value</code></a>"
+      ],
+      "answer": {
+        "kind": "nested",
+        "tag": "code",
+        "inside": "a"
+      }
+    },
+    {
+      "name": "a tag never closed",
+      "args": [
+        "<b>title"
+      ],
+      "answer": {
+        "kind": "unclosed",
+        "tag": "b"
+      }
+    },
+    {
+      "name": "an expandable quote never closed",
+      "args": [
+        "<blockquote expandable>body"
+      ],
+      "answer": {
+        "kind": "unclosed",
+        "tag": "blockquote"
+      }
+    },
+    {
+      "name": "a tag closed out of turn",
+      "args": [
+        "<b><i>title</b></i>"
+      ],
+      "answer": {
+        "kind": "unopened",
+        "tag": "b",
+        "open": "i"
+      }
+    },
+    {
+      "name": "a tag closed that was never opened",
+      "args": [
+        "title</b>"
+      ],
+      "answer": {
+        "kind": "unopened",
+        "tag": "b",
+        "open": null
+      }
+    },
+    {
+      "name": "a tag Telegram does not know",
+      "args": [
+        "<div>title</div>"
+      ],
+      "answer": {
+        "kind": "unsupported",
+        "tag": "div"
+      }
+    },
+    {
+      "name": "a line break tag",
+      "args": [
+        "one line<br>the next line"
+      ],
+      "answer": {
+        "kind": "unsupported",
+        "tag": "br"
+      }
+    },
+    {
+      "name": "a span that is not a spoiler",
+      "args": [
+        "<span>title</span>"
+      ],
+      "answer": {
+        "kind": "unsupported",
+        "tag": "span"
+      }
+    },
+    {
+      "name": "a custom emoji is not a tag the gate sends",
+      "args": [
+        "<tg-emoji emoji-id=\"5368324170671202286\">🙂</tg-emoji>"
+      ],
+      "answer": {
+        "kind": "unsupported",
+        "tag": "tg-emoji"
+      }
+    },
+    {
+      "name": "an unescaped less-than",
+      "args": [
+        "a < b"
+      ],
+      "answer": {
+        "kind": "unescaped",
+        "character": "<"
+      }
+    },
+    {
+      "name": "an unescaped greater-than",
+      "args": [
+        "a > b"
+      ],
+      "answer": {
+        "kind": "unescaped",
+        "character": ">"
+      }
+    },
+    {
+      "name": "an unescaped ampersand",
+      "args": [
+        "R&D"
+      ],
+      "answer": {
+        "kind": "unescaped",
+        "character": "&"
+      }
+    },
+    {
+      "name": "an unescaped ampersand inside a tag's words",
+      "args": [
+        "<b>R&D</b>"
+      ],
+      "answer": {
+        "kind": "unescaped",
+        "character": "&"
+      }
+    },
+    {
+      "name": "a quote inside a quote",
+      "args": [
+        "<blockquote>somebody's words <blockquote expandable>folded again</blockquote></blockquote>"
+      ],
+      "answer": {
+        "kind": "nested",
+        "tag": "blockquote",
+        "inside": "blockquote"
+      }
+    },
+    {
+      "name": "an entity Telegram does not read",
+      "args": [
+        "&nbsp; space"
+      ],
+      "answer": {
+        "kind": "unescaped",
+        "character": "&"
+      }
+    }
+  ],
+  "faultReason": [
+    {
+      "name": "an unescaped character",
+      "args": [
+        {
+          "kind": "unescaped",
+          "character": "&"
+        }
+      ],
+      "answer": "Structure check: the character & outside a tag is not escaped."
+    },
+    {
+      "name": "an unsupported tag",
+      "args": [
+        {
+          "kind": "unsupported",
+          "tag": "div"
+        }
+      ],
+      "answer": "Structure check: the tag <div> is not supported."
+    },
+    {
+      "name": "a tag never closed",
+      "args": [
+        {
+          "kind": "unclosed",
+          "tag": "b"
+        }
+      ],
+      "answer": "Structure check: the tag <b> is never closed."
+    },
+    {
+      "name": "a tag never opened",
+      "args": [
+        {
+          "kind": "unopened",
+          "tag": "b",
+          "open": null
+        }
+      ],
+      "answer": "Structure check: the tag </b> closes a tag that was never opened."
+    },
+    {
+      "name": "a tag closed while another is open",
+      "args": [
+        {
+          "kind": "unopened",
+          "tag": "b",
+          "open": "i"
+        }
+      ],
+      "answer": "Structure check: the tag </b> closes while <i> is still open."
+    },
+    {
+      "name": "a tag where it may not stand",
+      "args": [
+        {
+          "kind": "nested",
+          "tag": "code",
+          "inside": "b"
+        }
+      ],
+      "answer": "Structure check: the tag <code> stands inside <b>, where it may not."
+    }
+  ]
+}

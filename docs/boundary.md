@@ -6,7 +6,7 @@
   dependency. Its public modules and items are stated in `docs/api.md`.
 - **The TypeScript package `bmo-markup`,** in `package/`, taken by a consumer as a dependency and imported
   one module at a time as `bmo-markup/<module>`. Its exports are stated in `docs/api.md`.
-- **The data files** the package's readings and tests stand on, named in `docs/api.md`.
+- **The cases** both sides are held to, one file per module under `cases/`, named in `docs/api.md`.
 
 The version both carry is the repository's, in `VERSION`. A consumer pins the version it was built
 against and moves to a new major only by its own change.

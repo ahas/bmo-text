@@ -201,6 +201,39 @@ fn the_crate_and_the_package_carry_the_repository_version() {
   assert_eq!(package_version.as_deref(), Some(version.as_str()), "the package's version is VERSION's");
 }
 
+// The names of the files a folder holds with an extension, the extension taken off and `_` read as `-`.
+fn module_names(folder: &str, extension: &str) -> Vec<String> {
+  let mut names: Vec<String> = fs::read_dir(root().join(folder))
+    .expect("the folder reads")
+    .map(|entry| entry.expect("an entry").path())
+    .filter(|path| path.extension().is_some_and(|found| found == extension))
+    .map(|path| path.file_stem().expect("a name").to_string_lossy().replace('_', "-"))
+    .collect();
+
+  names.sort();
+  names
+}
+
+#[test]
+fn the_crate_and_the_package_carry_one_list_of_modules_each_held_to_its_cases() {
+  // The crate's `js` is how it reads as JavaScript does, which the package has from its language.
+  let crate_modules: Vec<String> = module_names("src", "rs")
+    .into_iter()
+    .filter(|name| name != "lib" && name != "js")
+    .collect();
+  let mut package_modules: Vec<String> = package_manifest()["exports"]
+    .as_object()
+    .expect("the package's exports")
+    .keys()
+    .map(|key| key.trim_start_matches("./").to_owned())
+    .collect();
+
+  package_modules.sort();
+
+  assert_eq!(crate_modules, package_modules, "the crate's modules are the package's");
+  assert_eq!(module_names("cases", "json"), package_modules, "each module is held to one cases file");
+}
+
 // An escape naming a code point, in either brace or four-digit form or a regular expression's `\x{...}`, and
 // a call building a character from a number.
 static ESCAPE: LazyLock<Regex> =

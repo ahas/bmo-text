@@ -1,0 +1,140 @@
+{
+  "about": "The cases the English test is held to: a part's set-aside pattern, the Latin letters each Hangul syllable left is weighed against, and the text. A strict policy reads two names past and allows no Hangul; a lenient one also reads a phrase past and weighs each syllable against twenty letters.",
+  "passes": [
+    {
+      "name": "a strict policy refuses a single syllable",
+      "args": [
+        "가나|다라",
+        0,
+        "fix: the 가 reading"
+      ],
+      "answer": false
+    },
+    {
+      "name": "a strict policy refuses a syllable in a body",
+      "args": [
+        "가나|다라",
+        0,
+        "Land the close\n\nThe body holds one 가"
+      ],
+      "answer": false
+    },
+    {
+      "name": "a strict policy refuses a syllable alone",
+      "args": [
+        "가나|다라",
+        0,
+        "가"
+      ],
+      "answer": false
+    },
+    {
+      "name": "a strict policy reads its first name past",
+      "args": [
+        "가나|다라",
+        0,
+        "Refuse Hangul in commits, as 가나 asked"
+      ],
+      "answer": true
+    },
+    {
+      "name": "a strict policy reads its second name past",
+      "args": [
+        "가나|다라",
+        0,
+        "Refuse Hangul in commits, as 다라 asked"
+      ],
+      "answer": true
+    },
+    {
+      "name": "a name with a syllable glued on leaves the syllable",
+      "args": [
+        "가나|다라",
+        0,
+        "Refuse Hangul in commits, as 가나가 asked"
+      ],
+      "answer": false
+    },
+    {
+      "name": "pure English passes",
+      "args": [
+        "가나|다라",
+        0,
+        "docs: state that commits are English only"
+      ],
+      "answer": true
+    },
+    {
+      "name": "an empty text passes a strict policy",
+      "args": [
+        "가나|다라",
+        0,
+        ""
+      ],
+      "answer": true
+    },
+    {
+      "name": "a lenient policy weighs a syllable against many letters",
+      "args": [
+        "(가나|다라) 마바|가나|다라|사아",
+        20,
+        "The suite rebuilds the server inside its guard, and 가 word"
+      ],
+      "answer": true
+    },
+    {
+      "name": "a lenient policy refuses a few syllables against few letters",
+      "args": [
+        "(가나|다라) 마바|가나|다라|사아",
+        20,
+        "가가가가가 with a few words"
+      ],
+      "answer": false
+    },
+    {
+      "name": "a lenient policy refuses a text of no letters",
+      "args": [
+        "(가나|다라) 마바|가나|다라|사아",
+        20,
+        "가"
+      ],
+      "answer": false
+    },
+    {
+      "name": "a lenient policy refuses an empty text",
+      "args": [
+        "",
+        20,
+        ""
+      ],
+      "answer": false
+    },
+    {
+      "name": "the default reads nothing past and passes English",
+      "args": [
+        "",
+        0,
+        "plain English"
+      ],
+      "answer": true
+    },
+    {
+      "name": "the default refuses any Hangul",
+      "args": [
+        "",
+        0,
+        "almost English 가"
+      ],
+      "answer": false
+    },
+    {
+      "name": "the set-aside pattern reads a phrase past wherever it stands",
+      "args": [
+        "see [가-힣]+",
+        0,
+        "see 마바 and see that"
+      ],
+      "answer": true
+    }
+  ]
+}

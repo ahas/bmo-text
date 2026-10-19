@@ -11,6 +11,24 @@ pub const TEXT_LIMIT: usize = 4096;
 /// A file's caption on an account without Premium, the only size a sender can count on.
 pub const CAPTION_LIMIT: usize = 1024;
 
+/// The largest file the Bot API takes, in bytes.
+pub const MAX_SEND_FILE_BYTES: usize = 50 * 1024 * 1024;
+
+/// The bot's own Telegram user id, which is the number before the colon of its token, read as JavaScript's
+/// `parseInt` reads it: leading white space passed over, a sign, then the digits that stand; nought where there
+/// are none.
+pub fn bot_id_from_token(token: &str) -> i64 {
+  let head = crate::js::trim(token.split(':').next().unwrap_or(""));
+  let (sign, digits) = match head.as_bytes().first() {
+    Some(b'-') => (-1, &head[1..]),
+    Some(b'+') => (1, &head[1..]),
+    _ => (1, head),
+  };
+  let end = digits.find(|character: char| !character.is_ascii_digit()).unwrap_or(digits.len());
+
+  digits[..end].parse::<i64>().map_or(0, |id| sign * id)
+}
+
 /// Plain words divided into consecutive messages of at most `limit` UTF-16 units each, the way a Telegram client
 /// sends a long paste: each part ends just after the last pause that fits — a blank line, else a line break, else
 /// a space — so the pause stays with the words before it, and where none fits, after the last whole character a

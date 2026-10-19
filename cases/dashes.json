@@ -1,0 +1,317 @@
+{
+  "about": "The cases the dash rewrite is held to: a text and whether it is wrapped, a wrapped text reading a paragraph or a list item as one piece across its line breaks.",
+  "withoutDashes": [
+    {
+      "name": "a name and its explanation are joined by a colon",
+      "args": [
+        "Drone survey method — high resolution grid",
+        false
+      ],
+      "answer": "Drone survey method: high resolution grid"
+    },
+    {
+      "name": "a bold label in a list item takes the colon",
+      "args": [
+        "- **Owner** — the account holder",
+        false
+      ],
+      "answer": "- **Owner**: the account holder"
+    },
+    {
+      "name": "a heading's dash takes the colon",
+      "args": [
+        "## Why these rules — a real case",
+        false
+      ],
+      "answer": "## Why these rules: a real case"
+    },
+    {
+      "name": "an aside between two dashes is set off by commas",
+      "args": [
+        "I think — to be honest — that is right.",
+        false
+      ],
+      "answer": "I think, to be honest, that is right."
+    },
+    {
+      "name": "an aside with commas of its own is set off by brackets",
+      "args": [
+        "Anything larger — a feature, a refactor, a rulebook — is filed as an item.",
+        false
+      ],
+      "answer": "Anything larger (a feature, a refactor, a rulebook) is filed as an item."
+    },
+    {
+      "name": "an aside closed before a comma",
+      "args": [
+        "It keeps the words — all of them —, then stops.",
+        false
+      ],
+      "answer": "It keeps the words, all of them, then stops."
+    },
+    {
+      "name": "past an aside a dash is a colon, and a new sentence starts over",
+      "args": [
+        "Lockdown mode — blocked when on — root is stopped too — no exceptions. Next item — TPM",
+        false
+      ],
+      "answer": "Lockdown mode, blocked when on, root is stopped too: no exceptions. Next item: TPM"
+    },
+    {
+      "name": "a footnote mark ends a sentence",
+      "args": [
+        "MoniKa — recovered from memory, MIT.[5] Kakaotalk_decDB — an old-style example.",
+        false
+      ],
+      "answer": "MoniKa: recovered from memory, MIT.[5] Kakaotalk_decDB: an old-style example."
+    },
+    {
+      "name": "a line's opening label is no colon of the sentence",
+      "args": [
+        "- Question: relay — an agent manager",
+        false
+      ],
+      "answer": "- Question: relay: an agent manager"
+    },
+    {
+      "name": "a sentence that has a colon takes a comma",
+      "args": [
+        "Note: the conclusion is this: one — two",
+        false
+      ],
+      "answer": "Note: the conclusion is this: one, two"
+    },
+    {
+      "name": "a time's colon is no colon of the sentence",
+      "args": [
+        "Now(20:57) the places passed are 3 — Sunrise",
+        false
+      ],
+      "answer": "Now(20:57) the places passed are 3: Sunrise"
+    },
+    {
+      "name": "dashes each inside their own brackets are no pair",
+      "args": [
+        "platforms(Alpha — sales 8T), SI(Beta — 13.9T) in order",
+        false
+      ],
+      "answer": "platforms(Alpha: sales 8T), SI(Beta, 13.9T) in order"
+    },
+    {
+      "name": "an unspaced dash between digits is a range",
+      "args": [
+        "3—5 items",
+        false
+      ],
+      "answer": "3~5 items"
+    },
+    {
+      "name": "a dash after a pause mark goes",
+      "args": [
+        "Done. — the next one",
+        false
+      ],
+      "answer": "Done. the next one"
+    },
+    {
+      "name": "a dash after an opening bracket goes",
+      "args": [
+        "(— note)",
+        false
+      ],
+      "answer": "(note)"
+    },
+    {
+      "name": "a spaced en dash is a dash and an unspaced one a range that stays",
+      "args": [
+        "Title – subtitle, 2020–2024",
+        false
+      ],
+      "answer": "Title: subtitle, 2020–2024"
+    },
+    {
+      "name": "a table row keeps its dash",
+      "args": [
+        "| price | — |",
+        false
+      ],
+      "answer": "| price | — |"
+    },
+    {
+      "name": "a dash opening a line stays",
+      "args": [
+        "— a line head",
+        false
+      ],
+      "answer": "— a line head"
+    },
+    {
+      "name": "a dash ending a line stays",
+      "args": [
+        "a line end —",
+        false
+      ],
+      "answer": "a line end —"
+    },
+    {
+      "name": "a dash after a list mark stays",
+      "args": [
+        "- — after a list mark",
+        false
+      ],
+      "answer": "- — after a list mark"
+    },
+    {
+      "name": "a dash inside brackets or quotes as a symbol stays",
+      "args": [
+        "the dash(—) letter, a separator \" — \"",
+        false
+      ],
+      "answer": "the dash(—) letter, a separator \" — \""
+    },
+    {
+      "name": "a quoted line stays",
+      "args": [
+        "> a quote — somebody else's words",
+        false
+      ],
+      "answer": "> a quote — somebody else's words"
+    },
+    {
+      "name": "a code span stays",
+      "args": [
+        "`a — b` code",
+        false
+      ],
+      "answer": "`a — b` code"
+    },
+    {
+      "name": "quotations stay",
+      "args": [
+        "quoted \"OAuth token refresh failed — run /login\" as it is, “Lovable — Powering” too",
+        false
+      ],
+      "answer": "quoted \"OAuth token refresh failed — run /login\" as it is, “Lovable — Powering” too"
+    },
+    {
+      "name": "an address stays",
+      "args": [
+        "https://example.com/a—b an address",
+        false
+      ],
+      "answer": "https://example.com/a—b an address"
+    },
+    {
+      "name": "a fenced block stays",
+      "args": [
+        "```\nx — y\n```\nafter — it",
+        false
+      ],
+      "answer": "```\nx — y\n```\nafter: it"
+    },
+    {
+      "name": "an unwrapped text reads each line alone",
+      "args": [
+        "line one —\nthe next line — end",
+        false
+      ],
+      "answer": "line one —\nthe next line: end"
+    },
+    {
+      "name": "a text with no dash comes back as it was",
+      "args": [
+        "A text with no dash. As it was.",
+        false
+      ],
+      "answer": "A text with no dash. As it was."
+    },
+    {
+      "name": "several sentences of dashes",
+      "args": [
+        "A — B — C. D — E — F — G",
+        false
+      ],
+      "answer": "A, B, C. D, E, F: G"
+    },
+    {
+      "name": "a second pass changes nothing",
+      "args": [
+        "A, B, C. D, E, F: G",
+        false
+      ],
+      "answer": "A, B, C. D, E, F: G"
+    },
+    {
+      "name": "Hangul around a dash",
+      "args": [
+        "회의 결과 — 다음 주에 다시",
+        false
+      ],
+      "answer": "회의 결과: 다음 주에 다시"
+    },
+    {
+      "name": "an emoji before a dash",
+      "args": [
+        "Shipped 🚀 — finally",
+        false
+      ],
+      "answer": "Shipped 🚀: finally"
+    },
+    {
+      "name": "a dash between JavaScript-only spaces",
+      "args": [
+        "word — meaning",
+        false
+      ],
+      "answer": "word :  meaning"
+    },
+    {
+      "name": "a carriage-return line end",
+      "args": [
+        "first — second\r\nthird — fourth",
+        false
+      ],
+      "answer": "first: second\r\nthird: fourth"
+    },
+    {
+      "name": "an empty text",
+      "args": [
+        "",
+        false
+      ],
+      "answer": ""
+    },
+    {
+      "name": "a wrapped list item is read as one piece and keeps its line breaks",
+      "args": [
+        "- Anything larger inside a repository —\n  a feature, a refactor — is filed as an item. Other work — the\n  host's own — is done by hand.\n- A new item — its own piece.",
+        true
+      ],
+      "answer": "- Anything larger inside a repository\n  (a feature, a refactor) is filed as an item. Other work, the\n  host's own, is done by hand.\n- A new item: its own piece."
+    },
+    {
+      "name": "a wrapped aside across a line break",
+      "args": [
+        "Every other piece\n— this one included — stays.",
+        true
+      ],
+      "answer": "Every other piece,\nthis one included, stays."
+    },
+    {
+      "name": "a wrapped bold label and an aside with commas",
+      "args": [
+        "- **Long term — years.** What decides returns — fees, tax — is long.",
+        true
+      ],
+      "answer": "- **Long term: years.** What decides returns (fees, tax) is long."
+    },
+    {
+      "name": "wrapped paragraphs are pieces of their own",
+      "args": [
+        "First paragraph — one.\n\nSecond — two — three.",
+        true
+      ],
+      "answer": "First paragraph: one.\n\nSecond, two, three."
+    }
+  ]
+}

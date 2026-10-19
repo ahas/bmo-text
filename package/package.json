@@ -1,18 +1,19 @@
 {
   "name": "bmo-markup",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "exports": {
     "./answer-cap": "./answer-cap.ts",
     "./answer-language": "./answer-language.ts",
     "./dashes": "./dashes.ts",
+    "./english": "./english.ts",
     "./finding-markdown": "./finding-markdown.ts",
     "./format": "./format.ts",
     "./html-reading": "./html-reading.ts",
     "./markdown": "./markdown.ts",
     "./markdown-structure": "./markdown-structure.ts",
-    "./telegram-parts": "./telegram-parts.ts",
+    "./telegram": "./telegram.ts",
     "./translation-parts": "./translation-parts.ts",
     "./web-address": "./web-address.ts",
     "./wording": "./wording.ts"

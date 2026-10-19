@@ -1,58 +1,60 @@
-use bmo_markup::format::*;
+mod shared;
 
-#[test]
-fn sound_markup_has_no_fault() {
-  for markup in [
-    "plain &amp; simple",
-    "<b>bold <i>both</i></b>",
-    r#"<pre><code class="language-rust">x &lt; y</code></pre>"#,
-    r#"<a href="https://example.com">a</a>"#,
-    r#"<span class="tg-spoiler">hidden</span>"#,
-    "<blockquote expandable>folded</blockquote>",
-  ] {
-    assert_eq!(markup_fault(markup), None, "{markup}");
+use bmo_markup::format::*;
+use serde_json::{Value, json};
+
+use shared::text;
+
+// A fault in the package's shape, a tagged union by its kind.
+fn fault_json(fault: &MarkupFault) -> Value {
+  match fault {
+    MarkupFault::Unescaped { character } => {
+      json!({ "kind": "unescaped", "character": character.to_string() })
+    }
+    MarkupFault::Unsupported { tag } => json!({ "kind": "unsupported", "tag": tag }),
+    MarkupFault::Unclosed { tag } => json!({ "kind": "unclosed", "tag": tag }),
+    MarkupFault::Unopened { tag, open } => json!({ "kind": "unopened", "tag": tag, "open": open }),
+    MarkupFault::Nested { tag, inside } => json!({ "kind": "nested", "tag": tag, "inside": inside }),
+  }
+}
+
+// A fault read back from the package's shape.
+fn fault_of(value: &Value) -> MarkupFault {
+  let field = |key: &str| text(&value[key]).to_owned();
+
+  match text(&value["kind"]) {
+    "unescaped" => MarkupFault::Unescaped {
+      character: text(&value["character"]).chars().next().expect("a character"),
+    },
+    "unsupported" => MarkupFault::Unsupported { tag: field("tag") },
+    "unclosed" => MarkupFault::Unclosed { tag: field("tag") },
+    "unopened" => MarkupFault::Unopened {
+      tag: field("tag"),
+      open: value["open"].as_str().map(str::to_owned),
+    },
+    "nested" => MarkupFault::Nested {
+      tag: field("tag"),
+      inside: field("inside"),
+    },
+    other => panic!("no fault of kind {other}"),
   }
 }
 
 #[test]
-fn each_fault_is_found_first() {
-  assert_eq!(markup_fault("a < b"), Some(MarkupFault::Unescaped { character: '<' }));
-  assert_eq!(markup_fault("a & b"), Some(MarkupFault::Unescaped { character: '&' }));
-  assert_eq!(markup_fault("a > b"), Some(MarkupFault::Unescaped { character: '>' }));
-  assert_eq!(markup_fault("<div>x</div>"), Some(MarkupFault::Unsupported { tag: "div".into() }));
-  assert_eq!(markup_fault("<span>x</span>"), Some(MarkupFault::Unsupported { tag: "span".into() }));
-  assert_eq!(markup_fault("<b>x"), Some(MarkupFault::Unclosed { tag: "b".into() }));
-  assert_eq!(
-    markup_fault("x</b>"),
-    Some(MarkupFault::Unopened {
-      tag: "b".into(),
-      open: None
-    })
+fn the_shared_cases_hold() {
+  shared::hold_all(
+    "format",
+    &[
+      ("escapeHtml", &|args| Value::from(escape_html(text(&args[0])))),
+      ("escapeAttribute", &|args| Value::from(escape_attribute(text(&args[0])))),
+      ("isLinkable", &|args| Value::from(is_linkable(text(&args[0])))),
+      ("visibleText", &|args| Value::from(visible_text(text(&args[0])))),
+      ("expandableMarkup", &|args| Value::from(expandable_markup(text(&args[0])))),
+      ("expandable", &|args| Value::from(expandable(text(&args[0])))),
+      ("markupFault", &|args| {
+        markup_fault(text(&args[0])).as_ref().map_or(Value::Null, fault_json)
+      }),
+      ("faultReason", &|args| Value::from(fault_reason(&fault_of(&args[0])))),
+    ],
   );
-  assert_eq!(
-    markup_fault("<b><i>x</b></i>"),
-    Some(MarkupFault::Unopened {
-      tag: "b".into(),
-      open: Some("i".into())
-    })
-  );
-  assert_eq!(
-    markup_fault("<b><code>x</code></b>"),
-    Some(MarkupFault::Nested {
-      tag: "code".into(),
-      inside: "b".into()
-    })
-  );
-  assert_eq!(
-    markup_fault("<blockquote><blockquote>x</blockquote></blockquote>"),
-    Some(MarkupFault::Nested {
-      tag: "blockquote".into(),
-      inside: "blockquote".into()
-    })
-  );
-}
-
-#[test]
-fn the_visible_text_is_the_words_alone() {
-  assert_eq!(visible_text("<b>a &lt;b&gt; &amp;</b>"), "a <b> &");
 }

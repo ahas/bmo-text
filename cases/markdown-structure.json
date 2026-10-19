@@ -1,0 +1,572 @@
+{
+  "about": "The cases the structure of a markdown text is held to: its ATX headings outside fenced code, a heading's words and mark, its sections and its halves. Offsets and middles are UTF-16 units.",
+  "markdownHeadings": [
+    {
+      "name": "headings are read in order with their depth, words and source line",
+      "args": [
+        "# Document\n\nBody\n\n## First part ##\n### Deeper `code`\n"
+      ],
+      "answer": [
+        {
+          "depth": 1,
+          "text": "Document",
+          "slug": "document",
+          "line": 1
+        },
+        {
+          "depth": 2,
+          "text": "First part",
+          "slug": "first-part",
+          "line": 5
+        },
+        {
+          "depth": 3,
+          "text": "Deeper code",
+          "slug": "deeper-code",
+          "line": 6
+        }
+      ]
+    },
+    {
+      "name": "every line of a fenced block is skipped, whichever fence opened it",
+      "args": [
+        "# One\n```sh\n# comment\n~~~\n# still code\n```\n~~~~\n## not\n~~~~\n## Two"
+      ],
+      "answer": [
+        {
+          "depth": 1,
+          "text": "One",
+          "slug": "one",
+          "line": 1
+        },
+        {
+          "depth": 2,
+          "text": "Two",
+          "slug": "two",
+          "line": 10
+        }
+      ]
+    },
+    {
+      "name": "a shorter fence does not close a longer one",
+      "args": [
+        "````\n# inside\n```\n# still inside\n````\n# Out"
+      ],
+      "answer": [
+        {
+          "depth": 1,
+          "text": "Out",
+          "slug": "out",
+          "line": 6
+        }
+      ]
+    },
+    {
+      "name": "a fence with words after it closes nothing",
+      "args": [
+        "```\n# inside\n``` not a close\n# still inside\n```\n# Out"
+      ],
+      "answer": [
+        {
+          "depth": 1,
+          "text": "Out",
+          "slug": "out",
+          "line": 6
+        }
+      ]
+    },
+    {
+      "name": "a repeated heading gets a mark of its own",
+      "args": [
+        "## Example\n## Example\n## Example-1\n## Example"
+      ],
+      "answer": [
+        {
+          "depth": 2,
+          "text": "Example",
+          "slug": "example",
+          "line": 1
+        },
+        {
+          "depth": 2,
+          "text": "Example",
+          "slug": "example-1",
+          "line": 2
+        },
+        {
+          "depth": 2,
+          "text": "Example-1",
+          "slug": "example-1-1",
+          "line": 3
+        },
+        {
+          "depth": 2,
+          "text": "Example",
+          "slug": "example-2",
+          "line": 4
+        }
+      ]
+    },
+    {
+      "name": "a hash without words, without a space, or indented four is no heading",
+      "args": [
+        "#\n#nospace\n    # indented\n#### Four"
+      ],
+      "answer": [
+        {
+          "depth": 4,
+          "text": "Four",
+          "slug": "four",
+          "line": 4
+        }
+      ]
+    },
+    {
+      "name": "seven hashes are no heading",
+      "args": [
+        "####### Seven\n###### Six"
+      ],
+      "answer": [
+        {
+          "depth": 6,
+          "text": "Six",
+          "slug": "six",
+          "line": 2
+        }
+      ]
+    },
+    {
+      "name": "carriage returns end lines as line feeds do",
+      "args": [
+        "# a\r\n\r\n## b"
+      ],
+      "answer": [
+        {
+          "depth": 1,
+          "text": "a",
+          "slug": "a",
+          "line": 1
+        },
+        {
+          "depth": 2,
+          "text": "b",
+          "slug": "b",
+          "line": 3
+        }
+      ]
+    },
+    {
+      "name": "a lone carriage return ends a line",
+      "args": [
+        "# a\r## b"
+      ],
+      "answer": [
+        {
+          "depth": 1,
+          "text": "a",
+          "slug": "a",
+          "line": 1
+        },
+        {
+          "depth": 2,
+          "text": "b",
+          "slug": "b",
+          "line": 2
+        }
+      ]
+    },
+    {
+      "name": "a heading of markup alone has no words",
+      "args": [
+        "# ``\n# **x**"
+      ],
+      "answer": [
+        {
+          "depth": 1,
+          "text": "x",
+          "slug": "x",
+          "line": 2
+        }
+      ]
+    },
+    {
+      "name": "a closing run of hashes is not words",
+      "args": [
+        "## Title ###   \n# Only #"
+      ],
+      "answer": [
+        {
+          "depth": 2,
+          "text": "Title",
+          "slug": "title",
+          "line": 1
+        },
+        {
+          "depth": 1,
+          "text": "Only",
+          "slug": "only",
+          "line": 2
+        }
+      ]
+    },
+    {
+      "name": "Hangul headings keep their syllables in the mark",
+      "args": [
+        "# 휴식 상태\n## 휴식 상태"
+      ],
+      "answer": [
+        {
+          "depth": 1,
+          "text": "휴식 상태",
+          "slug": "휴식-상태",
+          "line": 1
+        },
+        {
+          "depth": 2,
+          "text": "휴식 상태",
+          "slug": "휴식-상태-1",
+          "line": 2
+        }
+      ]
+    },
+    {
+      "name": "an emoji is dropped from the mark",
+      "args": [
+        "# Ship it 🚀\n# 🚀"
+      ],
+      "answer": [
+        {
+          "depth": 1,
+          "text": "Ship it 🚀",
+          "slug": "ship-it",
+          "line": 1
+        },
+        {
+          "depth": 1,
+          "text": "🚀",
+          "slug": "section",
+          "line": 2
+        }
+      ]
+    },
+    {
+      "name": "a line separator inside a heading leaves no heading",
+      "args": [
+        "# A B\n# C"
+      ],
+      "answer": [
+        {
+          "depth": 1,
+          "text": "C",
+          "slug": "c",
+          "line": 2
+        }
+      ]
+    },
+    {
+      "name": "an empty text has none",
+      "args": [
+        ""
+      ],
+      "answer": []
+    }
+  ],
+  "plainHeading": [
+    {
+      "name": "markup falls away",
+      "args": [
+        "**bold** [link](https://example.org) `code` ~~struck~~ _slanted_"
+      ],
+      "answer": "bold link code struck slanted"
+    },
+    {
+      "name": "underscores inside a word stay",
+      "args": [
+        "snake_case_name"
+      ],
+      "answer": "snake_case_name"
+    },
+    {
+      "name": "an image stands as its words",
+      "args": [
+        "![a chart](chart.png) of the week"
+      ],
+      "answer": "a chart of the week"
+    },
+    {
+      "name": "emphasis over several words",
+      "args": [
+        "*one two* three"
+      ],
+      "answer": "one two three"
+    },
+    {
+      "name": "the longest emphasis that ends at a word boundary is taken",
+      "args": [
+        "*a* b*"
+      ],
+      "answer": "a* b"
+    },
+    {
+      "name": "an emphasis glued to a word stays",
+      "args": [
+        "a*b*c"
+      ],
+      "answer": "a*b*c"
+    },
+    {
+      "name": "escapes are read after emphasis, so an escaped star keeps its backslash",
+      "args": [
+        "__strong__ and \\*literal\\* and \\# hash"
+      ],
+      "answer": "strong and \\literal\\ and # hash"
+    },
+    {
+      "name": "an unclosed mark stays",
+      "args": [
+        "**half open"
+      ],
+      "answer": "**half open"
+    },
+    {
+      "name": "strikes and bold mixed",
+      "args": [
+        "~~old~~ **new** ~~"
+      ],
+      "answer": "old new ~~"
+    },
+    {
+      "name": "emphasis around Hangul",
+      "args": [
+        "*강조* 표시"
+      ],
+      "answer": "강조 표시"
+    },
+    {
+      "name": "emphasis around an emoji",
+      "args": [
+        "*🙂* face"
+      ],
+      "answer": "🙂 face"
+    },
+    {
+      "name": "JavaScript white space is trimmed",
+      "args": [
+        " ﻿ Title 　"
+      ],
+      "answer": "Title"
+    }
+  ],
+  "headingSlug": [
+    {
+      "name": "letters and digits of a mixed heading",
+      "args": [
+        "Gate runs (runGateModel)!"
+      ],
+      "answer": "gate-runs-rungatemodel"
+    },
+    {
+      "name": "Hangul syllables are letters",
+      "args": [
+        "휴식 상태 — 두 가지"
+      ],
+      "answer": "휴식-상태-두-가지"
+    },
+    {
+      "name": "nothing left is a section",
+      "args": [
+        "!!!"
+      ],
+      "answer": "section"
+    },
+    {
+      "name": "runs of space become one hyphen",
+      "args": [
+        "  many   spaces\there  "
+      ],
+      "answer": "many-spaces-here"
+    },
+    {
+      "name": "hyphens and underscores stay",
+      "args": [
+        "snake_case and-kebab"
+      ],
+      "answer": "snake_case-and-kebab"
+    },
+    {
+      "name": "decomposed letters are composed first",
+      "args": [
+        "Café Menu"
+      ],
+      "answer": "café-menu"
+    },
+    {
+      "name": "capitals are lowered in any script",
+      "args": [
+        "ΣΟΦΙΑ Ärger"
+      ],
+      "answer": "σοφια-ärger"
+    },
+    {
+      "name": "digits of any script stay",
+      "args": [
+        "Part ٣ and 3"
+      ],
+      "answer": "part-٣-and-3"
+    }
+  ],
+  "markdownSections": [
+    {
+      "name": "a section starts at each heading and the lead is kept",
+      "args": [
+        "Lead\n\n# One\nBody\n```\n# code\n```\n## Two\nEnd"
+      ],
+      "answer": [
+        "Lead\n\n",
+        "# One\nBody\n```\n# code\n```\n",
+        "## Two\nEnd"
+      ]
+    },
+    {
+      "name": "a text opening on a heading is one section",
+      "args": [
+        "# From the start\nText"
+      ],
+      "answer": [
+        "# From the start\nText"
+      ]
+    },
+    {
+      "name": "a text with no heading is its lead",
+      "args": [
+        "Just words\n\nand more"
+      ],
+      "answer": [
+        "Just words\n\nand more"
+      ]
+    },
+    {
+      "name": "a trailing line break stays with the last section",
+      "args": [
+        "# A\nx\n# B\ny\n"
+      ],
+      "answer": [
+        "# A\nx\n",
+        "# B\ny\n"
+      ]
+    },
+    {
+      "name": "carriage returns stay in the sections",
+      "args": [
+        "Lead\r\n# One\r\nBody"
+      ],
+      "answer": [
+        "Lead\r\n",
+        "# One\r\nBody"
+      ]
+    },
+    {
+      "name": "an empty text is one empty section",
+      "args": [
+        ""
+      ],
+      "answer": [
+        ""
+      ]
+    }
+  ],
+  "halveText": [
+    {
+      "name": "one line has no halves",
+      "args": [
+        "one line only"
+      ],
+      "answer": null
+    },
+    {
+      "name": "a paragraph boundary is taken before a line boundary",
+      "args": [
+        "first line\nsecond line\n\nthird paragraph\nfourth line"
+      ],
+      "answer": {
+        "halves": [
+          "first line\nsecond line\n\n",
+          "third paragraph\nfourth line"
+        ],
+        "joint": "\n\n"
+      }
+    },
+    {
+      "name": "the paragraph boundary nearest the middle",
+      "args": [
+        "a\n\nbbbbbbbbbbbbbbbbbbbb\n\nc\n\nd"
+      ],
+      "answer": {
+        "halves": [
+          "a\n\nbbbbbbbbbbbbbbbbbbbb\n\n",
+          "c\n\nd"
+        ],
+        "joint": "\n\n"
+      }
+    },
+    {
+      "name": "a line boundary where there is no paragraph",
+      "args": [
+        "one\ntwo\nthree\nfour"
+      ],
+      "answer": {
+        "halves": [
+          "one\ntwo\n",
+          "three\nfour"
+        ],
+        "joint": "\n"
+      }
+    },
+    {
+      "name": "no cut inside a code block",
+      "args": [
+        "intro\n```\na\n\nb\n\nc\n```\nend"
+      ],
+      "answer": {
+        "halves": [
+          "intro\n",
+          "```\na\n\nb\n\nc\n```\nend"
+        ],
+        "joint": "\n"
+      }
+    },
+    {
+      "name": "a trailing line break is no cut",
+      "args": [
+        "only line\n"
+      ],
+      "answer": null
+    },
+    {
+      "name": "the middle counts Hangul and emoji in UTF-16 units",
+      "args": [
+        "가나다라마바사\n\n🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\n\nend"
+      ],
+      "answer": {
+        "halves": [
+          "가나다라마바사\n\n",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\n\nend"
+        ],
+        "joint": "\n\n"
+      }
+    },
+    {
+      "name": "two cuts as near: the earlier wins",
+      "args": [
+        "a\n\nbb\n\nccc"
+      ],
+      "answer": {
+        "halves": [
+          "a\n\n",
+          "bb\n\nccc"
+        ],
+        "joint": "\n\n"
+      }
+    }
+  ]
+}

@@ -1,5 +1,7 @@
 //! A text read with JavaScript's character classes, so a reading written in TypeScript keeps its answers:
-//! its white space, its trim, its line terminators and its lengths in UTF-16 units.
+//! its white space, its trim, its line terminators, its lengths in UTF-16 units and its URI components.
+
+use percent_encoding::{AsciiSet, NON_ALPHANUMERIC, percent_decode_str, utf8_percent_encode};
 
 /// JavaScript's `\s`, as a regular expression's class body.
 pub const SPACE: &str =
@@ -186,4 +188,38 @@ pub fn bun_hash(text: &str) -> u64 {
   let (low, high) = wyhash_mum(a, b);
 
   wyhash_mix(low ^ secret[0] ^ input.len() as u64, high ^ secret[1])
+}
+
+// What JavaScript's `encodeURIComponent` leaves as it stands.
+const COMPONENT: &AsciiSet = &NON_ALPHANUMERIC
+  .remove(b'-')
+  .remove(b'_')
+  .remove(b'.')
+  .remove(b'!')
+  .remove(b'~')
+  .remove(b'*')
+  .remove(b'\'')
+  .remove(b'(')
+  .remove(b')');
+
+/// A text as JavaScript's `encodeURIComponent` writes it: its UTF-8 bytes percent-escaped but for letters,
+/// digits and `-_.!~*'()`.
+pub fn encode_uri_component(text: &str) -> String {
+  utf8_percent_encode(text, COMPONENT).to_string()
+}
+
+/// A text as JavaScript's `decodeURIComponent` reads it, and none where that would throw: an escape that is not
+/// two hexadecimal digits, or escaped bytes that are not UTF-8.
+pub fn decode_uri_component(text: &str) -> Option<String> {
+  let bytes = text.as_bytes();
+  let well_formed = bytes.iter().enumerate().filter(|(_, byte)| **byte == b'%').all(|(at, _)| {
+    bytes.get(at + 1).is_some_and(u8::is_ascii_hexdigit)
+      && bytes.get(at + 2).is_some_and(u8::is_ascii_hexdigit)
+  });
+
+  if !well_formed {
+    return None;
+  }
+
+  percent_decode_str(text).decode_utf8().ok().map(|decoded| decoded.into_owned())
 }

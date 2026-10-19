@@ -1,0 +1,199 @@
+{
+  "about": "The cases Telegram's divisions are held to: plain words divided under a limit in UTF-16 units at the last pause that fits or between whole characters, a transcript folded under its voice as a caption and replies, and a bot's id read out of its token.",
+  "plainParts": [
+    {
+      "name": "words within one message stand whole",
+      "args": [
+        "short words",
+        20
+      ],
+      "answer": [
+        "short words"
+      ]
+    },
+    {
+      "name": "an empty text is one empty part",
+      "args": [
+        "",
+        20
+      ],
+      "answer": [
+        ""
+      ]
+    },
+    {
+      "name": "a blank line is the first pause",
+      "args": [
+        "first part\n\nsecond part",
+        16
+      ],
+      "answer": [
+        "first part\n\n",
+        "second part"
+      ]
+    },
+    {
+      "name": "a line break is the next",
+      "args": [
+        "one line\nanother line",
+        12
+      ],
+      "answer": [
+        "one line\n",
+        "another line"
+      ]
+    },
+    {
+      "name": "a space is the last",
+      "args": [
+        "several words in a row",
+        12
+      ],
+      "answer": [
+        "several ",
+        "words in a ",
+        "row"
+      ]
+    },
+    {
+      "name": "a pause at the very start is no cut",
+      "args": [
+        " abcdefgh",
+        4
+      ],
+      "answer": [
+        " abc",
+        "defg",
+        "h"
+      ]
+    },
+    {
+      "name": "emoji are two units each and never parted",
+      "args": [
+        "😀😀😀",
+        5
+      ],
+      "answer": [
+        "😀😀",
+        "😀"
+      ]
+    },
+    {
+      "name": "a skin-tone cluster is one character",
+      "args": [
+        "👍🏽👍🏽",
+        6
+      ],
+      "answer": [
+        "👍🏽",
+        "👍🏽"
+      ]
+    },
+    {
+      "name": "letters with no pause are cut at the limit",
+      "args": [
+        "abcdef",
+        4
+      ],
+      "answer": [
+        "abcd",
+        "ef"
+      ]
+    },
+    {
+      "name": "a cluster longer than the window is parted between code points",
+      "args": [
+        "👍🏽",
+        3
+      ],
+      "answer": [
+        "👍",
+        "🏽"
+      ]
+    },
+    {
+      "name": "Hangul syllables are one unit each",
+      "args": [
+        "가나다 라마바 사아",
+        5
+      ],
+      "answer": [
+        "가나다 ",
+        "라마바 ",
+        "사아"
+      ]
+    }
+  ],
+  "transcriptParts": [
+    {
+      "name": "a short reading is one escaped caption",
+      "args": [
+        "a <b> & c"
+      ],
+      "answer": [
+        "<blockquote expandable>a &lt;b&gt; &amp; c</blockquote>"
+      ]
+    },
+    {
+      "name": "an empty reading has no parts",
+      "args": [
+        ""
+      ],
+      "answer": []
+    },
+    {
+      "name": "a reading past the caption goes on in a reply",
+      "args": [
+        "word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word "
+      ],
+      "answer": [
+        "<blockquote expandable>word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word</blockquote>",
+        "<blockquote expandable> word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word </blockquote>"
+      ]
+    }
+  ],
+  "botIdFromToken": [
+    {
+      "name": "the number before the colon",
+      "args": [
+        "123456:secret-part"
+      ],
+      "answer": 123456
+    },
+    {
+      "name": "no colon is the whole token",
+      "args": [
+        "98765"
+      ],
+      "answer": 98765
+    },
+    {
+      "name": "no number is nought",
+      "args": [
+        "bot:secret"
+      ],
+      "answer": 0
+    },
+    {
+      "name": "an empty token is nought",
+      "args": [
+        ""
+      ],
+      "answer": 0
+    },
+    {
+      "name": "digits stop at the first other character",
+      "args": [
+        "12ab:secret"
+      ],
+      "answer": 12
+    },
+    {
+      "name": "leading space and a sign are read",
+      "args": [
+        "  -42:secret"
+      ],
+      "answer": -42
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 import { escapeAttribute, escapeHtml, expandableMarkup, isLinkable, longTextLength, markupFault, visibleText } from "./format";
 import { bareAddressAt, gluedAfterAddress, markdownLinkAt } from "./web-address";
-import { telegramTextLimit } from "./telegram-parts";
+import { telegramTextLimit } from "./telegram";
 
 // An agent writes markdown and Telegram reads HTML. This module is the one place the first becomes the
 // second: the markdown is read once, and the markup sent, the plain text held as its fallback and

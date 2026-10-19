@@ -1,0 +1,509 @@
+{
+  "about": "The cases an HTML page's reading is held to: its title, its description, its words as markdown-shaped lines and the pictures written inside it, each picture's bytes written here as base64.",
+  "readHtml": [
+    {
+      "name": "headings keep their level and a list item is a dash",
+      "args": [
+        "<h1>Title</h1><h3>Third</h3><ul><li>one</li><li>two</li></ul><p>End</p>",
+        "picture"
+      ],
+      "answer": {
+        "title": null,
+        "description": null,
+        "lines": [
+          "# Title",
+          "### Third",
+          "- one",
+          "- two",
+          "End"
+        ],
+        "pictures": []
+      }
+    },
+    {
+      "name": "a list item closed by the next one",
+      "args": [
+        "<ul><li>a<li>b</ul>c",
+        "picture"
+      ],
+      "answer": {
+        "title": null,
+        "description": null,
+        "lines": [
+          "- a",
+          "- b",
+          "c"
+        ],
+        "pictures": []
+      }
+    },
+    {
+      "name": "a block inside a heading or a list item keeps the mark",
+      "args": [
+        "<h2><span>Lead</span><div>Inner</div></h2><li><p>Item</p></li>",
+        "picture"
+      ],
+      "answer": {
+        "title": null,
+        "description": null,
+        "lines": [
+          "## Lead",
+          "Inner",
+          "- Item"
+        ],
+        "pictures": []
+      }
+    },
+    {
+      "name": "neighbouring inline elements are two words",
+      "args": [
+        "<p><b>one</b><i>two</i>three</p>",
+        "picture"
+      ],
+      "answer": {
+        "title": null,
+        "description": null,
+        "lines": [
+          "one twothree"
+        ],
+        "pictures": []
+      }
+    },
+    {
+      "name": "line breaks and rules start lines",
+      "args": [
+        "<p>first<br>second<hr>third</p>",
+        "picture"
+      ],
+      "answer": {
+        "title": null,
+        "description": null,
+        "lines": [
+          "first",
+          "second",
+          "third"
+        ],
+        "pictures": []
+      }
+    },
+    {
+      "name": "scripts, styles and the head are not words, nested too",
+      "args": [
+        "<head><title>Page</title><style>p{}</style></head><body><script>var a = '<p>';</script><noscript>off</noscript><template><p>t</p></template><svg><text>drawn</text><script>x</script></svg><p>Shown</p></body>",
+        "picture"
+      ],
+      "answer": {
+        "title": "Page",
+        "description": null,
+        "lines": [
+          "Shown"
+        ],
+        "pictures": []
+      }
+    },
+    {
+      "name": "a self-closing svg holds nothing and hides nothing",
+      "args": [
+        "<p>a</p><svg/><p>b</p>",
+        "picture"
+      ],
+      "answer": {
+        "title": null,
+        "description": null,
+        "lines": [
+          "a",
+          "b"
+        ],
+        "pictures": []
+      }
+    },
+    {
+      "name": "a self-closing title in svg is no title",
+      "args": [
+        "<svg><title/></svg><p>after</p>",
+        "picture"
+      ],
+      "answer": {
+        "title": null,
+        "description": null,
+        "lines": [
+          "after"
+        ],
+        "pictures": []
+      }
+    },
+    {
+      "name": "the title's entities and spaces are read",
+      "args": [
+        "<title>  Fish &amp;\n chips &#x1F41F; </title><p>x</p>",
+        "picture"
+      ],
+      "answer": {
+        "title": "Fish & chips 🐟",
+        "description": null,
+        "lines": [
+          "x"
+        ],
+        "pictures": []
+      }
+    },
+    {
+      "name": "an empty title is none",
+      "args": [
+        "<title>   </title><p>x</p>",
+        "picture"
+      ],
+      "answer": {
+        "title": null,
+        "description": null,
+        "lines": [
+          "x"
+        ],
+        "pictures": []
+      }
+    },
+    {
+      "name": "the description meta, the first one winning",
+      "args": [
+        "<meta name=\"description\" content=\" A page &amp; more \"><meta property=\"og:description\" content=\"second\"><p>x</p>",
+        "picture"
+      ],
+      "answer": {
+        "title": null,
+        "description": "A page & more",
+        "lines": [
+          "x"
+        ],
+        "pictures": []
+      }
+    },
+    {
+      "name": "an og description is read by its property",
+      "args": [
+        "<meta property=\"OG:Description\" content=\"by property\">",
+        "picture"
+      ],
+      "answer": {
+        "title": null,
+        "description": "by property",
+        "lines": [],
+        "pictures": []
+      }
+    },
+    {
+      "name": "a name that is not a description hides the property",
+      "args": [
+        "<meta name=\"viewport\" property=\"description\" content=\"hidden\"><meta name=\"description\" content=\"\"><meta name=\"description\" content=\"kept\">",
+        "picture"
+      ],
+      "answer": {
+        "title": null,
+        "description": "kept",
+        "lines": [],
+        "pictures": []
+      }
+    },
+    {
+      "name": "an outside picture keeps its address and its alt",
+      "args": [
+        "<p>see</p><img src=\"https://example.com/a.png?x=1&amp;y=2\" alt=\"a &quot;chart&quot;\"><p>after</p>",
+        "picture"
+      ],
+      "answer": {
+        "title": null,
+        "description": null,
+        "lines": [
+          "see",
+          "![a \"chart\"](https://example.com/a.png?x=1&amp;y=2)",
+          "after"
+        ],
+        "pictures": []
+      }
+    },
+    {
+      "name": "a picture with no source",
+      "args": [
+        "<img alt=\"empty\">",
+        "picture"
+      ],
+      "answer": {
+        "title": null,
+        "description": null,
+        "lines": [
+          "![empty]()"
+        ],
+        "pictures": []
+      }
+    },
+    {
+      "name": "data pictures are taken out and numbered by the stem",
+      "args": [
+        "<img src=\"data:image/png;base64,iVBORw0KGgo=\" alt=\"one\"><img src=\"data:image/JPEG;base64,/9j/4AAQ\"><img src=\"data:image/svg+xml,%3Csvg%20xmlns%3D%22x%22%2F%3E\">",
+        "page"
+      ],
+      "answer": {
+        "title": null,
+        "description": null,
+        "lines": [
+          "![one](page-01.png)",
+          "![](page-02.jpg)",
+          "![](page-03.svg)"
+        ],
+        "pictures": [
+          {
+            "name": "page-01.png",
+            "type": "image/png",
+            "bytes": "iVBORw0KGgo="
+          },
+          {
+            "name": "page-02.jpg",
+            "type": "image/jpeg",
+            "bytes": "/9j/4AAQ"
+          },
+          {
+            "name": "page-03.svg",
+            "type": "image/svg+xml",
+            "bytes": "PHN2ZyB4bWxucz0ieCIvPg=="
+          }
+        ]
+      }
+    },
+    {
+      "name": "an unknown picture type is named by its subtype",
+      "args": [
+        "<img src=\"data:image/x-icon+fancy;base64,AAAB\"><img src=\"data:image/bmp;base64,Qk0=\">",
+        "shot"
+      ],
+      "answer": {
+        "title": null,
+        "description": null,
+        "lines": [
+          "![](shot-01.x-icon)",
+          "![](shot-02.bmp)"
+        ],
+        "pictures": [
+          {
+            "name": "shot-01.x-icon",
+            "type": "image/x-icon+fancy",
+            "bytes": "AAAB"
+          },
+          {
+            "name": "shot-02.bmp",
+            "type": "image/bmp",
+            "bytes": "Qk0="
+          }
+        ]
+      }
+    },
+    {
+      "name": "base64 read leniently: spaces, either alphabet, no padding",
+      "args": [
+        "<img src=\"data:image/png;base64,iV BO-_\"><img src=\"data:image/png;base64,aGk=aGk=\"><img src=\"data:image/png;base64,Y\">",
+        "p"
+      ],
+      "answer": {
+        "title": null,
+        "description": null,
+        "lines": [
+          "![](p-01.png)",
+          "![](p-02.png)",
+          "![](p-03.png)"
+        ],
+        "pictures": [
+          {
+            "name": "p-01.png",
+            "type": "image/png",
+            "bytes": "iVBO+w=="
+          },
+          {
+            "name": "p-02.png",
+            "type": "image/png",
+            "bytes": "aGk="
+          },
+          {
+            "name": "p-03.png",
+            "type": "image/png",
+            "bytes": ""
+          }
+        ]
+      }
+    },
+    {
+      "name": "a malformed escape keeps the payload as it stands",
+      "args": [
+        "<img src=\"data:image/png,%E0%A4%A\">",
+        "p"
+      ],
+      "answer": {
+        "title": null,
+        "description": null,
+        "lines": [
+          "![](p-01.png)"
+        ],
+        "pictures": [
+          {
+            "name": "p-01.png",
+            "type": "image/png",
+            "bytes": "JUUwJUE0JUE="
+          }
+        ]
+      }
+    },
+    {
+      "name": "an escape that is not UTF-8 keeps the payload as it stands",
+      "args": [
+        "<img src=\"data:image/png,%FF%FE\">",
+        "p"
+      ],
+      "answer": {
+        "title": null,
+        "description": null,
+        "lines": [
+          "![](p-01.png)"
+        ],
+        "pictures": [
+          {
+            "name": "p-01.png",
+            "type": "image/png",
+            "bytes": "JUZGJUZF"
+          }
+        ]
+      }
+    },
+    {
+      "name": "entities in text, with and without a semicolon",
+      "args": [
+        "<p>a &amp b &lt;c&gt; &notit; &copy &#0; &#x110000; &unknown; &nbsp;d</p>",
+        "picture"
+      ],
+      "answer": {
+        "title": null,
+        "description": null,
+        "lines": [
+          "a & b <c> ¬it; © � � &unknown; d"
+        ],
+        "pictures": []
+      }
+    },
+    {
+      "name": "JavaScript white space runs become one space",
+      "args": [
+        "<p>a 　b c﻿d</p>",
+        "picture"
+      ],
+      "answer": {
+        "title": null,
+        "description": null,
+        "lines": [
+          "a b c d"
+        ],
+        "pictures": []
+      }
+    },
+    {
+      "name": "Hangul words",
+      "args": [
+        "<h1>제목</h1><p>본문 <b>강조</b> 끝</p>",
+        "picture"
+      ],
+      "answer": {
+        "title": null,
+        "description": null,
+        "lines": [
+          "# 제목",
+          "본문 강조 끝"
+        ],
+        "pictures": []
+      }
+    },
+    {
+      "name": "words outside any block are a line",
+      "args": [
+        "loose words <span>and more</span>",
+        "picture"
+      ],
+      "answer": {
+        "title": null,
+        "description": null,
+        "lines": [
+          "loose words and more"
+        ],
+        "pictures": []
+      }
+    },
+    {
+      "name": "a table's cells are lines",
+      "args": [
+        "<table><tr><th>Dish</th><th>Price</th></tr><tr><td>Soup</td><td>9</td></tr></table>",
+        "picture"
+      ],
+      "answer": {
+        "title": null,
+        "description": null,
+        "lines": [
+          "Dish",
+          "Price",
+          "Soup",
+          "9"
+        ],
+        "pictures": []
+      }
+    },
+    {
+      "name": "a whole page of headings, blocks, a button and a script",
+      "args": [
+        "<!doctype html><title> Palette &amp; colour </title><style>b{color:red}</style><h1>Gallery</h1><p>One line<br>Two lines</p><ul><li><p>Item</p></li></ul><script>alert(1)</script><section><h2>Pearl &amp; Cyan</h2><button><b>Pearl White</b><em>#FEFEFE · Dominant</em></button></section>",
+        "picture"
+      ],
+      "answer": {
+        "title": "Palette & colour",
+        "description": null,
+        "lines": [
+          "# Gallery",
+          "One line",
+          "Two lines",
+          "- Item",
+          "## Pearl & Cyan",
+          "Pearl White #FEFEFE · Dominant"
+        ],
+        "pictures": []
+      }
+    },
+    {
+      "name": "a whole picture between words",
+      "args": [
+        "<img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==\" alt=\"dot\"><p>Between</p><img src=\"https://example.com/a.webp\">",
+        "palette"
+      ],
+      "answer": {
+        "title": null,
+        "description": null,
+        "lines": [
+          "![dot](palette-01.png)",
+          "Between",
+          "![](https://example.com/a.webp)"
+        ],
+        "pictures": [
+          {
+            "name": "palette-01.png",
+            "type": "image/png",
+            "bytes": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+          }
+        ]
+      }
+    },
+    {
+      "name": "an empty document",
+      "args": [
+        "",
+        "picture"
+      ],
+      "answer": {
+        "title": null,
+        "description": null,
+        "lines": [],
+        "pictures": []
+      }
+    }
+  ]
+}

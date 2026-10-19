@@ -39,7 +39,9 @@ name and depends on no repository.
   is read the same way by the crate.
 - **A length says what it counts.** A length is counted in UTF-16 units, as Telegram and JavaScript count
   it, unless its name says `chars`: such a length counts characters as a reader does, one to a code point,
-  so a Hangul syllable and an emoji are one each. A budget of estimated tokens is named for tokens.
+  so a Hangul syllable and an emoji are one each. A budget of estimated tokens is named for tokens. An
+  index into a string is in UTF-16 units too; a crate function that reads a run of characters rather than a
+  string indexes that run, and names the same places.
 - **The cases are shared.** Each module is held to one file of cases under `cases/`, named as the package
   names the module, and both sides' tests read every case in it: the inputs of each public function and
   the answer expected, in the package's JSON shape (camelCase keys, `null` for none). A case is added once,

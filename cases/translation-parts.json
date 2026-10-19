@@ -1,0 +1,205 @@
+{
+  "about": "The cases a text's reading for a translator is held to: its language by its letters outside code, the parts it is cut into under a budget of estimated tokens, and a part as shown once read.",
+  "textLanguage": [
+    {
+      "name": "an English text",
+      "args": [
+        "The run finished and every test passed."
+      ],
+      "answer": "en"
+    },
+    {
+      "name": "a Korean text",
+      "args": [
+        "작업을 마쳤고 시험이 모두 통과했습니다."
+      ],
+      "answer": "ko"
+    },
+    {
+      "name": "a few syllables against many Latin letters is English",
+      "args": [
+        "The word 가 means nothing on its own here."
+      ],
+      "answer": "en"
+    },
+    {
+      "name": "an empty text is Korean",
+      "args": [
+        ""
+      ],
+      "answer": "ko"
+    },
+    {
+      "name": "Latin letters inside a fenced block are not counted",
+      "args": [
+        "설명입니다\n```\nconst many = letters + in + code;\n```\n"
+      ],
+      "answer": "ko"
+    },
+    {
+      "name": "a tilde fence is code too",
+      "args": [
+        "설명\n~~~\nmany latin letters here and there\n~~~"
+      ],
+      "answer": "ko"
+    },
+    {
+      "name": "a fence closes only on its own run",
+      "args": [
+        "한글\n```\ncode words here\n````\nmore english words outside of any block"
+      ],
+      "answer": "en"
+    },
+    {
+      "name": "an indented fence of up to three spaces is code",
+      "args": [
+        "한글 문장\n   ```\nlatin letters in code\n   ```"
+      ],
+      "answer": "ko"
+    },
+    {
+      "name": "a code span is not counted",
+      "args": [
+        "설명 `someLongIdentifierName` 끝"
+      ],
+      "answer": "ko"
+    },
+    {
+      "name": "an unclosed fence is read as prose",
+      "args": [
+        "한글\n```\nlatin letters everywhere in this unclosed block"
+      ],
+      "answer": "en"
+    },
+    {
+      "name": "a fence closes at a carriage return",
+      "args": [
+        "한글\r\n```\r\nlatin words in a block\r\n```\r\n끝"
+      ],
+      "answer": "ko"
+    }
+  ],
+  "translationParts": [
+    {
+      "name": "a short text is one part",
+      "args": [
+        "# Title\n\nA short body.",
+        750
+      ],
+      "answer": [
+        "# Title\n\nA short body."
+      ]
+    },
+    {
+      "name": "an empty text is one empty part",
+      "args": [
+        "",
+        750
+      ],
+      "answer": [
+        ""
+      ]
+    },
+    {
+      "name": "sections are packed while they fit",
+      "args": [
+        "# One\nalpha beta gamma\n# Two\ndelta epsilon\n# Three\nzeta eta theta iota kappa lambda",
+        12
+      ],
+      "answer": [
+        "# One\nalpha beta gamma\n",
+        "# Two\ndelta epsilon\n",
+        "# Three\nzeta eta theta iota kappa lambda"
+      ]
+    },
+    {
+      "name": "a section too large is cut at its paragraphs",
+      "args": [
+        "# Long\n\nfirst paragraph of words here\n\nsecond paragraph of words here\n\nthird paragraph of words here",
+        10
+      ],
+      "answer": [
+        "# Long\n\n",
+        "first paragraph of words here\n\n",
+        "second paragraph of words here\n\n",
+        "third paragraph of words here"
+      ]
+    },
+    {
+      "name": "Hangul weighs more than ASCII",
+      "args": [
+        "# 하나\n가나다라마바사아자차\n# 둘\n가나다라마바사아자차",
+        12
+      ],
+      "answer": [
+        "# 하나\n가나다라마바사아자차\n",
+        "# 둘\n가나다라마바사아자차"
+      ]
+    },
+    {
+      "name": "a single line too large stays whole",
+      "args": [
+        "one very long line that cannot be cut anywhere at all",
+        3
+      ],
+      "answer": [
+        "one very long line that cannot be cut anywhere at all"
+      ]
+    },
+    {
+      "name": "emoji count as two units of most of a token each",
+      "args": [
+        "# A\n🙂🙂🙂\n# B\n🙂🙂🙂",
+        5
+      ],
+      "answer": [
+        "# A\n",
+        "🙂🙂🙂\n",
+        "# B\n",
+        "🙂🙂🙂"
+      ]
+    }
+  ],
+  "shownPart": [
+    {
+      "name": "no translation shows the original",
+      "args": [
+        "Original\n",
+        null
+      ],
+      "answer": "Original\n"
+    },
+    {
+      "name": "a translation that ends its line stands as it is",
+      "args": [
+        "Original\n",
+        "Translated\n"
+      ],
+      "answer": "Translated\n"
+    },
+    {
+      "name": "a trimmed translation gets the line end back",
+      "args": [
+        "Original\n",
+        "Translated"
+      ],
+      "answer": "Translated\n"
+    },
+    {
+      "name": "a trimmed translation gets the blank line back",
+      "args": [
+        "Original\n\n",
+        "Translated"
+      ],
+      "answer": "Translated\n\n"
+    },
+    {
+      "name": "an original with no line end leaves the translation alone",
+      "args": [
+        "Original",
+        "Translated"
+      ],
+      "answer": "Translated"
+    }
+  ]
+}

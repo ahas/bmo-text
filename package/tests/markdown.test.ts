@@ -1,7 +1,19 @@
 import { describe, expect, test } from "bun:test";
 
 import { markupFault, visibleText } from "../format";
-import { codeMarkup, convertMarkdown, foldBlocks, foldedMarkup, markdownParts } from "../markdown";
+import {
+  codeMarkup,
+  convertMarkdown,
+  foldBlocks,
+  foldedMarkup,
+  markdownParts,
+  parseInline,
+  parseMarkdown,
+  plainInline,
+  renderInline,
+} from "../markdown";
+import cases from "../../cases/markdown.json";
+import { holdAll } from "./shared";
 
 // The markdown an agent writes becomes Telegram HTML here, and whatever the input, three things hold:
 // the markup has only tags Telegram takes and passes the structure check, no marker is left standing
@@ -478,4 +490,22 @@ describe("a text longer than one message", () => {
   test("a text that fits is one part, unchanged", () => {
     expect(markdownParts("a short text")).toEqual(["a short text"]);
   });
+});
+
+// A conversion is compared as its markup, plain text and whether it is formatted, and the fold and the two
+// markups made from one are each given the source they are made from.
+holdAll("markdown", cases, {
+  parseInline: (text: string) => parseInline(text),
+  parseMarkdown,
+  renderInline,
+  plainInline,
+  convertMarkdown: (source: string) => {
+    const { markup, plain, formatted } = convertMarkdown(source);
+
+    return { markup, plain, formatted };
+  },
+  foldBlocks: (source: string) => foldBlocks(parseMarkdown(source)),
+  foldedMarkup: (source: string) => foldedMarkup(convertMarkdown(source)),
+  codeMarkup: (source: string) => codeMarkup(convertMarkdown(source)),
+  markdownParts: (text: string, limit?: number) => markdownParts(text, limit),
 });

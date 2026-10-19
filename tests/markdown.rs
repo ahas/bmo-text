@@ -1,56 +1,118 @@
+//! The markdown reading held to the cases the package's is held to, its reading written in the package's
+//! shape: a piece of a line by its kind, a block by its kind, a fold by its parts.
+
+mod shared;
+
 use bmo_markup::js::chars;
 use bmo_markup::markdown::*;
+use bmo_markup::telegram::TEXT_LIMIT;
+use serde_json::{Value, json};
 
-fn markup(source: &str) -> String {
-  convert_markdown(source).markup
+use shared::text;
+
+fn pair_kind(pair: Pair) -> &'static str {
+  match pair {
+    Pair::Bold => "b",
+    Pair::Italic => "i",
+    Pair::Strike => "s",
+    Pair::Spoiler => "spoiler",
+  }
+}
+
+fn inline_json(inline: &Inline) -> Value {
+  match inline {
+    Inline::Text(text) => json!({ "kind": "text", "text": text }),
+    Inline::Code(text) => json!({ "kind": "code", "text": text }),
+    Inline::Pair(pair, children) => json!({ "kind": pair_kind(*pair), "children": line_json(children) }),
+    Inline::Link(url, children) => json!({ "kind": "link", "url": url, "children": line_json(children) }),
+  }
+}
+
+fn line_json(line: &[Inline]) -> Value {
+  line.iter().map(inline_json).collect()
+}
+
+fn inline_of(value: &Value) -> Inline {
+  let children = || line_of(&value["children"]);
+
+  match text(&value["kind"]) {
+    "text" => Inline::Text(text(&value["text"]).to_owned()),
+    "code" => Inline::Code(text(&value["text"]).to_owned()),
+    "b" => Inline::Pair(Pair::Bold, children()),
+    "i" => Inline::Pair(Pair::Italic, children()),
+    "s" => Inline::Pair(Pair::Strike, children()),
+    "spoiler" => Inline::Pair(Pair::Spoiler, children()),
+    "link" => Inline::Link(text(&value["url"]).to_owned(), children()),
+    other => panic!("no piece of kind {other}"),
+  }
+}
+
+fn line_of(value: &Value) -> Vec<Inline> {
+  value.as_array().expect("a line's pieces").iter().map(inline_of).collect()
+}
+
+fn block_json(block: &Block) -> Value {
+  match block {
+    Block::Lines(lines) => {
+      json!({ "kind": "lines", "lines": lines.iter().map(|line| line_json(line)).collect::<Vec<_>>() })
+    }
+    Block::Pre { language, text } => json!({ "kind": "pre", "language": language, "text": text }),
+    Block::Quote(document) => {
+      json!({ "kind": "quote", "blocks": blocks_json(&document.blocks), "gaps": document.gaps })
+    }
+  }
+}
+
+fn blocks_json(blocks: &[Block]) -> Vec<Value> {
+  blocks.iter().map(block_json).collect()
+}
+
+fn document_json(document: &Document) -> Value {
+  json!({ "blocks": blocks_json(&document.blocks), "gaps": document.gaps })
+}
+
+fn fold_json(fold: &Fold) -> Value {
+  json!({
+    "opening": fold.opening.as_ref().map(block_json),
+    "openingGap": fold.opening_gap,
+    "hidden": blocks_json(&fold.hidden),
+    "hiddenGaps": fold.hidden_gaps,
+    "closing": fold.closing.as_ref().map(block_json),
+    "closingGap": fold.closing_gap,
+  })
+}
+
+fn optional(markup: Option<String>) -> Value {
+  markup.map_or(Value::Null, Value::from)
 }
 
 #[test]
-fn pairs_codes_and_links_become_their_tags() {
-  assert_eq!(
-    markup("**bold** and *it* and ~~gone~~ and ||hid||"),
-    "<b>bold</b> and <i>it</i> and <s>gone</s> and <tg-spoiler>hid</tg-spoiler>"
-  );
-  assert_eq!(markup("a `x < y` b"), "a <code>x &lt; y</code> b");
-  assert_eq!(markup("[site](https://example.com)"), "<a href=\"https://example.com\">site</a>");
-  assert_eq!(markup("2**3 and server/**/*.ts"), "2**3 and server/**/*.ts");
-}
+fn the_shared_cases_hold() {
+  shared::hold_all(
+    "markdown",
+    &[
+      ("parseInline", &|args| line_json(&parse_inline(&chars(text(&args[0])), None))),
+      ("parseMarkdown", &|args| document_json(&parse_markdown(text(&args[0])))),
+      ("renderInline", &|args| Value::from(render_inline(&line_of(&args[0])))),
+      ("plainInline", &|args| Value::from(plain_inline(&line_of(&args[0])))),
+      ("convertMarkdown", &|args| {
+        let converted = convert_markdown(text(&args[0]));
 
-#[test]
-fn a_code_inside_a_bold_splits_the_bold_around_it() {
-  assert_eq!(markup("**a `b` c**"), "<b>a </b><code>b</code><b> c</b>");
-}
+        json!({ "markup": converted.markup, "plain": converted.plain, "formatted": converted.formatted })
+      }),
+      ("foldBlocks", &|args| {
+        fold_blocks(&parse_markdown(text(&args[0]))).as_ref().map_or(Value::Null, fold_json)
+      }),
+      ("foldedMarkup", &|args| optional(folded_markup(&convert_markdown(text(&args[0]))))),
+      ("codeMarkup", &|args| optional(code_markup(&convert_markdown(text(&args[0]))))),
+      ("markdownParts", &|args| {
+        let limit = args
+          .get(1)
+          .map_or(TEXT_LIMIT, |limit| usize::try_from(limit.as_u64().expect("a limit")).expect("a limit"));
 
-#[test]
-fn blocks_are_laid_flat_and_spaced_as_written() {
-  let converted = convert_markdown("# Title\n\n- one\n- two\n\n---\n\n> quoted\n\n```rust\nfn x() {}\n```");
-
-  assert_eq!(
-    converted.markup,
-    "Title\n\n\u{2022} one\n\u{2022} two\n\n<blockquote>quoted</blockquote>\n\n<pre><code class=\"language-rust\">fn x() {}</code></pre>"
-  );
-  assert_eq!(converted.plain, "Title\n\n\u{2022} one\n\u{2022} two\n\nquoted\n\nfn x() {}");
-}
-
-#[test]
-fn a_table_is_laid_flat_into_its_cells() {
-  assert_eq!(markup("| a | b |\n|---|---|\n| `x|y` | 2 |"), "a \u{b7} b\n<code>x|y</code> \u{b7} 2");
-}
-
-#[test]
-fn only_the_first_bold_stands_unless_each_is_a_whole_line() {
-  assert_eq!(markup("**a** and **b**"), "<b>a</b> and b");
-  assert_eq!(markup("- **a**\n- **b**"), "\u{2022} <b>a</b>\n\u{2022} <b>b</b>");
-}
-
-#[test]
-fn a_long_text_folds_behind_a_quote_with_its_conclusion_open() {
-  let body = (0..12).map(|at| format!("line {at} of the body")).collect::<Vec<_>>().join("\n");
-  let converted = convert_markdown(&format!("Opening.\n\n{body}\n\nThat is all."));
-
-  assert_eq!(
-    code_markup(&converted),
-    Some(format!("Opening.\n\n<blockquote expandable>{body}</blockquote>\n\nThat is all."))
+        Value::from(markdown_parts(text(&args[0]), limit))
+      }),
+    ],
   );
 }
 
