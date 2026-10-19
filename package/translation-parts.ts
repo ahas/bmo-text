@@ -1,89 +1,31 @@
-import { halveText, markdownSections } from "./markdown-structure";
+// How a text is read for the translator: which language it is written in, and the parts it is cut into and
+// joined back from. The readings are the crate's, through the package's WebAssembly build.
 
-// How a text is read for the translator: which language it is written in, and the parts it is cut
-// into and joined back from. The console cuts
-// the documents its viewer shows by these rules, and the bot cuts the texts it hands a job worker by
-// the same ones, so one reading decides both.
+import { binding } from "./binding";
 
 export type TextLanguage = "ko" | "en";
 
 // Which language a text is written in, by its letters outside code: a text with few Hangul syllables
 // against its Latin letters is English, and every other text is Korean.
 export function textLanguage(text: string): TextLanguage {
-  const prose = text.replace(/^ {0,3}(`{3,}|~{3,})[^\n]*\n[\s\S]*?^ {0,3}\1[ \t]*$/gm, "").replace(/`[^`\n]*`/g, "");
-  const hangul = prose.match(/[가-힣]/g)?.length ?? 0;
-  const latin = prose.match(/[A-Za-z]/g)?.length ?? 0;
-
-  return hangul * 4 < latin ? "en" : "ko";
-}
-
-// A rough count of the tokens a text costs a model: a Hangul syllable or other non-ASCII character
-// is most of one, an ASCII character about a third.
-function estimatedTokens(text: string): number {
-  let ascii = 0;
-
-  for (let index = 0; index < text.length; index += 1) {
-    if (text.charCodeAt(index) < 128) {
-      ascii += 1;
-    }
-  }
-
-  return Math.ceil((text.length - ascii) * 0.8 + ascii * 0.3);
+  return binding.textLanguage(text) as TextLanguage;
 }
 
 // How much of a text one translation part carries, in estimated tokens. The translation of a part has
 // to fit the translator's answer of 2,048 tokens, and a translation into Korean costs more tokens than
 // the English it renders. Parts this small are what let the first one show in seconds.
-export const TRANSLATION_PART_TOKENS = 750;
-
-function fitted(section: string, budget: number): string[] {
-  if (estimatedTokens(section) <= budget) {
-    return [section];
-  }
-
-  const cut = halveText(section);
-
-  if (cut === null) {
-    return [section];
-  }
-
-  return [...fitted(cut.halves[0], budget), ...fitted(cut.halves[1], budget)];
-}
+export const TRANSLATION_PART_TOKENS = binding.translationPartTokens() as 750;
 
 // A text as the parts the translator is given: its sections, the consecutive ones packed together
 // while they fit, a section too large on its own cut at its paragraphs. Joined back, the parts are
 // the text.
-export function translationParts(text: string, budget = TRANSLATION_PART_TOKENS): string[] {
-  const parts: string[] = [];
-  let current = "";
-
-  for (const piece of markdownSections(text).flatMap((section) => fitted(section, budget))) {
-    if (current !== "" && estimatedTokens(current + piece) > budget) {
-      parts.push(current);
-      current = "";
-    }
-
-    current += piece;
-  }
-
-  if (current !== "" || parts.length === 0) {
-    parts.push(current);
-  }
-
-  return parts;
+export function translationParts(text: string, budget: number = TRANSLATION_PART_TOKENS): string[] {
+  return binding.translationParts(text, budget);
 }
 
 // One part as it stands once read: its translation where there is one, the original where there is
 // none. The translator trims what it hands back, so a part that ended the original's line ends the
 // translation's too and the parts after it stay blocks of their own.
 export function shownPart(source: string, text: string | null): string {
-  if (text === null) {
-    return source;
-  }
-
-  if (source.endsWith("\n") && !text.endsWith("\n")) {
-    return text + (source.endsWith("\n\n") ? "\n\n" : "\n");
-  }
-
-  return text;
+  return binding.shownPart(source, text);
 }

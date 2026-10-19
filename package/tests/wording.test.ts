@@ -48,8 +48,9 @@ const sample = [
   "- en · fixing · docs/a.md · bike fixing — a repair",
 ].join("\n");
 
-// What the package carries and the crate does not: a glossary read from a folder, and files held to it.
-describe("the package's own reading of a glossary", () => {
+// What a JavaScript caller holds: a glossary read from a folder, files read through its function, and its own
+// terms given back.
+describe("a glossary read for a JavaScript caller", () => {
   test("the glossary is read from the folder the caller names, under its conventional name", () => {
     const root = mkdtempSync(join(tmpdir(), "markup-wording-"));
 
@@ -77,5 +78,19 @@ describe("the package's own reading of a glossary", () => {
     ]);
     expect(report.unusedAllowances).toEqual([]);
     expect(checkWording([], () => "", glossary).unusedAllowances).toHaveLength(1);
+  });
+
+  test("an error the reading function throws is thrown on", () => {
+    const unread = new Error("unread");
+
+    expect(() => checkWording(["docs/a.md"], () => { throw unread; }, parseGlossary(sample))).toThrow(unread);
+  });
+
+  test("a term given back is the caller's own object", () => {
+    const glossary = parseGlossary(sample);
+    const [hit] = checkWording(["docs/b.md"], () => "click the tool strip", glossary).hits;
+
+    expect(glossary.banned).toContain(hit!.term);
+    expect(bannedTermsIn("click the tool strip", glossary).every((term) => glossary.banned.includes(term))).toBe(true);
   });
 });

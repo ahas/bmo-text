@@ -2,7 +2,7 @@
 //! reads past and how many Latin letters a Hangul syllable is weighed against. Both are the part's own,
 //! passed in from its own policy.
 
-use regex::Regex;
+use fancy_regex::Regex;
 
 /// The test of whether a text is written in English, as one part's policy declares it: the set-aside words
 /// read past, and the Hangul syllables left read against the Latin letters left.
@@ -14,11 +14,17 @@ pub struct EnglishTest {
 impl EnglishTest {
   /// A test reading past what `set_aside` matches, a regular expression as the part writes it, and weighing
   /// each Hangul syllable left against `latin_per_hangul` Latin letters; at zero, any Hangul left fails it.
-  pub fn new(set_aside: &str, latin_per_hangul: usize) -> Self {
-    Self {
-      set_aside: Regex::new(set_aside).expect("a set-aside pattern of a part's English policy"),
+  /// A pattern that does not compile gives the compiler's message.
+  pub fn try_new(set_aside: &str, latin_per_hangul: usize) -> Result<Self, String> {
+    Ok(Self {
+      set_aside: Regex::new(set_aside).map_err(|error| error.to_string())?,
       latin_per_hangul,
-    }
+    })
+  }
+
+  /// The test `try_new` makes, panicking on a pattern that does not compile.
+  pub fn new(set_aside: &str, latin_per_hangul: usize) -> Self {
+    Self::try_new(set_aside, latin_per_hangul).expect("a set-aside pattern of a part's English policy")
   }
 
   /// Whether a text is English: with no Latin letters per Hangul syllable, none left at all; otherwise some

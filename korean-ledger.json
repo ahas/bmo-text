@@ -1,11 +1,6 @@
 {
-  "package/answer-language.ts": 1,
-  "package/english.ts": 1,
   "package/tests/answer-cap.test.ts": 9,
   "package/tests/markdown.test.ts": 4,
-  "package/translation-parts.ts": 1,
-  "package/web-address.ts": 1,
-  "package/wording.ts": 2,
   "src/answer_language.rs": 1,
   "src/english.rs": 1,
   "src/translation_parts.rs": 1,

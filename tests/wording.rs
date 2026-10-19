@@ -87,6 +87,35 @@ fn the_shared_cases_hold() {
   );
 }
 
+const SAMPLE: &str = "## Banned terms\n\n- en · tool strip → toolbar\n- en · fixing → editing — when it means editing\n\n## Allowed uses\n\n- en · fixing · docs/a.md · bike fixing — a repair";
+
+#[test]
+fn an_allowed_use_passes_only_in_its_own_file_and_line_and_a_stale_one_is_reported() {
+  let glossary = parse_wording(SAMPLE).expect("the sample reads");
+  let files = [
+    ("docs/a.md", "bike fixing\ndocument fixing\n"),
+    ("docs/b.md", "bike fixing\nclick the tool strip\n"),
+  ];
+  let read = |path: &str| {
+    files
+      .iter()
+      .find(|(name, _)| *name == path)
+      .map(|(_, text)| (*text).to_owned())
+      .ok_or(())
+  };
+  let report = check_wording(&["docs/a.md", "docs/b.md"], read, &glossary).expect("every file reads");
+  let hits: Vec<String> = report
+    .hits
+    .iter()
+    .map(|found| format!("{}:{}:{}", found.path, found.hit.line, found.hit.term.term))
+    .collect();
+
+  assert_eq!(hits, ["docs/a.md:2:fixing", "docs/b.md:1:fixing", "docs/b.md:2:tool strip"]);
+  assert!(report.unused_allowances.is_empty());
+  assert_eq!(check_wording(&[], read, &glossary).expect("nothing to read").unused_allowances.len(), 1);
+  assert_eq!(check_wording(&["docs/c.md"], read, &glossary), Err(()));
+}
+
 #[test]
 fn a_folder_with_no_glossary_bans_nothing() {
   assert!(read_glossary(Path::new("/nonexistent/folder")).is_empty());

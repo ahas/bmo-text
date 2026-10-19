@@ -50,6 +50,21 @@ pub struct WordingHit {
   pub term: BannedTerm,
 }
 
+/// A use of a banned term in one file of a check: the path it was read from and the hit.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct FileHit {
+  pub path: String,
+  pub hit: WordingHit,
+}
+
+/// What a check of files against the glossary found: the uses no allowed use covers, and the allowed uses
+/// that no longer cover anything.
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub struct WordingReport {
+  pub hits: Vec<FileHit>,
+  pub unused_allowances: Vec<AllowedUse>,
+}
+
 /// The document the banned words are read out of, at the source root.
 pub const WORDING_DOCUMENT: &str = "WORDING.md";
 
@@ -60,8 +75,8 @@ static ALLOWED_LINE: LazyLock<Regex> =
 static OWN_SENSE_LINE: LazyLock<Regex> =
   LazyLock::new(|| Regex::new(r"^- ([a-z]{2,3}) · (.+?) · (.+?) — .+$").unwrap());
 
-// The languages a line can be told to be in, by the script it is written in.
-const KNOWN_LANGUAGES: [&str; 3] = ["ko", "ja", "en"];
+/// The languages a line can be told to be in, by the script it is written in.
+pub const KNOWN_LANGUAGES: [&str; 3] = ["ko", "ja", "en"];
 
 /// The language a line is written in, told by its script: Korean where it holds Hangul, Japanese where it
 /// holds kana alone, English otherwise.
@@ -299,4 +314,48 @@ pub fn add_banned_terms(text: &str, entries: &[BannedTerm]) -> Result<(String, V
   }
 
   Ok((result, added))
+}
+
+/// The given files, each read through `read`, held to the glossary: every use of a banned term that no allowed
+/// use covers, and the allowed uses that cover nothing. An allowed use covers a hit of its term, in its
+/// language, in its file, on a line holding its excerpt. A read that fails ends the check with its error.
+pub fn check_wording<E>(
+  paths: &[&str],
+  mut read: impl FnMut(&str) -> Result<String, E>,
+  glossary: &Glossary,
+) -> Result<WordingReport, E> {
+  let mut used = vec![false; glossary.allowed.len()];
+  let mut hits = Vec::new();
+
+  for path in paths {
+    for hit in find_banned(&read(path)?, &glossary.banned) {
+      let covers = |one: &AllowedUse| {
+        one.lang == hit.term.lang
+          && one.term == hit.term.term
+          && one.path == *path
+          && hit.text.contains(&one.excerpt)
+      };
+
+      match glossary.allowed.iter().position(covers) {
+        Some(allowance) => used[allowance] = true,
+        None => hits.push(FileHit {
+          path: (*path).to_owned(),
+          hit,
+        }),
+      }
+    }
+  }
+
+  let unused_allowances = glossary
+    .allowed
+    .iter()
+    .zip(used)
+    .filter(|(_, used)| !used)
+    .map(|(one, _)| one.clone())
+    .collect();
+
+  Ok(WordingReport {
+    hits,
+    unused_allowances,
+  })
 }

@@ -12,9 +12,10 @@ Three standing principles hold for every bmo-next repository, this one included:
   on a service.
 
 This repository is the base library `bmo-text`: the reading and writing of markdown and text that the
-chat services, the console and the archive share. It ships one Rust crate at the root and one TypeScript
-package in `package/`, twins that read a text the same way. It has no server, no deployment and no data of its
-own, and every bmo-next repository may depend on it directly.
+chat services, the console and the archive share. It ships one Rust crate at the root, where every reading is
+written, and one TypeScript package in `package/`, which is that crate built to WebAssembly under thin typed
+modules. It has no server, no deployment and no data of its own, and every bmo-next repository may depend on
+it directly.
 
 ## Rules
 
@@ -41,9 +42,10 @@ own, and every bmo-next repository may depend on it directly.
 
 ## Checks
 
-- Rust, from the root: `cargo check --all-targets`, `cargo clippy --all-targets -- -D warnings`,
+- Rust, from the root: `cargo check --all-targets`, `cargo clippy --all-targets --all-features -- -D warnings`,
   `cargo fmt --check` (108 columns, 2-space indentation, as `rustfmt.toml` sets), then `cargo test`.
-- TypeScript, from `package/`: `bun run check`, the static check and the tests together.
+- TypeScript, from `package/`: `bun run check`, the static check and the tests together. After any change to
+  the crate, `bun run build` first: the package's tests fail on a WebAssembly build older than the crate.
 - `testbed.toml` declares the quick checks and the setup for the testbed, which checks and tests the crate
   as the root project and the package by its `check` script.
 - The version is the repository's, in semver: `VERSION`, the crate's and the package's version are one

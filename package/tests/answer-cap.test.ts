@@ -22,6 +22,14 @@ describe("cutting a list to the ceiling", () => {
     expect(capped.note).toBeNull();
   });
 
+  test("a list that fits is the caller's own list, and an error its render throws is thrown on", () => {
+    const items = ["one", "two"];
+    const refused = new Error("refused");
+
+    expect(capItems(items, lines, said).kept).toBe(items);
+    expect(() => capItems(items, () => { throw refused; }, said)).toThrow(refused);
+  });
+
   test("an empty list is a list that fits", () => {
     expect(capItems([], lines, said)).toEqual({ kept: [], left: 0, note: null });
   });

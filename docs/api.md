@@ -35,9 +35,10 @@ fields. Where an entry calls a module "the package's", the package's entry says 
 ### `english`
 
 - **`EnglishTest`** is the test of whether a text is English, as a part's policy declares it.
-  - **`new`** takes the set-aside pattern, a regular expression of the words read past wherever they stand,
-    and the number of Latin letters each Hangul syllable left is weighed against. It panics on a pattern that
-    does not compile.
+  - **`try_new`** takes the set-aside pattern, a regular expression of the words read past wherever they
+    stand, lookaround and backreferences included, and the number of Latin letters each Hangul syllable left
+    is weighed against; it gives the compiler's message for a pattern that does not compile. **`new`** is
+    the same, and panics on such a pattern.
   - **`passes`** answers whether a text is English: with a weight of zero, no Hangul syllable may be left
     once the set-aside words are read past; otherwise the text holds some Latin letters and fewer syllables
     than one to every so many of them.
@@ -70,8 +71,8 @@ fields. Where an entry calls a module "the package's", the package's entry says 
 
 ### `html_reading`
 
-- **`read_html`**, **`HtmlReading`** and **`HtmlPicture`** are the package's `html-reading`, read with the
-  same streaming HTML rewriter the package's runtime uses; a picture's media type is its `media_type`.
+- **`read_html`**, **`HtmlReading`** and **`HtmlPicture`** are the package's `html-reading`; a picture's media
+  type is its `media_type`.
 
 ### `js`
 
@@ -89,6 +90,12 @@ The crate's own: JavaScript's counting, spaces and trims, which the package has 
 - **`bun_hash`** is what Bun's hash answers for a text: Wyhash of its UTF-8 bytes with seed 0.
 - **`encode_uri_component`** and **`decode_uri_component`** are JavaScript's, the decoding none where
   JavaScript's would throw: an escape that is not two hexadecimal digits, or escaped bytes that are not UTF-8.
+
+### `wasm`
+
+The crate's own, compiled only with the `wasm` feature: the binding the package's WebAssembly build exports
+(`docs/design.md`, 「One implementation」). Its exports are what the package's modules call and are no API of
+their own; a Rust consumer has no use for it.
 
 ### `markdown`
 
@@ -164,7 +171,8 @@ level-two sections: banned terms (`<language> · <term> → <what to write>`, op
 the word's own sense (`<language> · <term> · <phrase> — <why>`) and allowed uses (`<language> · <term> ·
 <path> · <excerpt> — <why>`).
 
-- **`WORDING_DOCUMENT`** is the document's conventional name, `WORDING.md`.
+- **`WORDING_DOCUMENT`** is the document's conventional name, `WORDING.md`; **`KNOWN_LANGUAGES`** are the
+  codes a line can be told in.
 - **`BannedTerm`**, **`AllowedUse`**, **`Glossary`** and **`WordingHit`** are an entry, an allowed use, the
   document's two lists, and one line using a banned term.
 - **`line_language`** tells a line's language by its script: Korean where it holds Hangul, Japanese where it
@@ -182,10 +190,22 @@ the word's own sense (`<language> · <term> · <phrase> — <why>`) and allowed 
   order; **`banned_terms_line`** writes them beside what to write instead.
 - **`add_banned_terms`** writes new banned lines after the last entry of the document's list, passing over a
   term already banned in its language and refusing a line that would not read back as written.
+- **`check_wording`** holds files, each read through a closure the caller gives, to the glossary: the uses no
+  allowed use covers, each a **`FileHit`** of the path and the hit, and the allowed uses that no longer cover
+  anything, in a **`WordingReport`**. A read that fails ends the check with the reader's error.
 
 ## The TypeScript package `bmo-text`
 
-Each module is imported by its name, as `bmo-text/<module>`.
+Each module is imported by its name, as `bmo-text/<module>`. Every module answers through the crate built to
+WebAssembly, which the package carries (`docs/design.md`, 「One implementation」).
+
+- **Nothing is awaited.** The build is compiled and instantiated synchronously when the first module is
+  imported, so every function may be called as soon as its import has run, in Bun, in Node and in a browser
+  bundle (a Nuxt client among them) alike. A bundler needs no plugin for WebAssembly: the bytes are a
+  JavaScript module's.
+- **A text crosses as UTF-8.** An unpaired surrogate in a string a function is given is read as U+FFFD.
+- **A fault in the build throws.** A function whose input the crate cannot read in the package's shape throws
+  a `RuntimeError` or an `Error` from the binding rather than answering.
 
 ### `answer-cap`
 
@@ -209,8 +229,9 @@ Each module is imported by its name, as `bmo-text/<module>`.
 
 - **`EnglishTest`** is the crate's `EnglishTest`: constructed from the set-aside pattern, a regular
   expression source as the part writes it, and the Latin letters each Hangul syllable is weighed against,
-  both defaulting to the strictest test; **`passes`** answers for a text. It throws on a pattern that does
-  not compile.
+  both defaulting to the strictest test; **`passes`** answers for a text. The pattern is compiled by the
+  crate's engine, which takes lookaround and backreferences and reads `\w`, `\d` and `\b` over all of
+  Unicode where JavaScript's reads them over ASCII. It throws on a pattern that does not compile.
 
 ### `finding-markdown`
 
@@ -293,11 +314,13 @@ rest) turned into the markdown they stand for.
   **`parseGlossary`**, **`addBannedTerms`**, **`findBanned`**, **`bannedTermsIn`** and **`bannedTermsLine`** are
   the crate's `wording`. **`parseGlossary`** gives both lists; **`readGlossary`** reads the document in the
   folder the caller names and throws where it cannot be read; **`findBanned`** takes the path the text was
-  read from, which each hit carries; **`knownLanguages`** are the codes a line can be told in.
-- **`checkWording`** holds files, each read through a function the caller gives, to the glossary: the uses no
-  allowed use covers, and the allowed uses that no longer cover anything, in a **`WordingReport`**.
-- **`knownLanguages`**, **`checkWording`** and **`WordingReport`** are the package's own; the crate's
-  `QUOTED_SPAN` and its `parse_glossary` of the banned terms alone are the crate's.
+  read from, which each hit carries; **`knownLanguages`**, the crate's `KNOWN_LANGUAGES`, are the codes a line
+  can be told in.
+- **`checkWording`** and **`WordingReport`** are the crate's `check_wording` and `WordingReport`, a hit
+  carrying its path itself; an error the reading function throws is thrown on.
+- A term the package gives back, alone or in a hit, is the caller's own object from the list it passed.
+- The crate's `QUOTED_SPAN`, its `FileHit` and its `parse_glossary` of the banned terms alone are the
+  crate's.
 
 ## Data files
 

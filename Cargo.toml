@@ -1,6 +1,6 @@
 [package]
 name = "bmo-text"
-version = "2.0.0"
+version = "2.1.0"
 description = "Markdown and text as a chat room reads them, written into Telegram's HTML."
 edition = "2024"
 publish = false
@@ -9,13 +9,29 @@ publish = false
 base64 = "0.23.1"
 fancy-regex = "0.19.2"
 htmlize = { version = "1.1.0", features = ["unescape"] }
+js-sys = { version = "0.3.103", optional = true }
 lol_html = "3.0.1"
 percent-encoding = "2.3.2"
 regex = "1.13.1"
+serde_json = { version = "1.0.154", optional = true }
 unicode-normalization = "0.1.26"
 unicode-segmentation = "1.13.3"
 url = "2.5.8"
+# Held to the version of the `wasm-bindgen` command the build runs, which must be the same.
+wasm-bindgen = { version = "=0.2.126", optional = true }
+
+[features]
+# The binding the package's WebAssembly build exports (docs/design.md, 「One implementation」).
+wasm = ["dep:js-sys", "dep:serde_json", "dep:wasm-bindgen"]
 
 [dev-dependencies]
 serde_json = "1.0.154"
 toml = { version = "0.8.23", default-features = false, features = ["parse"] }
+
+# The package's WebAssembly build, optimised for size.
+[profile.wasm]
+inherits = "release"
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"

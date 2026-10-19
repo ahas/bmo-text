@@ -16,8 +16,9 @@ name and depends on no repository.
   workspace. Each reading is one module under `src/`; its tests are one file under `tests/`, beside the
   repository test that holds the repository's own shape.
 - **One package, one file per module.** Each module is a file at the top of `package/`, exported by its
-  name; its tests are under `package/tests/`. The package's `check` script runs its static check and its
-  tests together, and is how the testbed checks and tests it.
+  name, that answers by calling the crate's WebAssembly build (「One implementation」); its tests are under
+  `package/tests/`. The package's `check` script runs its static check and its tests together, and is how
+  the testbed checks and tests it; its `build` script makes the WebAssembly build.
 - **The cases at the root.** The cases both sides are held to stand in `cases/`, one JSON file per module,
   read by the tests of both projects (「The twins」).
 - **The package is named `bmo-text`,** as the crate is and as `bmo-ui` is named and imported, so a
@@ -25,6 +26,36 @@ name and depends on no repository.
 - **One version.** `VERSION` holds the repository's semver; the crate and the package carry the same
   number. The public API stated in `docs/api.md` is fixed at major version 2; a change to a public
   signature or to what a reading answers for an input is a major change.
+
+## One implementation
+
+- **The readings are written once, in the crate.** The package holds no reading of its own: it is the crate
+  compiled to WebAssembly, and each of its modules is a thin file that hands its arguments to the build and
+  gives back what the build answers, typed as the package's API states it.
+- **The binding is the crate's `wasm` module,** compiled only with the crate's `wasm` feature, so a Rust
+  consumer never builds it. It takes the package's arguments, calls the crate's public functions and writes
+  each answer in the package's shape: camelCase keys, `null` for none, a field the package leaves out when
+  empty left out, and every index and length counted in UTF-16 units. It holds no reading either; a value it
+  cannot express in the package's shape is a fault of the binding, not a second answer.
+- **The package keeps only what a JavaScript caller holds.** A module's file does in JavaScript what only
+  JavaScript can: reading a file the caller names, calling back a closure the caller passes, handing back the
+  caller's own objects (the items a cut keeps, the terms a glossary lists) rather than copies of them, and
+  exporting the two block shapes of a drawn finding as JavaScript regular expressions.
+- **The build is carried in the package.** `package/wasm/` holds what the build made: the binding's
+  JavaScript glue and its types, the module's bytes written into a JavaScript module, and the hash of the
+  crate's sources it was made from. It is committed, so a consumer taking the package needs neither Rust nor
+  the build's tools. The package's tests fail where the crate's sources no longer hash to what the build was
+  made from, and `bun run build` in `package/` makes it again.
+- **The module is instantiated on import, synchronously.** The first module a consumer imports compiles and
+  instantiates the bytes the package carries, before anything is called, so no initialisation is awaited and
+  the package loads alike in Bun, in Node and in a browser bundle such as a Nuxt client's, with no bundler
+  plugin for WebAssembly. Every module calls through the instantiated build as a value it imports, so a
+  bundler that takes the package for free of side effects, as a Nuxt server's does, still instantiates it
+  before the first call. A browser compiles a module synchronously on its main thread only up to a size it
+  sets, which the build is kept well under.
+- **The build's tools** are the Rust target `wasm32-unknown-unknown`, the `wasm-bindgen` command at the
+  version the crate's `wasm-bindgen` dependency is locked to, and Binaryen's `wasm-opt` from the package's
+  development dependencies. The crate is compiled under its `wasm` profile, which optimises for size.
 
 ## The twins
 
@@ -34,9 +65,10 @@ name and depends on no repository.
   `translation_parts`, `web_address` and `wording`. The crate's `js` is the one module apart: it is how the
   crate counts, spaces and trims as JavaScript does, which the package has from its language, so it is the
   mechanism of the twinning rather than a reading.
-- **One answer for one input.** A module gives the same answer on both sides for the same input. Spaces,
-  trims and character classes are JavaScript's on both sides, and a regular expression the package writes
-  is read the same way by the crate.
+- **One answer for one input.** A module gives the same answer on both sides for the same input, the
+  package's answer being the crate's. Spaces, trims and character classes are JavaScript's on both sides,
+  and a regular expression a caller writes is read by the crate. A text crosses into the build as UTF-8, so
+  an unpaired surrogate in a string the package is given reaches the crate as U+FFFD.
 - **A length says what it counts.** A length is counted in UTF-16 units, as Telegram and JavaScript count
   it, unless its name says `chars`: such a length counts characters as a reader does, one to a code point,
   so a Hangul syllable and an emoji are one each. A budget of estimated tokens is named for tokens. An
@@ -45,9 +77,10 @@ name and depends on no repository.
 - **The cases are shared.** Each module is held to one file of cases under `cases/`, named as the package
   names the module, and both sides' tests read every case in it: the inputs of each public function and
   the answer expected, in the package's JSON shape (camelCase keys, `null` for none). A case is added once,
-  to that file, and a side that answers it differently fails its own tests. Each side's own tests stand
-  beside the shared ones for what only that side has, such as a type's shape or a closure the caller
-  passes.
+  to that file, and a side that answers it differently fails its own tests: the crate's tests read the
+  crate natively, and the package's read it through the WebAssembly build and its binding. Each side's own
+  tests stand beside the shared ones for what only that side has, such as a type's shape or a closure the
+  caller passes.
 - **Items may differ where a side's consumers differ.** Within one module, a side may carry an item the
   other does not, because only that side's consumers need it; `docs/api.md` names each such item.
 

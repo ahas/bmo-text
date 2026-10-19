@@ -18,6 +18,12 @@ fn the_shared_cases_hold() {
 }
 
 #[test]
+fn a_pattern_that_does_not_compile_is_refused_and_lookaround_compiles() {
+  assert!(EnglishTest::try_new("(unclosed", 0).is_err());
+  assert!(EnglishTest::try_new(r"(?<=x)y", 0).expect("a lookbehind compiles").passes("xy"));
+}
+
+#[test]
 fn the_default_is_the_strictest_test() {
   assert!(EnglishTest::default().passes("plain English"));
   assert!(!EnglishTest::default().passes("almost English 가"));

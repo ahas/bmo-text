@@ -18,5 +18,8 @@ pub mod markdown;
 pub mod markdown_structure;
 pub mod telegram;
 pub mod translation_parts;
+#[cfg(feature = "wasm")]
+#[doc(hidden)]
+pub mod wasm;
 pub mod web_address;
 pub mod wording;
