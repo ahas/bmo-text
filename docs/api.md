@@ -376,10 +376,10 @@ sentence.
   `text`, the `term`, what to write `instead` and `when` the entry applies, or `null`. A glossary that cannot
   be read or does not parse is the tool's error.
 
-## The harness plugin `ahas-text`
+## The harness plugin `bmo-text`
 
-`plugin/` is the plugin a harness installs: its manifest names it `ahas-text` at the repository's version,
-its MCP configuration starts `bmo-text mcp` from the harness's `PATH`, and its skill `ahas-text` tells the
+`plugin/` is the plugin a harness installs: its manifest names it `bmo-text` at the repository's version,
+its MCP configuration starts `bmo-text mcp` from the harness's `PATH`, and its skill `bmo-text` tells the
 harness when to call each tool.
 
 ## Data files

@@ -215,12 +215,12 @@ fn plugin_manifest() -> Value {
 fn the_plugin_starts_the_crate_s_mcp_server_and_carries_its_skill() {
   let servers: Value =
     serde_json::from_str(&text_of("plugin/.mcp.json")).expect("the plugin's MCP configuration is JSON");
-  let skill = text_of("plugin/skills/ahas-text/SKILL.md");
+  let skill = text_of("plugin/skills/bmo-text/SKILL.md");
 
-  assert_eq!(plugin_manifest()["name"], "ahas-text");
+  assert_eq!(plugin_manifest()["name"], "bmo-text");
   assert_eq!(servers["mcpServers"]["bmo-text"]["command"], "bmo-text");
   assert_eq!(servers["mcpServers"]["bmo-text"]["args"], serde_json::json!(["mcp"]));
-  assert!(skill.starts_with("---\nname: \"ahas-text\"\n"), "the skill names itself ahas-text");
+  assert!(skill.starts_with("---\nname: \"bmo-text\"\n"), "the skill names itself bmo-text");
 }
 
 // The names of the files a folder holds with an extension, the extension taken off and `_` read as `-`.

@@ -57,8 +57,8 @@
     "needs": [
       "mcp/server"
     ],
-    "base": "0155d8f069d82b0b077e61b29867f0f2f9007fd4",
-    "changed": 1792498803633,
+    "base": "647d549b626d64d679c009a1b8b3921781c8fadc",
+    "changed": 1792529727710,
     "boundary": {
       "side": "exposes"
     }
@@ -100,11 +100,11 @@
   {
     "id": "api/plugin",
     "title": "Harness plugin API",
-    "what": "The ahas-text plugin as a harness sees it: the manifest naming the plugin at the repository's version, the MCP server it starts and the skill that says when to call each tool.",
+    "what": "The bmo-text plugin as a harness sees it: the manifest naming the plugin at the repository's version, the MCP server it starts and the skill that says when to call each tool.",
     "files": [
       "plugin/.claude-plugin/plugin.json",
       "plugin/.mcp.json",
-      "plugin/skills/ahas-text/SKILL.md",
+      "plugin/skills/bmo-text/SKILL.md",
       "docs/api.md",
       "docs/boundary.md"
     ],
@@ -114,8 +114,8 @@
       "plugin/harness",
       "mcp/server"
     ],
-    "base": "0155d8f069d82b0b077e61b29867f0f2f9007fd4",
-    "changed": 1792498803635,
+    "base": "647d549b626d64d679c009a1b8b3921781c8fadc",
+    "changed": 1792529727732,
     "boundary": {
       "side": "exposes"
     }

@@ -8,8 +8,8 @@
   one module at a time as `bmo-text/<module>`. Its exports are stated in `docs/api.md`.
 - **The MCP server** the crate's binary starts as `bmo-text mcp`, over its standard input and output, and
   its seven tools, stated in `docs/api.md`.
-- **The harness plugin `ahas-text`,** in `plugin/`: its manifest, the MCP configuration starting the server,
-  and the `ahas-text` skill.
+- **The harness plugin `bmo-text`,** in `plugin/`: its manifest, the MCP configuration starting the server,
+  and the `bmo-text` skill.
 - **The cases** both sides are held to, one file per module under `cases/`, named in `docs/api.md`.
 
 The version both carry is the repository's, in `VERSION`. A consumer pins the version it was built

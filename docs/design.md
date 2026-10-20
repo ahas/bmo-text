@@ -28,8 +28,8 @@ repository.
   `bmo-text mcp` (「The MCP server」). It and the crate's `mcp` module are compiled with the crate's `mcp`
   feature, which is on by default so the crate's own tests reach the server; the WebAssembly build, and a
   Rust consumer taking the readings alone, leave it out with `default-features = false`.
-- **The harness plugin in `plugin/`.** The plugin `ahas-text` is the manifest a harness installs, the MCP
-  server it starts, and the `ahas-text` skill telling the harness when to call which tool.
+- **The harness plugin in `plugin/`.** The plugin `bmo-text` is the manifest a harness installs, the MCP
+  server it starts, and the `bmo-text` skill telling the harness when to call which tool.
 - **One version.** `VERSION` holds the repository's semver; the crate, the package and the plugin carry
   the same number. Until the first release the number is `0.1.0` with a `-rev.N` suffix, N counting the
   versions cut so far (`docs/api.md`, 「Version numbers」). The public API stated in `docs/api.md`, the MCP
@@ -97,7 +97,7 @@ repository.
 
 ## The MCP server
 
-- **A harness's first entry point.** A coding harness given the `ahas-text` plugin starts `bmo-text mcp`,
+- **A harness's first entry point.** A coding harness given the `bmo-text` plugin starts `bmo-text mcp`,
   which speaks MCP over its standard input and output, and calls its tools to check or reshape text it is
   about to send or file. The server keeps nothing between calls, calls no other unit, and knows nothing of
   who started it: no tool, field or answer names a caller.

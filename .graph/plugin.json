@@ -2,18 +2,18 @@
   {
     "id": "plugin/harness",
     "title": "Harness plugin",
-    "what": "The ahas-text plugin a coding harness installs: its manifest at the repository's version, the MCP configuration starting bmo-text mcp, and the skill telling the harness when to call each tool (plugin/).",
+    "what": "The bmo-text plugin a coding harness installs: its manifest at the repository's version, the MCP configuration starting bmo-text mcp, and the skill telling the harness when to call each tool (plugin/).",
     "files": [
       "plugin/.claude-plugin/plugin.json",
       "plugin/.mcp.json",
-      "plugin/skills/ahas-text/SKILL.md"
+      "plugin/skills/bmo-text/SKILL.md"
     ],
     "symbols": [],
     "aliases": [],
     "needs": [
       "mcp/server"
     ],
-    "base": "0155d8f069d82b0b077e61b29867f0f2f9007fd4",
-    "changed": 1792498803626
+    "base": "647d549b626d64d679c009a1b8b3921781c8fadc",
+    "changed": 1792529727834
   }
 ]

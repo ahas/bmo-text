@@ -1,5 +1,5 @@
 ---
-name: "ahas-text"
+name: "bmo-text"
 description: "When and how to call the text tools of the bmo-text MCP server: before sending or filing text, to find or replace dashes between words, tell whether a text is Korean or English, read a markdown text's headings and sections, read an HTML page into lines, cut a text into translation parts, list the web addresses a text names, or hold a text to a project's glossary of banned terms."
 ---
 

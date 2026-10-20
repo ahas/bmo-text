@@ -8,7 +8,7 @@ search finding's structure lines, the parts of a text handed to a translator and
 The readings are written once, in the Rust crate; the TypeScript package is the crate built to WebAssembly,
 loaded synchronously on import in Bun, Node and the browser alike. Lengths are counted in UTF-16 units unless
 named `chars`, and spaces and trims follow JavaScript, so both give one answer for one input. The crate's
-binary, run as `bmo-text mcp`, is the MCP server through which a coding harness given the `ahas-text` plugin
+binary, run as `bmo-text mcp`, is the MCP server through which a coding harness given the `bmo-text` plugin
 calls the pure readings.
 
 | Folder | What it holds |
@@ -19,7 +19,7 @@ calls the pure readings.
 | `tests/` | The crate's tests, and the repository test that holds the repository's own shape |
 | `package/` | The TypeScript package `bmo-text`: its modules over the crate's WebAssembly build, the build in `wasm/`, and its tests |
 | `cases/` | The cases both the crate and the package are held to, one file per module |
-| `plugin/` | The harness plugin `ahas-text`: its manifest, the MCP server's configuration and the `ahas-text` skill |
+| `plugin/` | The harness plugin `bmo-text`: its manifest, the MCP server's configuration and the `bmo-text` skill |
 
 The library depends on nothing but registry packages and has no HTTP server or deployment. A consumer takes
 the crate by path or git and the package as a dependency, and passes in whatever is its own to decide:
