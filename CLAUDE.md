@@ -35,7 +35,8 @@ depend on it directly.
   glossary, a test whose point is how Hangul is read). Such Korean is written plainly, never as an escape
   sequence or a char code, and every file holding it is counted in `korean-ledger.json`.
 - **No names of agents, owners or hosts, and no personal paths** in code, documents or commits. Write the
-  role instead: a consumer, a reader, the owner.
+  role instead: a consumer, a reader, the owner. `docs/PERSONAL-DATA.md` states the whole rule and the
+  check that holds the repository to it.
 - **No directory named after its parent** (no `x/x`) and **no folder named for a language.** The crate's
   manifest and lockfile are the only ones at the root; `package/` is a project of its own with its manifest
   and lockfile.

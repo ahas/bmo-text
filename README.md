@@ -14,7 +14,7 @@ calls the pure readings.
 | Folder | What it holds |
 |---|---|
 | `.graph/` | The code dependency graph: the repository's settings, one node per feature with its files and the features it needs, and a boundary node for each API the library offers |
-| `docs/` | The design, the public API, the boundary and the inventory of what the library was built from |
+| `docs/` | The design, the public API, the boundary, the inventory of what the library was built from, and the personal-data rule |
 | `src/` | The sources of the Rust crate `bmo-text`, whose manifest stands at the root |
 | `tests/` | The crate's tests, and the repository test that holds the repository's own shape |
 | `package/` | The TypeScript package `bmo-text`: its modules over the crate's WebAssembly build, the build in `wasm/`, and its tests |
@@ -24,6 +24,9 @@ calls the pure readings.
 The library depends on nothing but registry packages and has no HTTP server or deployment. A consumer takes
 the crate by path or git and the package as a dependency, and passes in whatever is its own to decide:
 the words a reader sees, its English policy, the path of its glossary.
+
+Personal data is kept out of the code, tests, documents and commits; `docs/PERSONAL-DATA.md` states the
+rule and the check that holds this repository to it.
 
 The library is released under the MIT License; `LICENSE` holds its text.
 

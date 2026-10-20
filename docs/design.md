@@ -161,7 +161,18 @@ repository.
   Korean lines of a glossary, and a ceiling counting Hangul as characters. Every other example text is
   neutral English. A test file keeping Korean is counted in the ledger like any other file; a cases file
   under `cases/` is data rather than code, keeps Korean by the same rule, and is not counted.
-- **No name of a person, an agent or a real place** stands in a test; the example text uses neutral words.
+
+## Personal data
+
+- **No file and no commit carries personal data.** Names, handles, account ids, email and network
+  addresses, host names, home paths, devices, company names, a room member's display name or id, and a
+  line of a real conversation are kept out of code, comments, documents, test fixtures and commit
+  messages. A value that differs per deployment is configuration the consumer passes in; an example is a
+  neutral word. `docs/PERSONAL-DATA.md` states the rule and the two values the owner allows.
+- **The repository test holds every file to it.** A file fails the test where it holds an email address,
+  a home path, a phone number, a token or a private address. The report names the file, the line and the
+  kind, never the value. The encoded bytes the WebAssembly build writes are not scanned: they are
+  generated, and a long run of encoded bytes is no one's writing.
 
 ## What the library does not hold
 
