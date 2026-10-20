@@ -1,5 +1,5 @@
 {
-  "about": "The cases the dash rewrite is held to: a text and whether it is wrapped, a wrapped text reading a paragraph or a list item as one piece across its line breaks.",
+  "about": "The cases the dash rewrite is held to: a text and whether it is wrapped, a wrapped text reading a paragraph or a list item as one piece across its line breaks, and how many dashes a reading replaces.",
   "withoutDashes": [
     {
       "name": "a name and its explanation are joined by a colon",
@@ -312,6 +312,107 @@
         true
       ],
       "answer": "First paragraph: one.\n\nSecond, two, three."
+    }
+  ],
+  "readDashes": [
+    {
+      "name": "one dash between a name and its explanation",
+      "args": [
+        "Drone survey method — high resolution grid",
+        false
+      ],
+      "answer": {
+        "text": "Drone survey method: high resolution grid",
+        "found": 1
+      }
+    },
+    {
+      "name": "an aside counts both its dashes",
+      "args": [
+        "I think — to be honest — that is right.",
+        false
+      ],
+      "answer": {
+        "text": "I think, to be honest, that is right.",
+        "found": 2
+      }
+    },
+    {
+      "name": "a range counts as a dash replaced",
+      "args": [
+        "3—5 items",
+        false
+      ],
+      "answer": {
+        "text": "3~5 items",
+        "found": 1
+      }
+    },
+    {
+      "name": "an unspaced en dash is no dash",
+      "args": [
+        "Title – subtitle, 2020–2024",
+        false
+      ],
+      "answer": {
+        "text": "Title: subtitle, 2020–2024",
+        "found": 1
+      }
+    },
+    {
+      "name": "every dash of every sentence counts",
+      "args": [
+        "A — B — C. D — E — F — G",
+        false
+      ],
+      "answer": {
+        "text": "A, B, C. D, E, F: G",
+        "found": 5
+      }
+    },
+    {
+      "name": "a dash inside a fenced block is not counted",
+      "args": [
+        "```\nx — y\n```\nafter — it",
+        false
+      ],
+      "answer": {
+        "text": "```\nx — y\n```\nafter: it",
+        "found": 1
+      }
+    },
+    {
+      "name": "a dash inside a code span is not counted",
+      "args": [
+        "`a — b` code",
+        false
+      ],
+      "answer": {
+        "text": "`a — b` code",
+        "found": 0
+      }
+    },
+    {
+      "name": "a text with no dash finds none",
+      "args": [
+        "A text with no dash. As it was.",
+        false
+      ],
+      "answer": {
+        "text": "A text with no dash. As it was.",
+        "found": 0
+      }
+    },
+    {
+      "name": "a wrapped aside across a line break counts both",
+      "args": [
+        "Every other piece\n— this one included — stays.",
+        true
+      ],
+      "answer": {
+        "text": "Every other piece,\nthis one included, stays.",
+        "found": 2
+      }
     }
   ]
 }

@@ -5,7 +5,6 @@ mod shared;
 
 use bmo_text::js::chars;
 use bmo_text::markdown::*;
-use bmo_text::telegram::TEXT_LIMIT;
 use serde_json::{Value, json};
 
 use shared::text;
@@ -106,9 +105,7 @@ fn the_shared_cases_hold() {
       ("foldedMarkup", &|args| optional(folded_markup(&convert_markdown(text(&args[0]))))),
       ("codeMarkup", &|args| optional(code_markup(&convert_markdown(text(&args[0]))))),
       ("markdownParts", &|args| {
-        let limit = args
-          .get(1)
-          .map_or(TEXT_LIMIT, |limit| usize::try_from(limit.as_u64().expect("a limit")).expect("a limit"));
+        let limit = usize::try_from(args[1].as_u64().expect("a limit")).expect("a limit");
 
         Value::from(markdown_parts(text(&args[0]), limit))
       }),

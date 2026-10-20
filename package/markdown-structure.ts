@@ -44,3 +44,14 @@ export function halveText(text: string): { halves: [string, string]; joint: stri
 export function markdownSections(source: string): string[] {
   return binding.markdownSections(source);
 }
+
+// A markdown text's structure in one reading: its headings and its sections.
+export interface MarkdownStructure {
+  headings: MarkdownHeading[];
+  sections: string[];
+}
+
+// A text's headings and its sections, as `markdownHeadings` and `markdownSections` give them.
+export function markdownStructure(source: string): MarkdownStructure {
+  return binding.markdownStructure(source);
+}

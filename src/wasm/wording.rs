@@ -4,7 +4,7 @@ use wasm_bindgen::prelude::*;
 use super::{answer, argument, index_of, list, string};
 use crate::wording::{
   AllowedUse, BannedTerm, Glossary, KNOWN_LANGUAGES, WORDING_DOCUMENT, add_banned_terms, banned_terms_in,
-  banned_terms_line, check_wording, find_banned, line_language, parse_wording,
+  banned_terms_line, check_wording, find_banned, line_language, parse_wording, swaps_in,
 };
 
 // A term in the package's shape: its occasion and its own senses written only where it has them.
@@ -97,6 +97,18 @@ pub fn add_banned_terms_of(text: &str, entries: &str) -> Result<JsValue, JsError
 pub fn find_banned_of(text: &str, banned: &str) -> Result<JsValue, JsError> {
   let banned = list(&argument(banned)?, term_of)?;
   let hits: Vec<Value> = find_banned(text, &banned)
+    .iter()
+    .map(|hit| json!({ "line": hit.line, "text": hit.text, "term": index_of(&banned, &hit.term) }))
+    .collect();
+
+  Ok(answer(&Value::from(hits)))
+}
+
+/// Every hit outside the text's quoted spans, its term the index of the term among `banned`.
+#[wasm_bindgen(js_name = swapsIn)]
+pub fn swaps_in_of(text: &str, banned: &str) -> Result<JsValue, JsError> {
+  let banned = list(&argument(banned)?, term_of)?;
+  let hits: Vec<Value> = swaps_in(text, &banned)
     .iter()
     .map(|hit| json!({ "line": hit.line, "text": hit.text, "term": index_of(&banned, &hit.term) }))
     .collect();

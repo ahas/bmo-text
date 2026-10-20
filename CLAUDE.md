@@ -14,8 +14,9 @@ Three standing principles hold for every bmo-next repository, this one included:
 This repository is the base library `bmo-text`: the reading and writing of markdown and text that the
 chat services, the console and the archive share. It ships one Rust crate at the root, where every reading is
 written, and one TypeScript package in `package/`, which is that crate built to WebAssembly under thin typed
-modules. It has no server, no deployment and no data of its own, and every bmo-next repository may depend on
-it directly.
+modules. The crate's binary, run as `bmo-text mcp`, is the MCP server of the `ahas-text` harness plugin in
+`plugin/`. It has no HTTP server, no deployment and no data of its own, and every bmo-next repository may
+depend on it directly.
 
 ## Rules
 

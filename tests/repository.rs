@@ -199,6 +199,28 @@ fn the_crate_and_the_package_carry_the_repository_version() {
   assert!(!version.is_empty(), "VERSION names the repository's version");
   assert_eq!(crate_version.as_deref(), Some(version.as_str()), "the crate's version is VERSION's");
   assert_eq!(package_version.as_deref(), Some(version.as_str()), "the package's version is VERSION's");
+  assert_eq!(
+    plugin_manifest()["version"].as_str(),
+    Some(version.as_str()),
+    "the plugin's version is VERSION's"
+  );
+}
+
+fn plugin_manifest() -> Value {
+  serde_json::from_str(&text_of("plugin/.claude-plugin/plugin.json"))
+    .expect("the plugin's manifest is JSON")
+}
+
+#[test]
+fn the_plugin_starts_the_crate_s_mcp_server_and_carries_its_skill() {
+  let servers: Value =
+    serde_json::from_str(&text_of("plugin/.mcp.json")).expect("the plugin's MCP configuration is JSON");
+  let skill = text_of("plugin/skills/ahas-text/SKILL.md");
+
+  assert_eq!(plugin_manifest()["name"], "ahas-text");
+  assert_eq!(servers["mcpServers"]["bmo-text"]["command"], "bmo-text");
+  assert_eq!(servers["mcpServers"]["bmo-text"]["args"], serde_json::json!(["mcp"]));
+  assert!(skill.starts_with("---\nname: \"ahas-text\"\n"), "the skill names itself ahas-text");
 }
 
 // The names of the files a folder holds with an extension, the extension taken off and `_` read as `-`.

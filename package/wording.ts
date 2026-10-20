@@ -77,6 +77,15 @@ export function findBanned(path: string, text: string, banned: readonly BannedTe
   return hits.map((hit) => ({ path, line: hit.line, text: hit.text, term: banned[hit.term]! }));
 }
 
+// Every use of a banned term in a text being written, a line at a time as `findBanned` reads it, outside the
+// spans the text quotes in: a wrong form named in backticks or quotation marks passes. Each hit carries its line
+// as written.
+export function swapsIn(path: string, text: string, banned: readonly BannedTerm[]): WordingHit[] {
+  const hits: { line: number; text: string; term: number }[] = binding.swapsIn(text, JSON.stringify(banned));
+
+  return hits.map((hit) => ({ path, line: hit.line, text: hit.text, term: banned[hit.term]! }));
+}
+
 // The banned terms a text being written uses outside its quoted spans, each once and in the
 // glossary's order. The allowed uses are the file check's and are not read here: they name files.
 export function bannedTermsIn(text: string, glossary: Glossary): BannedTerm[] {

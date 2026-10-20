@@ -1,10 +1,10 @@
 # Public API
 
-Everything a consumer may use, project by project and module by module, fixed at major version 2. An item
-not named here is internal and may change in any version. Both sides carry the same modules
-(`docs/design.md`, 「The twins」), the crate's `js` apart, and a module gives one answer for one input on
-either side. Lengths are UTF-16 units and spaces are JavaScript's white space; a length named `chars`
-counts code points. An item one side carries and the other does not is marked as such.
+Everything a consumer may use, project by project and module by module, and the tools of the MCP server,
+fixed at major version 3. An item not named here is internal and may change in any version. Both sides carry
+the same modules (`docs/design.md`, 「The twins」), the crate's `js` apart, and a module gives one answer for
+one input on either side. Lengths are UTF-16 units and spaces are JavaScript's white space; a length named
+`chars` counts code points. An item one side carries and the other does not is marked as such.
 
 ## The Rust crate `bmo-text`
 
@@ -21,6 +21,8 @@ fields. Where an entry calls a module "the package's", the package's entry says 
 ### `answer_language`
 
 - **`holds_korean`** is the package's `holdsKorean`.
+- **`TextLanguage`** and **`text_language`** are the package's `TextLanguage` and `textLanguage`, a language
+  being `Ko` or `En` and its `code` the package's `ko` or `en`.
 
 ### `dashes`
 
@@ -31,6 +33,8 @@ fields. Where an entry calls a module "the package's", the package's entry says 
   code spans and blocks, quotations, quoted lines, table rows, addresses, a dash opening or ending a line. A
   wrapped text reads a paragraph or a list item as one piece across its line breaks; an unwrapped one reads
   each line alone, as a chat answer is written.
+- **`read_dashes`** reads a text the same way and gives a **`DashReading`**: its `text`, the one
+  `without_dashes` gives, and how many dashes it `found` and replaced, nought for a text that keeps its own.
 
 ### `english`
 
@@ -89,6 +93,11 @@ fields. Where an entry calls a module "the package's", the package's entry says 
 
 - **`read_html`**, **`HtmlReading`** and **`HtmlPicture`** are the package's `html-reading`; a picture's media
   type is its `media_type`.
+- **`read_html_page`** and **`HtmlPage`** are the crate's own: a page's `title` and as many of its `lines`,
+  from the index the caller names, as fit under `answer_cap`'s `MAX_ANSWER_CHARS` joined a line apart, and
+  whether `more` are left after them. A line over the ceiling on its own is given alone, cut at the ceiling,
+  so every page moves the reading on. The pictures are named after the stem given, as `read_html` names
+  them.
 
 ### `js`
 
@@ -135,33 +144,26 @@ The markdown an agent writes, read line for line into Telegram's HTML and plain 
 - **`sent_length`** is how long a piece of markdown is to Telegram: the longer of its markup's visible text
   and its plain text.
 - **`markdown_parts`** divides a long text into consecutive messages at the pauses a reader makes, each under
-  a limit, a code block cut in two being closed and opened again with its language; **`telegram_parts`** does
-  it at Telegram's text limit.
-- **`Pair`**, **`Span`**, **`sent_length`** and **`telegram_parts`** are the crate's own.
+  the limit the caller gives, a code block cut in two being closed and opened again with its language.
+- **`Pair`**, **`Span`** and **`sent_length`** are the crate's own.
 
 ### `markdown_structure`
 
 - **`MarkdownHeading`**, **`markdown_headings`**, **`plain_heading`**, **`heading_slug`**,
-  **`markdown_sections`** and **`halve_text`** are the package's `markdown-structure`; **`Halved`** is what
-  `halve_text` answers, the two halves and the joint.
+  **`markdown_sections`**, **`halve_text`**, **`MarkdownStructure`** and **`markdown_structure`** are the
+  package's `markdown-structure`; **`Halved`** is what `halve_text` answers, the two halves and the joint.
 
-### `telegram`
+### `mcp`
 
-- **`TEXT_LIMIT`** (4096) and **`CAPTION_LIMIT`** (1024) are what one message's text and one file's caption
-  hold; **`MAX_SEND_FILE_BYTES`** is the largest file the Bot API takes, 50 MiB.
-- **`bot_id_from_token`** reads a bot's user id out of its token: the number before its colon, nought where
-  there is none.
-- **`plain_parts`** divides plain words into messages under a limit the way a Telegram client divides a long
-  paste: each part ends after the last blank line, line break or space that fits.
-- **`transcript_parts`** folds the reading a voice was spoken from under the voice: its first part the
-  caption, the rest replies, every part an expandable quote of its escaped words, cut only between whole
-  characters a reader sees as one.
+The crate's own, compiled only with the `mcp` feature: the MCP server the binary starts (「The MCP server
+`bmo-text mcp`」). **`serve_stdio`** answers MCP over the process's standard input and output until the other
+side closes them; **`TextTools`** is the server, whose tools are no API of their own beyond what that section
+states.
 
 ### `translation_parts`
 
-- **`TextLanguage`**, **`text_language`**, **`TRANSLATION_PART_TOKENS`**, **`translation_parts`** and
-  **`shown_part`** are the package's `translation-parts`, a language being `Ko` or `En` and its `code` the
-  package's `ko` or `en`.
+- **`TRANSLATION_PART_TOKENS`**, **`translation_parts`** and **`shown_part`** are the package's
+  `translation-parts`.
 
 ### `web_address`
 
@@ -201,6 +203,10 @@ the word's own sense (`<language> · <term> · <phrase> — <why>`) and allowed 
 - **`find_banned`** finds every use of a banned term in a text, a line at a time and on lines of the term's
   own language, a Korean term another syllable runs into from the left belonging to that longer word, and a
   term inside a phrase of its own sense passing.
+- **`swaps_in`** finds the same uses outside the spans a text quotes in (`QUOTED_SPAN`): what a text being
+  written is held to, each hit carrying its line as written.
+- **`text_swaps`** is the crate's own: `swaps_in` against the banned terms of the document in a folder the
+  caller names, with an English sentence for a document that cannot be read or does not parse.
 - **`QUOTED_SPAN`** is the span a text quotes in: backticks or a pair of quotation marks on one line.
   **`banned_terms_in`** gives the banned terms a text uses outside such spans, each once and in the glossary's
   order; **`banned_terms_line`** writes them beside what to write instead.
@@ -236,10 +242,13 @@ WebAssembly, which the package carries (`docs/design.md`, 「One implementation�
 ### `answer-language`
 
 - **`holdsKorean`** answers whether a text holds any Hangul syllable at all.
+- **`TextLanguage`** and **`textLanguage`** tell whether a text is written in Korean or English by its letters
+  outside code: a text with few Hangul syllables against its Latin letters is English, every other Korean.
 
 ### `dashes`
 
-- **`withoutDashes`** is the crate's `without_dashes`, the wrapped reading asked for by an option.
+- **`withoutDashes`** and **`readDashes`** are the crate's `without_dashes` and `read_dashes`, the wrapped
+  reading asked for by an option; **`DashReading`** is the latter's `text` and `found`.
 
 ### `english`
 
@@ -301,23 +310,18 @@ rest) turned into the markdown they stand for.
 - **`markdownSections`** cuts a text at each heading, the lead before the first kept, the sections joining back
   into the text; **`halveText`** cuts a text in two at the paragraph boundary nearest its middle, or the
   line boundary where it has no paragraph boundary, and says what joins the halves; none for one line.
+- **`MarkdownStructure`** and **`markdownStructure`** give a text's `headings` and its `sections` in one
+  reading, as `markdownHeadings` and `markdownSections` give them.
 
 ### `markdown`
 
 - **`Inline`**, **`Line`**, **`Block`**, **`MarkdownDocument`**, **`Converted`** and **`Fold`** are the crate's
   reading; **`parseInline`**, **`parseMarkdown`**, **`renderInline`**, **`plainInline`**, **`convertMarkdown`**,
-  **`foldBlocks`**, **`foldedMarkup`**, **`codeMarkup`** and **`markdownParts`** its functions, the limit of a
-  division defaulting to Telegram's text limit.
-
-### `telegram`
-
-- **`telegramTextLimit`**, **`telegramCaptionLimit`**, **`maxSendFileBytes`**, **`botIdFromToken`**,
-  **`plainParts`** and **`transcriptParts`** are the crate's `telegram`.
+  **`foldBlocks`**, **`foldedMarkup`**, **`codeMarkup`** and **`markdownParts`** its functions, a division
+  taking its limit from the caller.
 
 ### `translation-parts`
 
-- **`TextLanguage`** and **`textLanguage`** tell whether a text is written in Korean or English by its letters
-  outside code.
 - **`translationParts`** cuts a text into the parts a translator is given: its sections, consecutive ones
   packed together while they fit a token budget (**`TRANSLATION_PART_TOKENS`**, 750, by default), a section
   too large cut at its paragraphs, the parts joining back into the text. **`shownPart`** gives what a part
@@ -332,16 +336,50 @@ rest) turned into the markdown they stand for.
 ### `wording`
 
 - **`wordingDocument`**, **`BannedTerm`**, **`AllowedUse`**, **`Glossary`**, **`WordingHit`**, **`lineLanguage`**,
-  **`parseGlossary`**, **`addBannedTerms`**, **`findBanned`**, **`bannedTermsIn`** and **`bannedTermsLine`** are
-  the crate's `wording`. **`parseGlossary`** gives both lists; **`readGlossary`** reads the document in the
-  folder the caller names and throws where it cannot be read; **`findBanned`** takes the path the text was
-  read from, which each hit carries; **`knownLanguages`**, the crate's `KNOWN_LANGUAGES`, are the codes a line
-  can be told in.
+  **`parseGlossary`**, **`addBannedTerms`**, **`findBanned`**, **`swapsIn`**, **`bannedTermsIn`** and
+  **`bannedTermsLine`** are the crate's `wording`. **`parseGlossary`** gives both lists; **`readGlossary`** reads
+  the document in the folder the caller names and throws where it cannot be read; **`findBanned`** and
+  **`swapsIn`** take the path the text was read from, which each hit carries; **`knownLanguages`**, the crate's
+  `KNOWN_LANGUAGES`, are the codes a line can be told in.
 - **`checkWording`** and **`WordingReport`** are the crate's `check_wording` and `WordingReport`, a hit
   carrying its path itself; an error the reading function throws is thrown on.
 - A term the package gives back, alone or in a hit, is the caller's own object from the list it passed.
-- The crate's `QUOTED_SPAN`, its `FileHit` and its `parse_glossary` of the banned terms alone are the
-  crate's.
+- The crate's `QUOTED_SPAN`, its `FileHit`, its `text_swaps` and its `parse_glossary` of the banned terms
+  alone are the crate's.
+
+## The MCP server `bmo-text mcp`
+
+The crate's binary `bmo-text`, run as `bmo-text mcp`, answers MCP over its standard input and output for the
+harness that started it (`docs/design.md`, 「The MCP server」). It is installed with `cargo install --path .`
+from the repository's root. It serves tools alone, seven of them, each a thin call of the crate function
+named; an input field marked optional may be left out or `null`. A tool's answer is its structured output, the
+same JSON written once more as its text; a tool that cannot answer gives an error result of one English
+sentence.
+
+- **`text_dashes`** calls `dashes::read_dashes`. In: `text`, and optional `replace` and `wrapped`, both false
+  by default. Out: `text`, the text with its dashes replaced where `replace` is true and as given otherwise,
+  and `found`, how many dashes between words it holds.
+- **`text_language`** calls `answer_language::text_language`. In: `text`. Out: `language`, `ko` or `en`.
+- **`text_markdown_structure`** calls `markdown_structure::markdown_structure`. In: `markdown`. Out:
+  `headings`, each its `depth`, `text`, `slug` and `line`, and `sections`, the text cut at each heading.
+- **`text_html_reading`** calls `html_reading::read_html_page`, the pictures named after `picture`. In: `html`,
+  and optional `from`, the index of the first line asked for, nought by default. Out: `title` or `null`,
+  `lines`, and `more`, whether lines are left after them; the next page is asked from `from` and the number
+  of lines given.
+- **`text_translation_parts`** calls `translation_parts::translation_parts`. In: `text`, and optional
+  `limit`, the token budget of a part, `TRANSLATION_PART_TOKENS` by default. Out: `parts`.
+- **`text_web_addresses`** calls `web_address::web_addresses_in`. In: `text`. Out: `addresses`, each address
+  as written, in order.
+- **`text_wording`** calls `wording::text_swaps`. In: `text`, and optional `folder`, the folder holding the
+  glossary document, the server's working directory by default. Out: `swaps`, each its `line`, the line's
+  `text`, the `term`, what to write `instead` and `when` the entry applies, or `null`. A glossary that cannot
+  be read or does not parse is the tool's error.
+
+## The harness plugin `ahas-text`
+
+`plugin/` is the plugin a harness installs: its manifest names it `ahas-text` at the repository's version,
+its MCP configuration starts `bmo-text mcp` from the harness's `PATH`, and its skill `ahas-text` tells the
+harness when to call each tool.
 
 ## Data files
 

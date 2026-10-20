@@ -1,12 +1,7 @@
 use wasm_bindgen::prelude::*;
 
 use super::{count, number};
-use crate::translation_parts::{TRANSLATION_PART_TOKENS, shown_part, text_language, translation_parts};
-
-#[wasm_bindgen(js_name = textLanguage)]
-pub fn text_language_of(text: &str) -> String {
-  text_language(text).code().to_owned()
-}
+use crate::translation_parts::{TRANSLATION_PART_TOKENS, shown_part, translation_parts};
 
 #[wasm_bindgen(js_name = translationPartTokens)]
 pub fn translation_part_tokens() -> f64 {

@@ -235,3 +235,18 @@ pub fn markdown_sections(source: &str) -> Vec<String> {
   sections.push(slice(from, lines.len()));
   sections
 }
+
+/// A markdown text's structure in one reading: its headings and its sections.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct MarkdownStructure {
+  pub headings: Vec<MarkdownHeading>,
+  pub sections: Vec<String>,
+}
+
+/// A text's headings and its sections, as `markdown_headings` and `markdown_sections` give them.
+pub fn markdown_structure(source: &str) -> MarkdownStructure {
+  MarkdownStructure {
+    headings: markdown_headings(source),
+    sections: markdown_sections(source),
+  }
+}

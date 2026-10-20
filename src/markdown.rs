@@ -18,7 +18,6 @@ use crate::format::{
   visible_text,
 };
 use crate::js::{self, DOT, SPACE, chars, is_space, units, units_of, within};
-use crate::telegram::TEXT_LIMIT;
 use crate::web_address::{bare_address_at, glued_after_address, markdown_link_at};
 
 /// What a formatting pair makes.
@@ -1124,9 +1123,4 @@ pub fn markdown_parts(text: &str, limit: usize) -> Vec<String> {
   }
 
   parts
-}
-
-/// The parts one Telegram message each holds.
-pub fn telegram_parts(text: &str) -> Vec<String> {
-  markdown_parts(text, TEXT_LIMIT)
 }

@@ -1,5 +1,5 @@
 {
-  "about": "The cases the markdown reading is held to: a line's pieces and a document's blocks in the package's shape, their markup and plain text, a whole conversion as its markup, plain text and whether it is formatted, the fold, the folded markup and the markup a send asking no gate puts up, each from a source, and the division into messages under a limit in UTF-16 units, Telegram's text limit where none is given.",
+  "about": "The cases the markdown reading is held to: a line's pieces and a document's blocks in the package's shape, their markup and plain text, a whole conversion as its markup, plain text and whether it is formatted, the fold, the folded markup and the markup a send asking no gate puts up, each from a source, and the division into messages under the limit given, in UTF-16 units.",
   "parseInline": [
     {
       "name": "words, code, pairs and a link",
@@ -1934,7 +1934,8 @@
     {
       "name": "a text that fits is one part, unchanged",
       "args": [
-        "a short text"
+        "a short text",
+        4096
       ],
       "answer": [
         "a short text"

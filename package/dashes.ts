@@ -10,3 +10,15 @@ import { binding } from "./binding";
 export function withoutDashes(text: string, options: { wrapped?: boolean } = {}): string {
   return binding.withoutDashes(text, options.wrapped ?? false);
 }
+
+// A text read for its dashes: the text with every dash left between words replaced, and how many there were.
+export interface DashReading {
+  text: string;
+  found: number;
+}
+
+// The text `withoutDashes` gives, and how many dashes it replaced: nought for a text whose dashes are all its
+// own, in code, quotations, addresses or tables.
+export function readDashes(text: string, options: { wrapped?: boolean } = {}): DashReading {
+  return binding.readDashes(text, options.wrapped ?? false);
+}

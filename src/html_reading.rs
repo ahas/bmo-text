@@ -19,6 +19,7 @@ use lol_html::html_content::{Element, TextChunk};
 use lol_html::{HtmlRewriter, Settings, doc_text, element};
 use regex::Regex;
 
+use crate::answer_cap::{MAX_ANSWER_CHARS, Said, cap_items, cap_value};
 use crate::js::{self, SPACE};
 
 /// One picture a page carried inside itself.
@@ -323,4 +324,34 @@ pub fn read_html(html: &str, stem: &str) -> HtmlReading {
   state.flush();
   state.done.title = state.title.as_deref().map(words).filter(|title| !title.is_empty());
   state.done
+}
+
+/// One page of a page's reading: its title, the lines from the one asked for that fit under the answer ceiling,
+/// and whether more are left after them.
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub struct HtmlPage {
+  pub title: Option<String>,
+  pub lines: Vec<String>,
+  pub more: bool,
+}
+
+/// The reading of one page from its line `from`, counted from nought: as many lines as fit under
+/// `MAX_ANSWER_CHARS` joined a line apart, and at least one, cut at the ceiling where it is over it alone, so
+/// each page moves the reading on. `stem` names the pictures as `read_html` names them.
+pub fn read_html_page(html: &str, stem: &str, from: usize) -> HtmlPage {
+  let reading = read_html(html, stem);
+  let rest = &reading.lines[from.min(reading.lines.len())..];
+  let capped =
+    cap_items(rest, |lines| lines.join("\n"), &Said::new("lines", "ask again from the next line."));
+  let lines = if capped.kept.is_empty() {
+    rest.first().map(|line| vec![cap_value(line, MAX_ANSWER_CHARS)]).unwrap_or_default()
+  } else {
+    capped.kept
+  };
+
+  HtmlPage {
+    title: reading.title,
+    more: lines.len() < rest.len(),
+    lines,
+  }
 }

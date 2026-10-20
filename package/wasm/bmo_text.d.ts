@@ -31,11 +31,6 @@ export function bannedTermsLine(terms: string): string;
 export function bareAddressAt(text: string, at: number): string | undefined;
 
 /**
- * The bot's user id as a number, as the package gives it.
- */
-export function botIdFromToken(token: string): number;
-
-/**
  * The cut of `length` items, `render` being given how many from the front a prefix holds and giving what the
  * caller prints for it: how many are kept, how many are left and the note. An error `render` throws is
  * thrown on once the cut has stopped calling it.
@@ -106,15 +101,15 @@ export function markdownHeadings(source: string): any;
 
 export function markdownLinkAt(text: string, at: number): any;
 
-export function markdownParts(text: string, limit?: number | null): string[];
+export function markdownParts(text: string, limit: number): string[];
 
 export function markdownSections(source: string): string[];
+
+export function markdownStructure(source: string): any;
 
 export function markupFault(markup: string): any;
 
 export function maxAnswerChars(): number;
-
-export function maxSendFileBytes(): number;
 
 export function maxValueChars(): number;
 
@@ -140,7 +135,7 @@ export function plainHeading(text: string): string;
 
 export function plainInline(nodes: string): string;
 
-export function plainParts(text: string, limit: number): string[];
+export function readDashes(text: string, wrapped: boolean): any;
 
 /**
  * The reading in the package's shape, each picture's bytes the bytes themselves rather than a list of
@@ -152,13 +147,12 @@ export function renderInline(nodes: string): string;
 
 export function shownPart(source: string, text?: string | null): string;
 
-export function telegramCaptionLimit(): number;
-
-export function telegramTextLimit(): number;
+/**
+ * Every hit outside the text's quoted spans, its term the index of the term among `banned`.
+ */
+export function swapsIn(text: string, banned: string): any;
 
 export function textLanguage(text: string): string;
-
-export function transcriptParts(text: string): string[];
 
 export function translationPartTokens(): number;
 
@@ -182,7 +176,6 @@ export interface InitOutput {
     readonly bannedTermsIn: (a: number, b: number, c: number, d: number) => [number, number, number];
     readonly bannedTermsLine: (a: number, b: number) => [number, number, number, number];
     readonly bareAddressAt: (a: number, b: number, c: number) => [number, number];
-    readonly botIdFromToken: (a: number, b: number) => number;
     readonly capItems: (a: number, b: any, c: number, d: number, e: number, f: number, g: number, h: number) => [number, number, number];
     readonly capValue: (a: number, b: number, c: number, d: number) => [number, number];
     readonly checkWording: (a: number, b: number, c: any, d: number, e: number) => [number, number, number];
@@ -214,11 +207,11 @@ export interface InitOutput {
     readonly longTextLength: () => number;
     readonly markdownHeadings: (a: number, b: number) => any;
     readonly markdownLinkAt: (a: number, b: number, c: number) => any;
-    readonly markdownParts: (a: number, b: number, c: number, d: number) => [number, number];
+    readonly markdownParts: (a: number, b: number, c: number) => [number, number];
     readonly markdownSections: (a: number, b: number) => [number, number];
+    readonly markdownStructure: (a: number, b: number) => any;
     readonly markupFault: (a: number, b: number) => any;
     readonly maxAnswerChars: () => number;
-    readonly maxSendFileBytes: () => number;
     readonly maxValueChars: () => number;
     readonly nonEnglishLetters: (a: number, b: number, c: number, d: number) => [number, number, number];
     readonly parseGlossary: (a: number, b: number) => [number, number, number];
@@ -228,14 +221,12 @@ export interface InitOutput {
     readonly pictureCaption: (a: number, b: number) => [number, number];
     readonly plainHeading: (a: number, b: number) => [number, number];
     readonly plainInline: (a: number, b: number) => [number, number, number, number];
-    readonly plainParts: (a: number, b: number, c: number) => [number, number];
+    readonly readDashes: (a: number, b: number, c: number) => any;
     readonly readHtml: (a: number, b: number, c: number, d: number) => any;
     readonly renderInline: (a: number, b: number) => [number, number, number, number];
     readonly shownPart: (a: number, b: number, c: number, d: number) => [number, number];
-    readonly telegramCaptionLimit: () => number;
-    readonly telegramTextLimit: () => number;
+    readonly swapsIn: (a: number, b: number, c: number, d: number) => [number, number, number];
     readonly textLanguage: (a: number, b: number) => [number, number];
-    readonly transcriptParts: (a: number, b: number) => [number, number];
     readonly translationPartTokens: () => number;
     readonly translationParts: (a: number, b: number, c: number, d: number) => [number, number];
     readonly visibleText: (a: number, b: number) => [number, number];

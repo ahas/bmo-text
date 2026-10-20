@@ -5,7 +5,6 @@
 // CommonMark's. The reading is the crate's, through the package's WebAssembly build.
 
 import { binding } from "./binding";
-import { telegramTextLimit } from "./telegram";
 
 export type Inline =
   | { kind: "text"; text: string }
@@ -108,6 +107,6 @@ export function codeMarkup(converted: Converted): string | null {
 // line break, else the last space inside the window. Each part is a whole piece of markdown: a code block cut
 // in two is closed at the end of one part and opened again, with its language, at the start of the next. The
 // parts put back together are the text, save for the fence lines a divided code block gains.
-export function markdownParts(text: string, limit: number = telegramTextLimit): string[] {
+export function markdownParts(text: string, limit: number): string[] {
   return binding.markdownParts(text, limit);
 }

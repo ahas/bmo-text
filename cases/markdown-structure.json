@@ -1,5 +1,5 @@
 {
-  "about": "The cases the structure of a markdown text is held to: its ATX headings outside fenced code, a heading's words and mark, its sections and its halves. Offsets and middles are UTF-16 units.",
+  "about": "The cases the structure of a markdown text is held to: its ATX headings outside fenced code, a heading's words and mark, its sections and its halves, and its headings and sections in one reading. Offsets and middles are UTF-16 units.",
   "markdownHeadings": [
     {
       "name": "headings are read in order with their depth, words and source line",
@@ -566,6 +566,47 @@
           "bb\n\nccc"
         ],
         "joint": "\n\n"
+      }
+    }
+  ],
+  "markdownStructure": [
+    {
+      "name": "the headings outside code and the sections at each of them",
+      "args": [
+        "Lead\n\n# One\nBody\n```\n# code\n```\n## Two\nEnd"
+      ],
+      "answer": {
+        "headings": [
+          {
+            "depth": 1,
+            "text": "One",
+            "slug": "one",
+            "line": 3
+          },
+          {
+            "depth": 2,
+            "text": "Two",
+            "slug": "two",
+            "line": 8
+          }
+        ],
+        "sections": [
+          "Lead\n\n",
+          "# One\nBody\n```\n# code\n```\n",
+          "## Two\nEnd"
+        ]
+      }
+    },
+    {
+      "name": "an empty text has no heading and one empty section",
+      "args": [
+        ""
+      ],
+      "answer": {
+        "headings": [],
+        "sections": [
+          ""
+        ]
       }
     }
   ]

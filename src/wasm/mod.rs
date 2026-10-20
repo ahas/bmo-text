@@ -13,7 +13,6 @@ mod format;
 mod html_reading;
 mod markdown;
 mod markdown_structure;
-mod telegram;
 mod translation_parts;
 mod web_address;
 mod wording;

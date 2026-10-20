@@ -7,7 +7,6 @@ use crate::markdown::{
   Block, Converted, Document, Fold, Inline, Pair, Span, code_markup, convert_markdown, fold_blocks,
   folded_markup, markdown_parts, parse_inline, parse_markdown, plain_inline, render_inline,
 };
-use crate::telegram::TEXT_LIMIT;
 
 fn pair_kind(pair: Pair) -> &'static str {
   match pair {
@@ -181,6 +180,6 @@ pub fn code_markup_of(converted: &str) -> Result<Option<String>, JsError> {
 }
 
 #[wasm_bindgen(js_name = markdownParts)]
-pub fn markdown_parts_of(text: &str, limit: Option<f64>) -> Vec<String> {
-  markdown_parts(text, limit.map_or(TEXT_LIMIT, count))
+pub fn markdown_parts_of(text: &str, limit: f64) -> Vec<String> {
+  markdown_parts(text, count(limit))
 }

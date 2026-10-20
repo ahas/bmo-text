@@ -3,7 +3,6 @@
   "package/tests/markdown.test.ts": 4,
   "src/answer_language.rs": 1,
   "src/english.rs": 1,
-  "src/translation_parts.rs": 1,
   "src/web_address.rs": 1,
   "src/wording.rs": 2,
   "tests/english.rs": 1,

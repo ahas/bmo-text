@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "bmo-text": {
+      "command": "bmo-text",
+      "args": ["mcp"]
+    }
+  }
+}

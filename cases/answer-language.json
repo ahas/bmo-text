@@ -1,5 +1,5 @@
 {
-  "about": "The cases whether an answer holds Korean is held to: any Hangul syllable counts, and nothing else does.",
+  "about": "The cases the answer language is held to: whether a text holds any Hangul syllable, and the language a text is written in by its letters outside code.",
   "holdsKorean": [
     {
       "name": "an English answer holds none",
@@ -63,6 +63,85 @@
         "🙂 done"
       ],
       "answer": false
+    }
+  ],
+  "textLanguage": [
+    {
+      "name": "an English text",
+      "args": [
+        "The run finished and every test passed."
+      ],
+      "answer": "en"
+    },
+    {
+      "name": "a Korean text",
+      "args": [
+        "작업을 마쳤고 시험이 모두 통과했습니다."
+      ],
+      "answer": "ko"
+    },
+    {
+      "name": "a few syllables against many Latin letters is English",
+      "args": [
+        "The word 가 means nothing on its own here."
+      ],
+      "answer": "en"
+    },
+    {
+      "name": "an empty text is Korean",
+      "args": [
+        ""
+      ],
+      "answer": "ko"
+    },
+    {
+      "name": "Latin letters inside a fenced block are not counted",
+      "args": [
+        "설명입니다\n```\nconst many = letters + in + code;\n```\n"
+      ],
+      "answer": "ko"
+    },
+    {
+      "name": "a tilde fence is code too",
+      "args": [
+        "설명\n~~~\nmany latin letters here and there\n~~~"
+      ],
+      "answer": "ko"
+    },
+    {
+      "name": "a fence closes only on its own run",
+      "args": [
+        "한글\n```\ncode words here\n````\nmore english words outside of any block"
+      ],
+      "answer": "en"
+    },
+    {
+      "name": "an indented fence of up to three spaces is code",
+      "args": [
+        "한글 문장\n   ```\nlatin letters in code\n   ```"
+      ],
+      "answer": "ko"
+    },
+    {
+      "name": "a code span is not counted",
+      "args": [
+        "설명 `someLongIdentifierName` 끝"
+      ],
+      "answer": "ko"
+    },
+    {
+      "name": "an unclosed fence is read as prose",
+      "args": [
+        "한글\n```\nlatin letters everywhere in this unclosed block"
+      ],
+      "answer": "en"
+    },
+    {
+      "name": "a fence closes at a carriage return",
+      "args": [
+        "한글\r\n```\r\nlatin words in a block\r\n```\r\n끝"
+      ],
+      "answer": "ko"
     }
   ]
 }

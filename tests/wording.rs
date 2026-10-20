@@ -75,6 +75,11 @@ fn the_shared_cases_hold() {
 
         find_banned(text(&args[1]), &terms_of(&args[2])).iter().map(hit).collect()
       }),
+      ("swapsIn", &|args| {
+        let hit = |hit: &WordingHit| json!({ "path": args[0], "line": hit.line, "text": hit.text, "term": term_json(&hit.term) });
+
+        swaps_in(text(&args[1]), &terms_of(&args[2])).iter().map(hit).collect()
+      }),
       ("bannedTermsIn", &|args| {
         terms_json(&banned_terms_in(text(&args[0]), &terms_of(&args[1])))
       }),
@@ -119,4 +124,49 @@ fn an_allowed_use_passes_only_in_its_own_file_and_line_and_a_stale_one_is_report
 #[test]
 fn a_folder_with_no_glossary_bans_nothing() {
   assert!(read_glossary(Path::new("/nonexistent/folder")).is_empty());
+}
+
+// A folder of its own for one test, holding the glossary document given, taken down when the test ends.
+struct GlossaryFolder(std::path::PathBuf);
+
+impl GlossaryFolder {
+  fn holding(name: &str, document: &str) -> Self {
+    let folder = std::env::temp_dir().join(format!("bmo-text-wording-{name}-{}", std::process::id()));
+
+    std::fs::create_dir_all(&folder).expect("the folder is made");
+    std::fs::write(folder.join(WORDING_DOCUMENT), document).expect("the glossary is written");
+    Self(folder)
+  }
+}
+
+impl Drop for GlossaryFolder {
+  fn drop(&mut self) {
+    let _ = std::fs::remove_dir_all(&self.0);
+  }
+}
+
+#[test]
+fn a_text_is_held_to_the_glossary_in_the_folder_named() {
+  let folder = GlossaryFolder::holding("read", SAMPLE);
+  let hits =
+    text_swaps("the `tool strip` is gone\nclick the tool strip", &folder.0).expect("the glossary reads");
+
+  assert_eq!(hits.len(), 1);
+  assert_eq!((hits[0].line, hits[0].term.instead.as_str()), (2, "toolbar"));
+}
+
+#[test]
+fn a_glossary_that_cannot_be_read_or_parsed_is_said_rather_than_read_as_clean() {
+  let missing = text_swaps("anything", Path::new("/nonexistent/folder")).expect_err("no glossary there");
+  let faulty = GlossaryFolder::holding("faulty", "## Banned terms\n\n- xx · tool strip → toolbar\n");
+
+  assert!(
+    missing.starts_with("The glossary /nonexistent/folder/WORDING.md cannot be read"),
+    "{missing}"
+  );
+  assert!(
+    text_swaps("anything", &faulty.0)
+      .expect_err("a faulty glossary")
+      .contains("unknown language code")
+  );
 }

@@ -3,17 +3,27 @@ use wasm_bindgen::prelude::*;
 
 use super::answer;
 use crate::markdown_structure::{
-  halve_text, heading_slug, markdown_headings, markdown_sections, plain_heading,
+  MarkdownHeading, halve_text, heading_slug, markdown_headings, markdown_sections, markdown_structure,
+  plain_heading,
 };
+
+fn headings_json(headings: &[MarkdownHeading]) -> Value {
+  headings
+    .iter()
+    .map(|heading| json!({ "depth": heading.depth, "text": heading.text, "slug": heading.slug, "line": heading.line }))
+    .collect()
+}
 
 #[wasm_bindgen(js_name = markdownHeadings)]
 pub fn markdown_headings_of(source: &str) -> JsValue {
-  let headings: Vec<Value> = markdown_headings(source)
-    .iter()
-    .map(|heading| json!({ "depth": heading.depth, "text": heading.text, "slug": heading.slug, "line": heading.line }))
-    .collect();
+  answer(&headings_json(&markdown_headings(source)))
+}
 
-  answer(&Value::from(headings))
+#[wasm_bindgen(js_name = markdownStructure)]
+pub fn markdown_structure_of(source: &str) -> JsValue {
+  let structure = markdown_structure(source);
+
+  answer(&json!({ "headings": headings_json(&structure.headings), "sections": structure.sections }))
 }
 
 #[wasm_bindgen(js_name = plainHeading)]

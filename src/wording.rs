@@ -209,9 +209,17 @@ fn used_in(line: &str, term: &BannedTerm) -> bool {
   false
 }
 
+// A text with every quoted span blanked out, so its lines stand where they stood with only the writer's own
+// words left in them.
+fn unquoted(text: &str) -> String {
+  QUOTED_SPAN
+    .replace_all(text, |found: &regex::Captures| " ".repeat(units(&found[0])))
+    .into_owned()
+}
+
 /// The banned terms a text uses outside its quoted spans, each once and in the glossary's order.
 pub fn banned_terms_in(text: &str, glossary: &[BannedTerm]) -> Vec<BannedTerm> {
-  let bare = QUOTED_SPAN.replace_all(text, |found: &regex::Captures| " ".repeat(units(&found[0])));
+  let bare = unquoted(text);
   let lines: Vec<(&str, &str)> = bare.split('\n').map(|line| (line_language(line), line)).collect();
 
   glossary
@@ -248,6 +256,39 @@ pub fn find_banned(text: &str, banned: &[BannedTerm]) -> Vec<WordingHit> {
   }
 
   hits
+}
+
+/// Every use of a banned term in a text being written, a line at a time as `find_banned` reads it, outside the
+/// spans the text quotes in: a wrong form named in backticks or quotation marks passes. Each hit carries its
+/// line as written.
+pub fn swaps_in(text: &str, banned: &[BannedTerm]) -> Vec<WordingHit> {
+  let bare = unquoted(text);
+  let mut hits = Vec::new();
+
+  for (index, (line, written)) in bare.split('\n').zip(text.split('\n')).enumerate() {
+    let lang = line_language(line);
+
+    for term in banned.iter().filter(|term| term.lang == lang && used_in(line, term)) {
+      hits.push(WordingHit {
+        line: index + 1,
+        text: written.to_owned(),
+        term: term.clone(),
+      });
+    }
+  }
+
+  hits
+}
+
+/// `swaps_in` against the banned terms of the glossary in `folder`, under its conventional name. A glossary
+/// that cannot be read or does not parse is an English sentence saying so, never an empty list read as a clean
+/// text.
+pub fn text_swaps(text: &str, folder: &Path) -> Result<Vec<WordingHit>, String> {
+  let path = folder.join(WORDING_DOCUMENT);
+  let document = std::fs::read_to_string(&path)
+    .map_err(|error| format!("The glossary {} cannot be read: {error}.", path.display()))?;
+
+  Ok(swaps_in(text, &parse_glossary(&document)?))
 }
 
 // A banned term's line in the list's own shape.

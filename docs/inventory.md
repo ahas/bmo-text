@@ -18,17 +18,17 @@ the count and the source each was read from, and what becomes of each.
 
 | Kind | Count | Kept | Dropped |
 |---|---|---|---|
-| Rust modules | 9 | 9 | 0 |
-| TypeScript runtime modules | 16 | 12 | 4 |
+| Rust modules | 9 | 8 | 1 |
+| TypeScript runtime modules | 16 | 11 | 5 |
 | TypeScript tests | 11 | 8 | 3 |
 | Data files | 2 | 1 | 1 |
 | Manifests | 4 | 2 | 2 |
-| Total | 42 | 32 | 10 |
+| Total | 42 | 30 | 12 |
 
 ### Kept: the Rust crate, at the root
 
-Each module keeps its name under `src/`. The eight that carried an inline test module have it moved into
-`tests/`, one file per module.
+Each kept module keeps its name under `src/`. The seven that carried an inline test module have it moved
+into `tests/`, one file per module.
 
 | Module | Inline tests | What changes in it |
 |---|---|---|
@@ -37,8 +37,7 @@ Each module keeps its name under `src/`. The eight that carried an inline test m
 | `english` | yes | Built from the same two values as plain parameters (the set-aside pattern and the Latin letters per Hangul syllable) instead of a policy struct, with a strict default; its Hangul range written as literal characters |
 | `format` | yes | The fault reasons are fixed English sentences; no policy crate and no fill helper |
 | `js` | yes | Its hash test's Korean sample written plainly instead of as escapes |
-| `markdown` | yes | Nothing beyond the move of its tests |
-| `telegram` | yes | Nothing beyond the move of its tests |
+| `markdown` | yes | Its division into messages takes its limit from the caller |
 | `web_address` | yes | Its Hangul ranges and its test's Korean sample written plainly instead of as escapes |
 | `wording` | yes | Its test's Korean word written plainly instead of as escapes |
 
@@ -53,8 +52,7 @@ Each module keeps its name under `src/`. The eight that carried an inline test m
 | `format` | The fault reasons are the same fixed English sentences as the crate's; no policy import, no fill helper |
 | `html-reading` | Nothing |
 | `markdown-structure` | Nothing |
-| `markdown` | Nothing beyond Korean in comments |
-| `telegram-parts` | Becomes `telegram`, the crate's twin, and gains the crate's divisions of plain words and of a transcript |
+| `markdown` | Its division into messages takes its limit from the caller; Korean in comments goes |
 | `translation-parts` | Nothing |
 | `web-address` | Its Hangul ranges written as literal characters instead of escapes |
 | `wording` | Loses its two checkout scans; reading a glossary takes the path from the caller |
@@ -81,6 +79,7 @@ rule of `docs/design.md`, and names of people, agents and real places become neu
 | `korean-in-code-ledger.json` | The old repository's ledger for the whole repository; this repository writes its own |
 | `bunfig.toml` | Preloaded test helpers of other units; the new one preloads nothing |
 | `Cargo.toml` | Inherited a workspace that is not this repository's; the new one stands alone |
+| `telegram` in the crate, `telegram-parts.ts` in the package | One chat platform's limits, bot token, file size and the divisions sized to them are that platform's own, stated where it is served; the library's divisions take a limit from the caller |
 
 ## Data and policy files the old code read
 

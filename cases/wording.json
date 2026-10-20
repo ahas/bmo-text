@@ -1,5 +1,5 @@
 {
-  "about": "The cases a glossary of banned terms is held to: its document read, terms found on lines of their own language, terms named in a text being written, and new lines added. A refusal is its sentence under `error`; the terms a text uses are found against the banned list alone.",
+  "about": "The cases a glossary of banned terms is held to: its document read, terms found on lines of their own language, terms named in a text being written and their uses outside the spans it quotes in, and new lines added. A refusal is its sentence under `error`; the terms a text uses are found against the banned list alone.",
   "lineLanguage": [
     {
       "name": "Hangul is Korean",
@@ -825,6 +825,131 @@
           }
         ]
       }
+    }
+  ],
+  "swapsIn": [
+    {
+      "name": "a wrong form named in backticks passes and the bare one is found",
+      "args": [
+        "note.md",
+        "write `tool strip` as one word\nthe tool strip above",
+        [
+          {
+            "lang": "en",
+            "term": "tool strip",
+            "instead": "toolbar"
+          }
+        ]
+      ],
+      "answer": [
+        {
+          "path": "note.md",
+          "line": 2,
+          "text": "the tool strip above",
+          "term": {
+            "lang": "en",
+            "term": "tool strip",
+            "instead": "toolbar"
+          }
+        }
+      ]
+    },
+    {
+      "name": "a use in quotation marks passes",
+      "args": [
+        "note.md",
+        "the old name \"tool strip\" is gone",
+        [
+          {
+            "lang": "en",
+            "term": "tool strip",
+            "instead": "toolbar"
+          }
+        ]
+      ],
+      "answer": []
+    },
+    {
+      "name": "a hit carries its line as written, quoted spans and all",
+      "args": [
+        "note.md",
+        "the `x` tool strip",
+        [
+          {
+            "lang": "en",
+            "term": "tool strip",
+            "instead": "toolbar"
+          }
+        ]
+      ],
+      "answer": [
+        {
+          "path": "note.md",
+          "line": 1,
+          "text": "the `x` tool strip",
+          "term": {
+            "lang": "en",
+            "term": "tool strip",
+            "instead": "toolbar"
+          }
+        }
+      ]
+    },
+    {
+      "name": "a Korean term standing on its own is found outside quotes",
+      "args": [
+        "x.md",
+        "협업으로 돌리기",
+        [
+          {
+            "lang": "ko",
+            "term": "돌리기",
+            "instead": "실행"
+          }
+        ]
+      ],
+      "answer": [
+        {
+          "path": "x.md",
+          "line": 1,
+          "text": "협업으로 돌리기",
+          "term": {
+            "lang": "ko",
+            "term": "돌리기",
+            "instead": "실행"
+          }
+        }
+      ]
+    },
+    {
+      "name": "a term inside a phrase of its own sense passes outside quotes",
+      "args": [
+        "x.md",
+        "the slot machine paid out",
+        [
+          {
+            "lang": "en",
+            "term": "tool strip",
+            "instead": "toolbar"
+          },
+          {
+            "lang": "en",
+            "term": "fixing",
+            "instead": "editing",
+            "when": "when it means editing"
+          },
+          {
+            "lang": "en",
+            "term": "slot",
+            "instead": "position",
+            "keeps": [
+              "slot machine",
+              "coin slot"
+            ]
+          }
+        ]
+      ],
+      "answer": []
     }
   ]
 }

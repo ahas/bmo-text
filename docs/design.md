@@ -1,9 +1,10 @@
 # Design
 
 `bmo-text` is a base library: the text readings that the chat services, the console, the archive, the
-gate and the testbed would otherwise each hold a copy of. It holds the mechanism of a reading and a safe
-default for anything that differs per consumer; the consumer supplies the rest. It knows no consumer by
-name and depends on no repository.
+gate and the testbed would otherwise each hold a copy of, and the MCP server through which a coding
+harness calls the pure ones. It holds the mechanism of a reading and a safe default for anything that
+differs per consumer; the consumer supplies the rest. It knows no consumer by name and depends on no
+repository.
 
 ## Layout
 
@@ -23,9 +24,16 @@ name and depends on no repository.
   read by the tests of both projects (「The twins」).
 - **The package is named `bmo-text`,** as the crate is and as `bmo-ui` is named and imported, so a
   consumer imports a module as `bmo-text/<module>`.
+- **The MCP server is the crate's binary.** `bmo-text`, built from `src/bin/`, starts the server with
+  `bmo-text mcp` (「The MCP server」). It and the crate's `mcp` module are compiled with the crate's `mcp`
+  feature, which is on by default so the crate's own tests reach the server; the WebAssembly build, and a
+  Rust consumer taking the readings alone, leave it out with `default-features = false`.
+- **The harness plugin in `plugin/`.** The plugin `ahas-text` is the manifest a harness installs, the MCP
+  server it starts, and the `ahas-text` skill telling the harness when to call which tool.
 - **One version.** `VERSION` holds the repository's semver; the crate and the package carry the same
-  number. The public API stated in `docs/api.md` is fixed at major version 2; a change to a public
-  signature or to what a reading answers for an input is a major change.
+  number. The public API stated in `docs/api.md`, the MCP server's tools among it, is fixed at major
+  version 3; a change to a public signature, to a tool's input or output, or to what a reading answers for
+  an input is a major change.
 
 ## One implementation
 
@@ -55,16 +63,18 @@ name and depends on no repository.
   sets, which the build is kept well under.
 - **The build's tools** are the Rust target `wasm32-unknown-unknown`, the `wasm-bindgen` command at the
   version the crate's `wasm-bindgen` dependency is locked to, and Binaryen's `wasm-opt` from the package's
-  development dependencies. The crate is compiled under its `wasm` profile, which optimises for size.
+  development dependencies. The crate is compiled with its `wasm` feature alone, its default features off, under
+  its `wasm` profile, which optimises for size.
 
 ## The twins
 
 - **One list of modules.** The crate and the package carry the same readings under the same names, a module
   being `snake_case` in the crate and `kebab-case` in the package: `answer_cap`, `answer_language`, `dashes`,
-  `english`, `finding_markdown`, `format`, `html_reading`, `markdown`, `markdown_structure`, `telegram`,
+  `english`, `finding_markdown`, `format`, `html_reading`, `markdown`, `markdown_structure`,
   `translation_parts`, `web_address` and `wording`. The crate's `js` is the one module apart: it is how the
   crate counts, spaces and trims as JavaScript does, which the package has from its language, so it is the
-  mechanism of the twinning rather than a reading.
+  mechanism of the twinning rather than a reading. The crate's `wasm` and `mcp` are bindings, not readings:
+  each hands a caller's arguments to the readings and gives back their answers in its caller's shape.
 - **One answer for one input.** A module gives the same answer on both sides for the same input, the
   package's answer being the crate's. Spaces, trims and character classes are JavaScript's on both sides,
   and a regular expression a caller writes is read by the crate. A text crosses into the build as UTF-8, so
@@ -83,6 +93,32 @@ name and depends on no repository.
   caller passes.
 - **Items may differ where a side's consumers differ.** Within one module, a side may carry an item the
   other does not, because only that side's consumers need it; `docs/api.md` names each such item.
+
+## The MCP server
+
+- **A harness's first entry point.** A coding harness given the `ahas-text` plugin starts `bmo-text mcp`,
+  which speaks MCP over its standard input and output, and calls its tools to check or reshape text it is
+  about to send or file. The server keeps nothing between calls, calls no other unit, and knows nothing of
+  who started it: no tool, field or answer names a caller.
+- **Seven tools, each a thin call of one reading.** A tool takes its input, calls one public function of
+  the crate and writes that function's answer as its structured output; it holds no reading of its own.
+  `text_dashes` calls `dashes::read_dashes`, `text_language` calls `answer_language::text_language`,
+  `text_markdown_structure` calls `markdown_structure::markdown_structure`, `text_html_reading` calls
+  `html_reading::read_html_page`, `text_translation_parts` calls `translation_parts::translation_parts`,
+  `text_web_addresses` calls `web_address::web_addresses_in` and `text_wording` calls `wording::text_swaps`.
+  `docs/api.md` states each tool's input and output.
+- **Its fields are the units' wire format:** camelCase keys, and an optional input left out or `null` alike.
+  A line number counts from one; an index into a list counts from nought.
+- **The caller decides what is its own.** `text_wording` reads the glossary in the folder the caller names,
+  the server's working directory where it names none, which is the project the harness started it in.
+  `text_translation_parts` takes its token budget from the caller, the library's default where it names
+  none; `text_dashes` reads a wrapped document only when the caller says the text is one.
+- **An answer stays under the ceiling.** The HTML reading is the one tool whose answer grows with its
+  input, so it answers the lines from the one the caller names, as many as fit under the answer ceiling
+  (`answer_cap`), and says whether more are left. The pictures a page carries inside itself are named in
+  its lines and not handed over.
+- **A tool that cannot answer says so.** A glossary that cannot be read or does not parse is the tool's
+  error, one English sentence, never an empty answer read as a clean text.
 
 ## What the consumer decides
 
@@ -109,7 +145,9 @@ name and depends on no repository.
 - **What is not English.** Whether a text is not English is a question of script, not of any one language:
   a letter of any script but Latin is not English, written as itself or named by one of the escapes code
   languages share. Neither the scripts nor the escape shapes are a policy, so neither is passed in.
-- **Telegram's limits.** The text and caption limits are Telegram's, not a policy, and stand as constants.
+- **No platform's limits.** A division into parts takes its limit from the caller, and the library names
+  no chat platform's text or caption limit, bot token or file size: those are the platform's own, stated
+  where that platform is served.
 
 ## Korean
 
@@ -132,4 +170,5 @@ name and depends on no repository.
   that such a check can use; it does not walk a repository.
 - **A check of reads off a shared policy package.** No shared policy package exists; each unit owns its
   policy files.
-- **Any server, deployment, data folder or table.**
+- **Any HTTP server, deployment, data folder or table.** The MCP server answers the one harness that started
+  it, over its standard input and output, and keeps nothing.

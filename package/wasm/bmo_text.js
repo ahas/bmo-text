@@ -141,18 +141,6 @@ export function bareAddressAt(text, at) {
 }
 
 /**
- * The bot's user id as a number, as the package gives it.
- * @param {string} token
- * @returns {number}
- */
-export function botIdFromToken(token) {
-    const ptr0 = passStringToWasm0(token, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.botIdFromToken(ptr0, len0);
-    return ret;
-}
-
-/**
  * The cut of `length` items, `render` being given how many from the front a prefix holds and giving what the
  * caller prints for it: how many are kept, how many are left and the note. An error `render` throws is
  * thrown on once the cut has stopped calling it.
@@ -621,13 +609,13 @@ export function markdownLinkAt(text, at) {
 
 /**
  * @param {string} text
- * @param {number | null} [limit]
+ * @param {number} limit
  * @returns {string[]}
  */
 export function markdownParts(text, limit) {
     const ptr0 = passStringToWasm0(text, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.markdownParts(ptr0, len0, !isLikeNone(limit), isLikeNone(limit) ? 0 : limit);
+    const ret = wasm.markdownParts(ptr0, len0, limit);
     var v2 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
     wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
     return v2;
@@ -647,6 +635,17 @@ export function markdownSections(source) {
 }
 
 /**
+ * @param {string} source
+ * @returns {any}
+ */
+export function markdownStructure(source) {
+    const ptr0 = passStringToWasm0(source, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.markdownStructure(ptr0, len0);
+    return ret;
+}
+
+/**
  * @param {string} markup
  * @returns {any}
  */
@@ -662,14 +661,6 @@ export function markupFault(markup) {
  */
 export function maxAnswerChars() {
     const ret = wasm.maxAnswerChars();
-    return ret;
-}
-
-/**
- * @returns {number}
- */
-export function maxSendFileBytes() {
-    const ret = wasm.maxSendFileBytes();
     return ret;
 }
 
@@ -812,16 +803,14 @@ export function plainInline(nodes) {
 
 /**
  * @param {string} text
- * @param {number} limit
- * @returns {string[]}
+ * @param {boolean} wrapped
+ * @returns {any}
  */
-export function plainParts(text, limit) {
+export function readDashes(text, wrapped) {
     const ptr0 = passStringToWasm0(text, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.plainParts(ptr0, len0, limit);
-    var v2 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
-    wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
-    return v2;
+    const ret = wasm.readDashes(ptr0, len0, wrapped);
+    return ret;
 }
 
 /**
@@ -888,19 +877,21 @@ export function shownPart(source, text) {
 }
 
 /**
- * @returns {number}
+ * Every hit outside the text's quoted spans, its term the index of the term among `banned`.
+ * @param {string} text
+ * @param {string} banned
+ * @returns {any}
  */
-export function telegramCaptionLimit() {
-    const ret = wasm.telegramCaptionLimit();
-    return ret;
-}
-
-/**
- * @returns {number}
- */
-export function telegramTextLimit() {
-    const ret = wasm.telegramTextLimit();
-    return ret;
+export function swapsIn(text, banned) {
+    const ptr0 = passStringToWasm0(text, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ptr1 = passStringToWasm0(banned, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len1 = WASM_VECTOR_LEN;
+    const ret = wasm.swapsIn(ptr0, len0, ptr1, len1);
+    if (ret[2]) {
+        throw takeFromExternrefTable0(ret[1]);
+    }
+    return takeFromExternrefTable0(ret[0]);
 }
 
 /**
@@ -920,19 +911,6 @@ export function textLanguage(text) {
     } finally {
         wasm.__wbindgen_free(deferred2_0, deferred2_1, 1);
     }
-}
-
-/**
- * @param {string} text
- * @returns {string[]}
- */
-export function transcriptParts(text) {
-    const ptr0 = passStringToWasm0(text, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.transcriptParts(ptr0, len0);
-    var v2 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
-    wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
-    return v2;
 }
 
 /**

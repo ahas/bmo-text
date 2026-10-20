@@ -13,6 +13,7 @@ import {
   lineLanguage,
   parseGlossary,
   readGlossary,
+  swapsIn,
   wordingDocument,
 } from "../wording";
 import cases from "../../cases/wording.json";
@@ -32,6 +33,7 @@ holdAll("wording", cases, {
   lineLanguage,
   parseGlossary: (text: string) => refused(() => parseGlossary(text)),
   findBanned,
+  swapsIn,
   bannedTermsIn: (text: string, banned: BannedTerm[]) => bannedTermsIn(text, { banned, allowed: [] }),
   bannedTermsLine,
   addBannedTerms: (text: string, entries: BannedTerm[]) => refused(() => addBannedTerms(text, entries)),

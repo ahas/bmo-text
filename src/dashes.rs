@@ -198,9 +198,13 @@ fn balanced(stretch: &[char]) -> bool {
   depth == 0
 }
 
-fn piece_without_dashes(text: &str) -> String {
+// A piece with its dashes replaced, and how many it replaced: each dash makes one swap.
+fn piece_without_dashes(text: &str) -> DashReading {
   if !any_dash(text) {
-    return text.to_owned();
+    return DashReading {
+      text: text.to_owned(),
+      found: 0,
+    };
   }
 
   let piece = chars(text);
@@ -337,6 +341,7 @@ fn piece_without_dashes(text: &str) -> String {
 
   swaps.sort_by_key(|swap| swap.from);
 
+  let found = swaps.len();
   let mut written = String::new();
   let mut from = 0;
 
@@ -346,14 +351,33 @@ fn piece_without_dashes(text: &str) -> String {
     from = swap.to;
   }
 
-  written + &js::text(&piece[from.min(piece.len())..])
+  DashReading {
+    text: written + &js::text(&piece[from.min(piece.len())..]),
+    found,
+  }
+}
+
+/// A text read for its dashes: the text with every dash left between words replaced, and how many there were.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct DashReading {
+  pub text: String,
+  pub found: usize,
 }
 
 /// A text with every dash left between words replaced; `wrapped` reads a paragraph or a list item of a
 /// document wrapped at a fixed width as one piece, where a chat answer's every line is one.
 pub fn without_dashes(text: &str, wrapped: bool) -> String {
+  read_dashes(text, wrapped).text
+}
+
+/// A text with every dash left between words replaced, as `without_dashes` gives it, and how many dashes it
+/// replaced: nought for a text whose dashes are all its own, in code, quotations, addresses or tables.
+pub fn read_dashes(text: &str, wrapped: bool) -> DashReading {
   if !any_dash(text) {
-    return text.to_owned();
+    return DashReading {
+      text: text.to_owned(),
+      found: 0,
+    };
   }
 
   let mut pieces: Vec<(Vec<&str>, bool)> = vec![];
@@ -377,9 +401,24 @@ pub fn without_dashes(text: &str, wrapped: bool) -> String {
     }
   }
 
-  pieces
+  let read: Vec<DashReading> = pieces
     .iter()
-    .map(|(lines, prose)| if *prose { piece_without_dashes(&lines.join("\n")) } else { lines.join("\n") })
-    .collect::<Vec<_>>()
-    .join("\n")
+    .map(|(lines, prose)| {
+      let piece = lines.join("\n");
+
+      if *prose {
+        piece_without_dashes(&piece)
+      } else {
+        DashReading {
+          text: piece,
+          found: 0,
+        }
+      }
+    })
+    .collect();
+
+  DashReading {
+    text: read.iter().map(|piece| piece.text.as_str()).collect::<Vec<_>>().join("\n"),
+    found: read.iter().map(|piece| piece.found).sum(),
+  }
 }

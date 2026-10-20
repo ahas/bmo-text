@@ -1,5 +1,5 @@
 // Makes the package's WebAssembly build into `wasm/` (docs/design.md, 「One implementation」): the crate compiled
-// with its `wasm` feature under its `wasm` profile, its binding's glue and types written by `wasm-bindgen`, the
+// with its `wasm` feature alone under its `wasm` profile, its binding's glue and types written by `wasm-bindgen`, the
 // module made smaller by Binaryen's `wasm-opt`, its bytes written into a JavaScript module the package
 // instantiates on import, and the hash of the crate's sources the build was made from.
 
@@ -51,8 +51,8 @@ function run(command: string[]): string {
 
 function build(): void {
   run([
-    "cargo", "rustc", "--lib", "--profile", "wasm", "--target", "wasm32-unknown-unknown", "--features", "wasm",
-    "--crate-type", "cdylib",
+    "cargo", "rustc", "--lib", "--profile", "wasm", "--target", "wasm32-unknown-unknown", "--no-default-features",
+    "--features", "wasm", "--crate-type", "cdylib",
   ]);
 
   const target: string = JSON.parse(run(["cargo", "metadata", "--format-version", "1", "--no-deps"])).target_directory;

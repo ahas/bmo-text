@@ -1,19 +1,23 @@
 [package]
 name = "bmo-text"
-version = "2.2.0"
-description = "Markdown and text as a chat room reads them, written into Telegram's HTML."
+version = "3.0.0"
+description = "Markdown and text as a chat room reads them, written into Telegram's HTML, and the MCP server over them."
 edition = "2024"
 publish = false
 
 [dependencies]
 base64 = "0.23.1"
+clap = { version = "4.6.7", default-features = false, features = ["std", "derive", "help", "usage", "error-context"], optional = true }
 fancy-regex = "0.19.2"
 htmlize = { version = "1.1.0", features = ["unescape"] }
 js-sys = { version = "0.3.103", optional = true }
 lol_html = "3.0.1"
 percent-encoding = "2.3.2"
 regex = "1.13.1"
+rmcp = { version = "3.5.1", default-features = false, features = ["server", "macros", "transport-io"], optional = true }
+serde = { version = "1.0.229", features = ["derive"], optional = true }
 serde_json = { version = "1.0.154", optional = true }
+tokio = { version = "1.54.0", features = ["rt", "io-std", "macros"], optional = true }
 unicode-normalization = "0.1.26"
 unicode-segmentation = "1.13.3"
 url = "2.5.8"
@@ -21,8 +25,17 @@ url = "2.5.8"
 wasm-bindgen = { version = "=0.2.126", optional = true }
 
 [features]
+default = ["mcp"]
+# The MCP server `bmo-text mcp` starts (docs/design.md, 「The MCP server」). It is on by default, so the crate's
+# own tests reach it; the WebAssembly build and a consumer taking the readings alone leave it out.
+mcp = ["dep:clap", "dep:rmcp", "dep:serde", "dep:serde_json", "dep:tokio"]
 # The binding the package's WebAssembly build exports (docs/design.md, 「One implementation」).
 wasm = ["dep:js-sys", "dep:serde_json", "dep:wasm-bindgen"]
+
+[[bin]]
+name = "bmo-text"
+path = "src/bin/bmo-text.rs"
+required-features = ["mcp"]
 
 [dev-dependencies]
 serde_json = "1.0.154"

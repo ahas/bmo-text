@@ -1,15 +1,8 @@
-// How a text is read for the translator: which language it is written in, and the parts it is cut into and
-// joined back from. The readings are the crate's, through the package's WebAssembly build.
+// How a text is read for the translator: the parts it is cut into and joined back from. Which language it is
+// written in is `answer-language`'s reading. The readings are the crate's, through the package's WebAssembly
+// build.
 
 import { binding } from "./binding";
-
-export type TextLanguage = "ko" | "en";
-
-// Which language a text is written in, by its letters outside code: a text with few Hangul syllables
-// against its Latin letters is English, and every other text is Korean.
-export function textLanguage(text: string): TextLanguage {
-  return binding.textLanguage(text) as TextLanguage;
-}
 
 // How much of a text one translation part carries, in estimated tokens. The translation of a part has
 // to fit the translator's answer of 2,048 tokens, and a translation into Korean costs more tokens than

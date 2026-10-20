@@ -10,7 +10,6 @@ fn the_shared_cases_hold() {
   shared::hold_all(
     "translation-parts",
     &[
-      ("textLanguage", &|args| Value::from(text_language(text(&args[0])).code())),
       ("translationParts", &|args| {
         let budget = usize::try_from(args[1].as_u64().expect("a budget")).expect("a budget");
 

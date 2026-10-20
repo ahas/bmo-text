@@ -486,10 +486,6 @@ describe("a text longer than one message", () => {
       expect(convertMarkdown(parts[1] ?? "").markup).toStartWith(tag);
     }
   });
-
-  test("a text that fits is one part, unchanged", () => {
-    expect(markdownParts("a short text")).toEqual(["a short text"]);
-  });
 });
 
 // A conversion is compared as its markup, plain text and whether it is formatted, and the fold and the two
@@ -507,5 +503,5 @@ holdAll("markdown", cases, {
   foldBlocks: (source: string) => foldBlocks(parseMarkdown(source)),
   foldedMarkup: (source: string) => foldedMarkup(convertMarkdown(source)),
   codeMarkup: (source: string) => codeMarkup(convertMarkdown(source)),
-  markdownParts: (text: string, limit?: number) => markdownParts(text, limit),
+  markdownParts,
 });
