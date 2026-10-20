@@ -40,7 +40,7 @@ function expectClean(markup: string): void {
 // no pair, ranges written with a tilde, angle brackets in a command, circled numbers, paths, and a
 // code block among backticks.
 const corpus = [
-  { case: "#350", text: `A summary of the checks that ran overnight is done. I grouped the failures by kind, found the causes, and closed the two that kept returning in code, deployed.
+  { case: "plain report", text: `A summary of the checks that ran overnight is done. I grouped the failures by kind, found the causes, and closed the two that kept returning in code, deployed.
 
 What I counted
 The 17 cases of a pair beside a tag came from the reader taking the backticks off and leaving the star pairs. 1~3, refused three times this round, are those, and 16 of them came after the second run.
@@ -70,7 +70,7 @@ The stars of a message that goes without formatting (PLAIN, one short line) go a
 1 done · 344 cases sorted · 183 tests passed · 225 of 228 passed · 9 files changed · 2 commits · 1 deployment
 
 Uncommitted changes of earlier work were kept: docs/guide.md, docs/deploy.md, docs/web.md, scripts/deploy.ts, scripts/check.ts and 33 more` },
-  { case: "#347", text: `The way to reopen a finished report with its earlier results kept is finished. A finished report can now be opened again from the command or the console, and what the earlier round did and its result documents stay, for the new plan to read and carry on.
+  { case: "reopened report", text: `The way to reopen a finished report with its earlier results kept is finished. A finished report can now be opened again from the command or the console, and what the earlier round did and its result documents stay, for the new plan to read and carry on.
 
 What I fixed
 I made the command run report --todo <number> --reopen and the console's "Open again" button on a report. Opening it again moves every finished step, with its result and document path, into history, named r1-plan, r1-step-0-0 and so on, and keeps that round's purpose and instruction apart. Then the report goes back to draft and the entry back to waiting.
@@ -91,7 +91,7 @@ The uncommitted changes of another job are untouched; I picked my own hunks to c
 1 done · 0 open · 176 touched tests passed · 221/222 files passed (the 1 failure is another job's) · 18 files changed
 
 Uncommitted changes of earlier work were kept: docs/guide.md, docs/deploy.md, docs/web.md, scripts/deploy.ts, scripts/check.ts and 32 more` },
-  { case: "#346", text: `This run spent no tokens of its own.
+  { case: "runner records", text: `This run spent no tokens of its own.
 
 The "four checkouts" in the alert are temporary folders named tmp-run-…-checkout. The overnight job ran its tests just before deploying (06:15, 06:21, 06:24), and the fake runner inside the tests wrote fake session records under the state folder. The watcher read those records as real sessions.
 
@@ -106,7 +106,7 @@ earlier job: 14.8M tokens, about $11
 the chat agent: 25 turns, 12.5M tokens
 
 The same false alert came at 05:54 as well. It looks to have begun when the tests started imitating the runner's records, and it will ring again each time the tests run. Shall I file an entry to have the tests write their fake records outside the state folder, or the watcher pass over this temporary folder?` },
-  { case: "#345", text: `I added the requester's words, as they were, to the entry. It is the work that changes where an editor's model and harness are chosen, so it went there, and nothing has run for it yet, so they reach the next run's prompt as they are.
+  { case: "editor models", text: `I added the requester's words, as they were, to the entry. It is the work that changes where an editor's model and harness are chosen, so it went there, and nothing has run for it yet, so they reach the next run's prompt as they are.
 
 This is how the editors run now.
 The digest and the writer are both tied to one editor line and run on one model. The writer is on high effort and keeps its session.
@@ -118,7 +118,7 @@ I read "a single agent like the gates" this way:
 ③ The default is a mid model, matched by a model of the same level on the other providers.
 
 Once ② is done, the session problem carried over from the earlier entry is solved and running it on another machine gets easier too. If it was not meant to go as far as running without a session, say so.` },
-  { case: "#344", text: `The two processes read different material and write to different places.
+  { case: "two readers", text: `The two processes read different material and write to different places.
 
 ① The digest
 Material: the notes the agent left with note.ts
@@ -131,7 +131,7 @@ What it does: writes pieces by subject for each speaker, such as character, way 
 The digest sorts the notes the agent wrote into rules or knowledge, and the writer reads the conversation itself and writes about the people.
 
 The digest's instruction already has the knowledge documents. It tags a note as one room's own or shared, and keeps shared only what the requester said may be shared. Making the new knowledge documents and the knowledge sorter may overlap with this.` },
-  { case: "#339", text: `Log in to the host over SSH and type \`relay\`, and that is it.
+  { case: "login note", text: `Log in to the host over SSH and type \`relay\`, and that is it.
 
 \`\`\`
 ssh user@example-host
@@ -163,23 +163,23 @@ describe("answers shaped as long reports", () => {
     });
   }
 
-  test("#339's code block and backticks become pre and code, and the plain text keeps none of them", () => {
-    const converted = convertMarkdown(corpus.find((one) => one.case === "#339")?.text ?? "");
+  test("the login note's code block and backticks become pre and code, and the plain text keeps none of them", () => {
+    const converted = convertMarkdown(corpus.find((one) => one.case === "login note")?.text ?? "");
 
-    expect(converted.markup).toContain("<pre>ssh user@example-host\n~/.local/bin/relay</pre>");
+    expect(converted.markup).toContain("<pre>ssh user@example-host\n/usr/local/bin/relay</pre>");
     expect(converted.markup).toContain("type <code>relay</code>, and");
     expect(converted.plain).not.toContain("`");
   });
 
-  test("#347's angle brackets are escaped, not read as a tag", () => {
-    const converted = convertMarkdown(corpus.find((one) => one.case === "#347")?.text ?? "");
+  test("the reopened report's angle brackets are escaped, not read as a tag", () => {
+    const converted = convertMarkdown(corpus.find((one) => one.case === "reopened report")?.text ?? "");
 
     expect(converted.markup).toContain("--todo &lt;number&gt; --reopen");
     expect(converted.plain).toContain("--todo <number> --reopen");
   });
 
-  test("#350's stars that are no pair stay as they were written", () => {
-    const converted = convertMarkdown(corpus.find((one) => one.case === "#350")?.text ?? "");
+  test("the plain report's stars that are no pair stay as they were written", () => {
+    const converted = convertMarkdown(corpus.find((one) => one.case === "plain report")?.text ?? "");
 
     expect(converted.plain).toContain("2**3, server/**/*.ts");
     expect(converted.markup).not.toContain("<b>");

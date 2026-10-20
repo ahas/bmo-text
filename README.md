@@ -25,4 +25,6 @@ The library depends on nothing but registry packages and has no HTTP server or d
 the crate by path or git and the package as a dependency, and passes in whatever is its own to decide:
 the words a reader sees, its English policy, the path of its glossary.
 
+The library is released under the MIT License; `LICENSE` holds its text.
+
 Checks and tests are declared in `testbed.toml`; `CLAUDE.md` names the commands.

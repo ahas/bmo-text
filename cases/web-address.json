@@ -102,7 +102,7 @@
       "answer": true
     },
     {
-      "name": "an address with an IP host",
+      "name": "an address with a reserved documentation IP host",
       "args": [
         "http://192.0.2.1/x"
       ],

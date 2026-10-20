@@ -68,10 +68,10 @@
     {
       "name": "a line's opening label is no colon of the sentence",
       "args": [
-        "- Question: relay — an agent manager",
+        "- Question: runner — a job manager",
         false
       ],
-      "answer": "- Question: relay: an agent manager"
+      "answer": "- Question: runner: a job manager"
     },
     {
       "name": "a sentence that has a colon takes a comma",

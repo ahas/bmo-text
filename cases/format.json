@@ -266,21 +266,21 @@
       "answer": null
     },
     {
-      "name": "a long reply once turned down as broken is sound, 1",
+      "name": "a long markup is sound, 1",
       "args": [
         "An update, in short. The checks are done and the two faults that kept returning are closed.\n\nWhat I counted\n<code>17</code> of the failures came from one reader; the rest were spread across four stages.\n\nWhat I fixed\nOne place now takes the markers off before any tag is put on, so a marker and a tag can no longer overlap."
       ],
       "answer": null
     },
     {
-      "name": "a long reply once turned down as broken is sound, 2",
+      "name": "a long markup is sound, 2",
       "args": [
         "A finished report can now be opened again with its earlier results kept. The earlier round's result documents stay, and the new plan reads them before it starts.\n\nWhat I checked\n<blockquote expandable>The command was run on a copy of the record, and the console's button was tried on that copy. Both opened the report again with the earlier round kept apart.</blockquote>\n\nNothing else changed."
       ],
       "answer": null
     },
     {
-      "name": "a long reply once turned down as broken is sound, 3",
+      "name": "a long markup is sound, 3",
       "args": [
         "The alert was a false one. The temporary folders the tests make were read as real runs.\n\nThere are three reasons.\n1. The tests use a fake runner and remove its records when they end.\n2. The log line that raised the alert is the same as a test phrase.\n3. The usage record shows no such burst at that time.\n\nWhat was really spent in the same window was small, and no run of the last hour went cold."
       ],
