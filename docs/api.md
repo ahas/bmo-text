@@ -1,10 +1,11 @@
 # Public API
 
 Everything a consumer may use, project by project and module by module, and the tools of the MCP server,
-fixed at major version 3. An item not named here is internal and may change in any version. Both sides carry
-the same modules (`docs/design.md`, 「The twins」), the crate's `js` apart, and a module gives one answer for
-one input on either side. Lengths are UTF-16 units and spaces are JavaScript's white space; a length named
-`chars` counts code points. An item one side carries and the other does not is marked as such.
+fixed at version `0.1.0-rev.5` (「Version numbers」). An item not named here is internal and may change in
+any version. Both sides carry the same modules (`docs/design.md`, 「The twins」), the crate's `js` apart, and
+a module gives one answer for one input on either side. Lengths are UTF-16 units and spaces are
+JavaScript's white space; a length named `chars` counts code points. An item one side carries and the other
+does not is marked as such.
 
 ## The Rust crate `bmo-text`
 
@@ -391,3 +392,18 @@ harness when to call each tool.
   repeated Hangul syllable tell a count of characters from a count of bytes.
 - **`korean-ledger.json`** at the root counts, per code file, the lines holding Korean the code inherently
   reads; the repository test and the testbed's `korean` check hold every file to it.
+
+## Version numbers
+
+The repository is numbered `0.1.0` until its first release, each version cut before it carrying a `-rev.N`
+suffix that counts the versions so far; the version in force is `0.1.0-rev.5`. A number the repository
+carried under its earlier semver numbering reads as the revision beside it and names the same API:
+
+| Earlier number | Revision |
+| --- | --- |
+| `0.1.0` | `0.1.0` |
+| `1.0.0` | `0.1.0-rev.1` |
+| `2.0.0` | `0.1.0-rev.2` |
+| `2.1.0` | `0.1.0-rev.3` |
+| `2.2.0` | `0.1.0-rev.4` |
+| `3.0.0` | `0.1.0-rev.5` |

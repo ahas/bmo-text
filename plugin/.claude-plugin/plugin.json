@@ -1,5 +1,5 @@
 {
   "name": "ahas-text",
   "description": "Readings of markdown and plain text for text about to be sent or filed: dashes between words, the language a text is written in, a markdown text's structure, an HTML page's words, translation parts, web addresses and a glossary of banned terms.",
-  "version": "3.0.0"
+  "version": "0.1.0-rev.5"
 }

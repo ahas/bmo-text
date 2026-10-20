@@ -13,7 +13,8 @@
 - **The cases** both sides are held to, one file per module under `cases/`, named in `docs/api.md`.
 
 The version both carry is the repository's, in `VERSION`. A consumer pins the version it was built
-against and moves to a new major only by its own change.
+against, an exact revision while the number is `0.1.0-rev.N`, and moves to a later one only by its own
+change.
 
 ## What this repository calls
 
