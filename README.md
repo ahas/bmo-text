@@ -13,6 +13,7 @@ calls the pure readings.
 
 | Folder | What it holds |
 |---|---|
+| `.graph/` | The code dependency graph: the repository's settings, one node per feature with its files and the features it needs, and a boundary node for each API the library offers |
 | `docs/` | The design, the public API, the boundary and the inventory of what the library was built from |
 | `src/` | The sources of the Rust crate `bmo-text`, whose manifest stands at the root |
 | `tests/` | The crate's tests, and the repository test that holds the repository's own shape |

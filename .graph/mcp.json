@@ -1,0 +1,27 @@
+[
+  {
+    "id": "mcp/server",
+    "title": "MCP server",
+    "what": "bmo-text mcp: the seven text tools served over standard input and output, each a thin call of a crate reading, started by the crate's binary (src/mcp/mod.rs, src/bin/bmo-text.rs).",
+    "files": [
+      "src/mcp/mod.rs",
+      "src/bin/bmo-text.rs"
+    ],
+    "symbols": [
+      "TextTools",
+      "serve_stdio"
+    ],
+    "aliases": [],
+    "needs": [
+      "reading/answer-language",
+      "reading/dashes",
+      "reading/html",
+      "reading/markdown-structure",
+      "reading/translation-parts",
+      "reading/web-address",
+      "reading/wording"
+    ],
+    "base": "0155d8f069d82b0b077e61b29867f0f2f9007fd4",
+    "changed": 1792498803624
+  }
+]

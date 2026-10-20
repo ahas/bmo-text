@@ -1,0 +1,123 @@
+[
+  {
+    "id": "api/crate",
+    "title": "Rust crate API",
+    "what": "The surface the Rust crate bmo-text offers a consumer: its twelve readings, the JavaScript counting both sides share and the WebAssembly binding, as docs/api.md states them.",
+    "files": [
+      "src/lib.rs",
+      "Cargo.toml",
+      "docs/api.md",
+      "docs/boundary.md",
+      "docs/design.md",
+      "docs/inventory.md"
+    ],
+    "symbols": [
+      "answer_cap",
+      "markdown",
+      "wording"
+    ],
+    "aliases": [],
+    "needs": [
+      "reading/answer-cap",
+      "reading/answer-language",
+      "reading/dashes",
+      "reading/english",
+      "reading/finding-markdown",
+      "reading/format",
+      "reading/html",
+      "reading/markdown",
+      "reading/markdown-structure",
+      "reading/translation-parts",
+      "reading/web-address",
+      "reading/wording",
+      "engine/js",
+      "engine/wasm",
+      "mcp/server"
+    ],
+    "base": "0155d8f069d82b0b077e61b29867f0f2f9007fd4",
+    "changed": 1792498855672,
+    "boundary": {
+      "side": "exposes"
+    }
+  },
+  {
+    "id": "api/mcp",
+    "title": "MCP server API",
+    "what": "The MCP protocol bmo-text mcp offers a harness: seven tools, each its input fields, structured output and error, as docs/api.md states them.",
+    "files": [
+      "src/bin/bmo-text.rs",
+      "src/mcp/mod.rs",
+      "docs/api.md"
+    ],
+    "symbols": [
+      "TextTools",
+      "serve_stdio"
+    ],
+    "aliases": [],
+    "needs": [
+      "mcp/server"
+    ],
+    "base": "0155d8f069d82b0b077e61b29867f0f2f9007fd4",
+    "changed": 1792498803633,
+    "boundary": {
+      "side": "exposes"
+    }
+  },
+  {
+    "id": "api/package",
+    "title": "TypeScript package API",
+    "what": "The surface the package bmo-text offers a JavaScript caller, imported one module at a time as bmo-text/<module>, its exports stated in docs/api.md and its modules loaded over the crate's build.",
+    "files": [
+      "package/package.json",
+      "docs/api.md",
+      "docs/boundary.md",
+      "docs/design.md"
+    ],
+    "symbols": [],
+    "aliases": [],
+    "needs": [
+      "reading/answer-cap",
+      "reading/answer-language",
+      "reading/dashes",
+      "reading/english",
+      "reading/finding-markdown",
+      "reading/format",
+      "reading/html",
+      "reading/markdown",
+      "reading/markdown-structure",
+      "reading/translation-parts",
+      "reading/web-address",
+      "reading/wording",
+      "engine/wasm",
+      "engine/build"
+    ],
+    "base": "0155d8f069d82b0b077e61b29867f0f2f9007fd4",
+    "changed": 1792498803631,
+    "boundary": {
+      "side": "exposes"
+    }
+  },
+  {
+    "id": "api/plugin",
+    "title": "Harness plugin API",
+    "what": "The ahas-text plugin as a harness sees it: the manifest naming the plugin at the repository's version, the MCP server it starts and the skill that says when to call each tool.",
+    "files": [
+      "plugin/.claude-plugin/plugin.json",
+      "plugin/.mcp.json",
+      "plugin/skills/ahas-text/SKILL.md",
+      "docs/api.md",
+      "docs/boundary.md"
+    ],
+    "symbols": [],
+    "aliases": [],
+    "needs": [
+      "plugin/harness",
+      "mcp/server"
+    ],
+    "base": "0155d8f069d82b0b077e61b29867f0f2f9007fd4",
+    "changed": 1792498803635,
+    "boundary": {
+      "side": "exposes"
+    }
+  }
+]

@@ -1,0 +1,9 @@
+repository = "bmo-text"
+base = true
+
+[coverage]
+# The crate's src/ from the layout, the TypeScript package beside it, and the declarations of the WebAssembly
+# build alone as the exceptions.
+layout = "bmo-next"
+roots = ["package/"]
+unindexed = ["package/wasm/bmo_text.d.ts", "package/wasm/bytes.d.ts"]

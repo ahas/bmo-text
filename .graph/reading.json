@@ -1,0 +1,363 @@
+[
+  {
+    "id": "reading/answer-cap",
+    "title": "Answer cap",
+    "what": "The ceilings of a verb's answer and of one value in it, cutting a list only between whole items and a long value at its limit, with one English line saying how to ask for the rest (src/answer_cap.rs, package/answer-cap.ts).",
+    "files": [
+      "src/answer_cap.rs",
+      "src/wasm/answer_cap.rs",
+      "package/answer-cap.ts",
+      "cases/answer-cap.json"
+    ],
+    "symbols": [
+      "MAX_ANSWER_CHARS",
+      "MAX_VALUE_CHARS",
+      "Said",
+      "Capped",
+      "cap_items",
+      "cap_value",
+      "capItems",
+      "capValue"
+    ],
+    "aliases": [],
+    "needs": [
+      "engine/wasm"
+    ],
+    "base": "0155d8f069d82b0b077e61b29867f0f2f9007fd4",
+    "changed": 1792498803596
+  },
+  {
+    "id": "reading/answer-language",
+    "title": "Answer language",
+    "what": "Whether a text is written in Korean or English by its letters outside code, and whether it holds any Hangul syllable at all (src/answer_language.rs, package/answer-language.ts).",
+    "files": [
+      "src/answer_language.rs",
+      "src/wasm/answer_language.rs",
+      "package/answer-language.ts",
+      "cases/answer-language.json"
+    ],
+    "symbols": [
+      "holds_korean",
+      "TextLanguage",
+      "text_language",
+      "holdsKorean",
+      "textLanguage"
+    ],
+    "aliases": [],
+    "needs": [
+      "engine/wasm"
+    ],
+    "base": "0155d8f069d82b0b077e61b29867f0f2f9007fd4",
+    "changed": 1792498803598
+  },
+  {
+    "id": "reading/dashes",
+    "title": "Dash rewrite",
+    "what": "The dash between words rewritten the way a person types the sentence, code, quotations, tables and addresses keeping theirs, a wrapped paragraph read as one piece (src/dashes.rs, package/dashes.ts).",
+    "files": [
+      "src/dashes.rs",
+      "src/wasm/dashes.rs",
+      "package/dashes.ts",
+      "cases/dashes.json"
+    ],
+    "symbols": [
+      "without_dashes",
+      "read_dashes",
+      "DashReading",
+      "withoutDashes",
+      "readDashes"
+    ],
+    "aliases": [],
+    "needs": [
+      "engine/wasm",
+      "engine/js",
+      "reading/web-address"
+    ],
+    "base": "0155d8f069d82b0b077e61b29867f0f2f9007fd4",
+    "changed": 1792498803600
+  },
+  {
+    "id": "reading/english",
+    "title": "English test",
+    "what": "The test whether a text is English as a part's policy declares it, and the letters of any script but Latin a text holds, escapes read wherever they stand (src/english.rs, package/english.ts).",
+    "files": [
+      "src/english.rs",
+      "src/wasm/english.rs",
+      "package/english.ts",
+      "cases/english.json"
+    ],
+    "symbols": [
+      "EnglishTest",
+      "holds_non_english",
+      "non_english_letters",
+      "NonEnglishLetter",
+      "LetterPlace",
+      "CodeStretches",
+      "holdsNonEnglish",
+      "nonEnglishLetters"
+    ],
+    "aliases": [],
+    "needs": [
+      "engine/wasm",
+      "engine/js"
+    ],
+    "base": "0155d8f069d82b0b077e61b29867f0f2f9007fd4",
+    "changed": 1792498803602
+  },
+  {
+    "id": "reading/finding-markdown",
+    "title": "Finding markdown",
+    "what": "A search finding's structure lines drawn as the markdown they stand for: its parts, pictures, gallery, menu table, map and footnotes, in the words a consumer chooses (src/finding_markdown.rs, package/finding-markdown.ts).",
+    "files": [
+      "src/finding_markdown.rs",
+      "src/wasm/finding_markdown.rs",
+      "package/finding-markdown.ts",
+      "cases/finding-markdown.json"
+    ],
+    "symbols": [
+      "PART_KEYS",
+      "FindingWords",
+      "finding_markdown",
+      "footnote_marks",
+      "picture_caption",
+      "FINDING_BLOCK",
+      "FINDING_MAP",
+      "finding_excerpt",
+      "englishFindingWords",
+      "findingMarkdown"
+    ],
+    "aliases": [],
+    "needs": [
+      "engine/wasm",
+      "engine/js",
+      "reading/markdown-structure"
+    ],
+    "base": "0155d8f069d82b0b077e61b29867f0f2f9007fd4",
+    "changed": 1792498803604
+  },
+  {
+    "id": "reading/format",
+    "title": "Markup format",
+    "what": "Telegram's HTML markup built and read: escaping, the visible text of a piece of markup, linkable addresses, the expandable quote, and the one fault the structure check finds (src/format.rs, package/format.ts).",
+    "files": [
+      "src/format.rs",
+      "src/wasm/format.rs",
+      "package/format.ts",
+      "cases/format.json"
+    ],
+    "symbols": [
+      "escape_html",
+      "escape_attribute",
+      "is_linkable",
+      "visible_text",
+      "expandable_markup",
+      "expandable",
+      "LONG_TEXT_LENGTH",
+      "MarkupFault",
+      "markup_fault",
+      "fault_reason",
+      "escapeHtml",
+      "markupFault"
+    ],
+    "aliases": [],
+    "needs": [
+      "engine/wasm",
+      "engine/js"
+    ],
+    "base": "0155d8f069d82b0b077e61b29867f0f2f9007fd4",
+    "changed": 1792498803607
+  },
+  {
+    "id": "reading/html",
+    "title": "HTML reading",
+    "what": "An HTML page read for what it says: its title, its words as markdown-shaped lines and every picture taken out as a file, a page at a time under the answer ceiling (src/html_reading.rs, package/html-reading.ts).",
+    "files": [
+      "src/html_reading.rs",
+      "src/wasm/html_reading.rs",
+      "package/html-reading.ts",
+      "cases/html-reading.json"
+    ],
+    "symbols": [
+      "read_html",
+      "HtmlReading",
+      "HtmlPicture",
+      "read_html_page",
+      "HtmlPage",
+      "readHtml"
+    ],
+    "aliases": [],
+    "needs": [
+      "engine/wasm",
+      "engine/js",
+      "reading/answer-cap"
+    ],
+    "base": "0155d8f069d82b0b077e61b29867f0f2f9007fd4",
+    "changed": 1792498803610
+  },
+  {
+    "id": "reading/markdown",
+    "title": "Markdown reading",
+    "what": "The markdown an agent writes, read line for line into Telegram's HTML and plain text: inline pieces, blocks and quotes, the fold, the send choice and the division into messages (src/markdown.rs, package/markdown.ts).",
+    "files": [
+      "src/markdown.rs",
+      "src/wasm/markdown.rs",
+      "package/markdown.ts",
+      "cases/markdown.json"
+    ],
+    "symbols": [
+      "Document",
+      "Converted",
+      "Fold",
+      "parse_markdown",
+      "parse_inline",
+      "render_inline",
+      "plain_inline",
+      "convert_markdown",
+      "fold_blocks",
+      "folded_markup",
+      "code_markup",
+      "sent_length",
+      "markdown_parts",
+      "parseMarkdown",
+      "convertMarkdown",
+      "markdownParts"
+    ],
+    "aliases": [],
+    "needs": [
+      "engine/wasm",
+      "engine/js",
+      "reading/format",
+      "reading/web-address"
+    ],
+    "base": "0155d8f069d82b0b077e61b29867f0f2f9007fd4",
+    "changed": 1792498803612
+  },
+  {
+    "id": "reading/markdown-structure",
+    "title": "Markdown structure",
+    "what": "A text's ATX headings and sections, a heading's plain words and slug, and a text halved at the paragraph boundary nearest its middle (src/markdown_structure.rs, package/markdown-structure.ts).",
+    "files": [
+      "src/markdown_structure.rs",
+      "src/wasm/markdown_structure.rs",
+      "package/markdown-structure.ts",
+      "cases/markdown-structure.json"
+    ],
+    "symbols": [
+      "MarkdownHeading",
+      "MarkdownStructure",
+      "markdown_headings",
+      "plain_heading",
+      "heading_slug",
+      "markdown_sections",
+      "halve_text",
+      "markdown_structure",
+      "Halved",
+      "markdownHeadings",
+      "markdownStructure",
+      "halveText"
+    ],
+    "aliases": [],
+    "needs": [
+      "engine/wasm",
+      "engine/js"
+    ],
+    "base": "0155d8f069d82b0b077e61b29867f0f2f9007fd4",
+    "changed": 1792498803614
+  },
+  {
+    "id": "reading/translation-parts",
+    "title": "Translation parts",
+    "what": "A text cut into the parts a translator is given: its sections packed while they fit a token budget, a section too large cut at its paragraphs, and what a part shows once read (src/translation_parts.rs, package/translation-parts.ts).",
+    "files": [
+      "src/translation_parts.rs",
+      "src/wasm/translation_parts.rs",
+      "package/translation-parts.ts",
+      "cases/translation-parts.json"
+    ],
+    "symbols": [
+      "TRANSLATION_PART_TOKENS",
+      "translation_parts",
+      "shown_part",
+      "translationParts",
+      "shownPart"
+    ],
+    "aliases": [],
+    "needs": [
+      "engine/wasm",
+      "engine/js",
+      "reading/markdown-structure"
+    ],
+    "base": "0155d8f069d82b0b077e61b29867f0f2f9007fd4",
+    "changed": 1792498803617
+  },
+  {
+    "id": "reading/web-address",
+    "title": "Web addresses",
+    "what": "Every web address a text names, in order and as written, the sentence's punctuation and the address's own brackets told apart, and a markdown link read at an index (src/web_address.rs, package/web-address.ts).",
+    "files": [
+      "src/web_address.rs",
+      "src/wasm/web_address.rs",
+      "package/web-address.ts",
+      "cases/web-address.json"
+    ],
+    "symbols": [
+      "address_as_written",
+      "is_web_address",
+      "MarkdownLink",
+      "markdown_link_at",
+      "bare_address_at",
+      "glued_after_address",
+      "FoundAddress",
+      "web_addresses",
+      "web_addresses_in",
+      "addressAsWritten",
+      "webAddresses"
+    ],
+    "aliases": [],
+    "needs": [
+      "engine/wasm",
+      "engine/js"
+    ],
+    "base": "0155d8f069d82b0b077e61b29867f0f2f9007fd4",
+    "changed": 1792498803620
+  },
+  {
+    "id": "reading/wording",
+    "title": "Banned wording",
+    "what": "The terms a glossary bans, read out of its markdown document and found in a text outside what it quotes, with what to write instead, and the files a check holds to the glossary (src/wording.rs, package/wording.ts).",
+    "files": [
+      "src/wording.rs",
+      "src/wasm/wording.rs",
+      "package/wording.ts",
+      "cases/wording.json"
+    ],
+    "symbols": [
+      "WORDING_DOCUMENT",
+      "KNOWN_LANGUAGES",
+      "Glossary",
+      "BannedTerm",
+      "WordingHit",
+      "WordingReport",
+      "parse_glossary",
+      "parse_wording",
+      "read_glossary",
+      "find_banned",
+      "swaps_in",
+      "text_swaps",
+      "add_banned_terms",
+      "check_wording",
+      "line_language",
+      "wordingDocument",
+      "knownLanguages",
+      "findBanned",
+      "checkWording"
+    ],
+    "aliases": [],
+    "needs": [
+      "engine/wasm",
+      "engine/js"
+    ],
+    "base": "0155d8f069d82b0b077e61b29867f0f2f9007fd4",
+    "changed": 1792498803622
+  }
+]

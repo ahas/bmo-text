@@ -1,0 +1,69 @@
+[
+  {
+    "id": "engine/build",
+    "title": "WebAssembly build",
+    "what": "The script that makes the package's WebAssembly build: the crate compiled for the browser, the binding's glue and types, the optimised bytes in a JavaScript module and the source hash (package/build.ts).",
+    "files": [
+      "package/build.ts"
+    ],
+    "symbols": [
+      "sourceHash",
+      "sourceHashFile"
+    ],
+    "aliases": [],
+    "needs": [
+      "engine/wasm"
+    ],
+    "base": "0155d8f069d82b0b077e61b29867f0f2f9007fd4",
+    "changed": 1792498803594
+  },
+  {
+    "id": "engine/js",
+    "title": "JavaScript semantics",
+    "what": "How the crate counts, spaces, trims and reads numbers as JavaScript does, so the crate and the package give one answer for one input (src/js.rs).",
+    "files": [
+      "src/js.rs"
+    ],
+    "symbols": [
+      "SPACE",
+      "DOT",
+      "is_space",
+      "trim",
+      "trim_end",
+      "number",
+      "units",
+      "units_of",
+      "chars",
+      "text",
+      "within",
+      "units_before",
+      "find",
+      "rfind",
+      "bun_hash",
+      "encode_uri_component",
+      "decode_uri_component"
+    ],
+    "aliases": [],
+    "needs": [],
+    "base": "0155d8f069d82b0b077e61b29867f0f2f9007fd4",
+    "changed": 1792498803588
+  },
+  {
+    "id": "engine/wasm",
+    "title": "WebAssembly binding",
+    "what": "The binding every package module calls through, and its loader: each export takes the package's arguments, calls a reading and writes the answer in the package's shape (src/wasm/mod.rs, package/binding.ts).",
+    "files": [
+      "src/wasm/mod.rs",
+      "package/binding.ts"
+    ],
+    "symbols": [
+      "binding"
+    ],
+    "aliases": [],
+    "needs": [
+      "engine/js"
+    ],
+    "base": "0155d8f069d82b0b077e61b29867f0f2f9007fd4",
+    "changed": 1792498803591
+  }
+]
