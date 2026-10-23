@@ -21,7 +21,6 @@ copy, which base library receives it, what changes at the boundary, and the orde
 - **37 git checkouts, 6,333 tracked files.** The three bases (`base/chat`, `base/text`, `base/ui`), the two
   content repositories (`resources/persona`, `resources/skills`), 30 service checkouts, and `tools/news` and
   `tools/stock-index`.
-- **`base/markup` is a symbolic link to `base/text`**, not a repository of its own, and it is counted once.
 - **`tools/privacy-scan` is one script in no repository.**
 - **The checkouts outside the graph** are `services/gate-harvest`, `services/tui`, `services/word-chain` and
   the non-repository folder; every other checkout is registered with the code graph.
