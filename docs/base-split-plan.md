@@ -1,6 +1,6 @@
 # Base separations: the plan
 
-The plan for taking the copies of shared code out of the bmo-next repositories and putting each one in a base
+The plan for taking the copies of shared code out of the bmo repositories and putting each one in a base
 library. No code moves in this document's own change: it states what stands now, which repository holds which
 copy, which base library receives it, what changes at the boundary, and the order the swaps are filed in.
 
