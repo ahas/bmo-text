@@ -42,6 +42,20 @@ depend on it directly.
   and lockfile.
 - **Documents state what is true now**: no change history, no quoted source and no file-and-line pins.
 
+## A change from a repository below
+
+A repository below that needs a change this library does not serve sends it as a pull request against this
+repository's GitHub repository, from a branch made from this repository's main. Its job never commits to
+this main and keeps no copy of the change.
+
+The change is written as the general case, with this library's own tests. Before it is opened and again in
+review it is held to the rule that it names no repository that asked for it, no provider or unit of one, no
+branch for one unit, and no data or test fixture only the asker uses.
+
+Whoever holds this repository's work reviews the pull request and merges it or sends it back with the reason
+on it; a review service may assist. A merge raises this repository's version in semver, and the repository
+that asked pins that version and resumes the part it stopped.
+
 ## Checks
 
 - Rust, from the root: `cargo check --all-targets`, `cargo clippy --all-targets --all-features -- -D warnings`,
