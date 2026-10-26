@@ -25,5 +25,5 @@ differs per consumer is a parameter the consumer passes in (`docs/design.md`, ã€
 
 ## Who may depend on it
 
-Any bmo-next repository, service or base library alike, as one of the base libraries the testbed's
+Any bmo repository, service or base library alike, as one of the base libraries the testbed's
 `dependencies` check allows, and any coding harness, through the plugin. It knows none of them.

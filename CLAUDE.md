@@ -1,6 +1,6 @@
 # Working in this repository
 
-Three standing principles hold for every bmo-next repository, this one included:
+Three standing principles hold for every bmo repository, this one included:
 
 - **(a) Each service runs on its own,** with no context bleeding in from other repositories: it builds, tests
   and runs from its own repository, data and settings, and never reads another repository's code, files,
@@ -15,7 +15,7 @@ This repository is the base library `bmo-text`: the reading and writing of markd
 chat services, the console and the archive share. It ships one Rust crate at the root, where every reading is
 written, and one TypeScript package in `package/`, which is that crate built to WebAssembly under thin typed
 modules. The crate's binary, run as `bmo-text mcp`, is the MCP server of the `bmo-text` harness plugin in
-`plugin/`. It has no HTTP server, no deployment and no data of its own, and every bmo-next repository may
+`plugin/`. It has no HTTP server, no deployment and no data of its own, and every bmo repository may
 depend on it directly.
 
 ## Rules
@@ -41,6 +41,19 @@ depend on it directly.
   manifest and lockfile are the only ones at the root; `package/` is a project of its own with its manifest
   and lockfile.
 - **Documents state what is true now**: no change history, no quoted source and no file-and-line pins.
+
+## A change from a repository below
+
+A repository below that needs a change this library does not serve sends it as a pull request against this
+repository's GitHub repository, from a branch made from this repository's main. Its job never commits to
+this main and keeps no copy of the change.
+
+The change is written as the general case, with this library's own tests. Before it is opened and again in
+review it is held to the rule that it names no repository that asked for it, no provider or unit of one, no
+branch for one unit, and no data or test fixture only the asker uses.
+
+Whoever holds this repository's work reviews the pull request and merges it or sends it back with the reason
+on it; a review service may assist. A merge moves no version (`docs/conventions.md` in bmo-chat, 「Versions」: a version moves only at a release the owner declares); the repository that asked builds against the merged main through its path dependency and resumes the part it stopped.
 
 ## Checks
 
