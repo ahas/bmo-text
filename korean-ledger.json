@@ -4,7 +4,7 @@
   "src/answer_language.rs": 1,
   "src/english.rs": 1,
   "src/web_address.rs": 1,
-  "src/wording.rs": 2,
+  "src/wording.rs": 3,
   "tests/english.rs": 1,
   "tests/js.rs": 1
 }
