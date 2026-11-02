@@ -1,4 +1,4 @@
-mod shared;
+use crate::shared;
 
 use bmo_text::answer_language::{holds_korean, text_language};
 use serde_json::Value;

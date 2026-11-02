@@ -1,7 +1,7 @@
 //! The markdown reading held to the cases the package's is held to, its reading written in the package's
 //! shape: a piece of a line by its kind, a block by its kind, a fold by its parts.
 
-mod shared;
+use crate::shared;
 
 use bmo_text::js::chars;
 use bmo_text::markdown::*;

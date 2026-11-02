@@ -1,4 +1,4 @@
-mod shared;
+use crate::shared;
 
 use bmo_text::finding_markdown::*;
 use serde_json::Value;

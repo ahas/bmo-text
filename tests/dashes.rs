@@ -1,4 +1,4 @@
-mod shared;
+use crate::shared;
 
 use bmo_text::dashes::*;
 use serde_json::{Value, json};

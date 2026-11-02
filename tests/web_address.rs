@@ -1,4 +1,4 @@
-mod shared;
+use crate::shared;
 
 use bmo_text::js::{chars, units_of, within};
 use bmo_text::web_address::*;

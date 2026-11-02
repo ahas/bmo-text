@@ -1,8 +1,5 @@
 //! The cases a module is held to on both sides, read from its file under `cases/` (docs/design.md, 「The
-//! twins」). Each function the file names is answered by the test, and every case of it is held. Each test
-//! target takes what it needs of this module, so what one leaves unused is no fault.
-
-#![allow(dead_code)]
+//! twins」). Each function the file names is answered by the test, and every case of it is held.
 
 use std::collections::BTreeSet;
 use std::fs;

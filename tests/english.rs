@@ -1,4 +1,4 @@
-mod shared;
+use crate::shared;
 
 use std::ops::Range;
 

@@ -1,4 +1,4 @@
-mod shared;
+use crate::shared;
 
 use bmo_text::translation_parts::*;
 use serde_json::Value;
