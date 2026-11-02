@@ -8,6 +8,13 @@ publish = false
 # One test target, the harness at tests/main.rs (bmo-chat's docs/conventions.md, 「Rust builds」).
 autotests = false
 
+# The package is its own workspace, so that a registry crate the shared versions list (bmo-chat's
+# docs/conventions.md, 「Shared versions」) is written once as the shared line and taken optionally here.
+[workspace]
+
+[workspace.dependencies]
+tokio = { version = "1.53.3", features = ["fs", "io-std", "io-util", "macros", "net", "process", "rt", "rt-multi-thread", "signal", "sync", "test-util", "time"] }
+
 [dependencies]
 base64 = "0.23.1"
 clap = { version = "4.6.7", default-features = false, features = ["std", "derive", "help", "usage", "error-context"], optional = true }
@@ -20,7 +27,7 @@ regex = "1.13.1"
 rmcp = { version = "3.5.1", default-features = false, features = ["server", "macros", "transport-io"], optional = true }
 serde = { version = "1.0.229", features = ["derive"], optional = true }
 serde_json = { version = "1.0.154", optional = true }
-tokio = { version = "1.54.0", features = ["rt", "io-std", "macros"], optional = true }
+tokio = { workspace = true, optional = true }
 unicode-normalization = "0.1.26"
 unicode-segmentation = "1.13.3"
 url = "2.5.8"
