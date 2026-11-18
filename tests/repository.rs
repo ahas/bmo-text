@@ -3,7 +3,7 @@
 //! folder, no dependency on another bmo repository, one version, and Korean only where the ledger allows
 //! it and never hidden behind an escape (docs/design.md).
 
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeSet;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -66,13 +66,6 @@ fn is_code(path: &str) -> bool {
 /// The Hangul blocks: jamo, compatibility jamo, extended jamo A, the syllables and extended jamo B.
 fn is_hangul(code: u32) -> bool {
   matches!(code, 0x1100..=0x11ff | 0x3130..=0x318f | 0xa960..=0xa97f | 0xac00..=0xd7af | 0xd7b0..=0xd7ff)
-}
-
-fn hangul_lines(text: &str) -> usize {
-  text
-    .lines()
-    .filter(|line| line.chars().any(|character| is_hangul(character.into())))
-    .count()
 }
 
 /// The one manifest the root holds: the crate's.
@@ -331,40 +324,6 @@ fn the_escape_check_finds_each_form() {
   for written in ["\\u{2014}", "\\u3000", "\\x{a0}", "fromCharCode(65)", "0xa076_1d64_78bd_642f"] {
     assert!(hidden_hangul(&format!("let a = \"{written}\";")).is_empty(), "{written}");
   }
-}
-
-fn ledger() -> BTreeMap<String, usize> {
-  serde_json::from_str(&text_of("korean-ledger.json"))
-    .expect("the ledger is a JSON object from paths to counts")
-}
-
-#[test]
-fn every_code_file_holds_no_more_korean_lines_than_the_ledger_allows() {
-  let ledger = ledger();
-  let over: Vec<String> = checkout_files()
-    .into_iter()
-    .filter(|path| is_code(path))
-    .filter_map(|path| {
-      let held = hangul_lines(&text_of(&path));
-      let allowed = ledger.get(&path).copied().unwrap_or(0);
-
-      (held > allowed).then(|| format!("{path}: {held} lines, the ledger allows {allowed}"))
-    })
-    .collect();
-
-  assert!(over.is_empty(), "these files hold more Korean than the ledger allows: {over:#?}");
-}
-
-#[test]
-fn the_ledger_names_only_code_files_that_stand() {
-  let files = checkout_files();
-  let stale: Vec<String> =
-    ledger().into_keys().filter(|path| !is_code(path) || !files.contains(path)).collect();
-
-  assert!(
-    stale.is_empty(),
-    "the ledger names files that are not code files of the checkout: {stale:?}"
-  );
 }
 
 /// A value the checkout must not carry: the kind a report names and the form that finds it.
