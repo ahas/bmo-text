@@ -1,3 +1,5 @@
+**English** | [한국어](README.ko.md) | [日本語](README.ja.md) | [简体中文](README.zh-CN.md)
+
 # bmo-text
 
 The base library for reading and writing markdown and text the way a chat room, the console and the
@@ -13,7 +15,7 @@ calls the pure readings.
 
 | Folder | What it holds |
 |---|---|
-| `docs/` | The design, the public API, the boundary, the inventory of what the library was built from, and the personal-data rule |
+| `docs/` | The design, the public API, the boundary, the inventory of what the library was built from, the plan for the base separations, and the personal-data rule |
 | `src/` | The sources of the Rust crate `bmo-text`, whose manifest stands at the root |
 | `tests/` | The crate's tests, and the repository test that holds the repository's own shape |
 | `package/` | The TypeScript package `bmo-text`: its modules over the crate's WebAssembly build, the build in `wasm/`, and its tests |
