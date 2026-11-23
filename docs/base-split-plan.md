@@ -99,8 +99,8 @@ Three new bases keep the set small; every other group joins one of these or an e
 A service publishes its client in its own repository, as a crate named `bmo-<service>-client` or a package
 named `bmo-<service>-client`, versioned with the service and pinned exactly by its callers. The caller lists it
 under `base_libraries` in `testbed.toml` and imports it; it never restates the client's types. That mechanism
-already stands: agency imports `bmo-brain-client` and `bmo-node-client`, review imports `bmo-job-client` and
-`bmo-graph`, and artifact imports `bmo-explorer`; no repository holds a private copy of another service's client
+already stands: agency imports `bmo-brain-client` and `bmo-node-client`, review imports `bmo-job-client`, and
+artifact imports `bmo-explorer`; no repository holds a private copy of another service's client
 types today. The plan files no move for it.
 
 ## The copies, group by group
