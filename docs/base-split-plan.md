@@ -22,7 +22,7 @@ copy, which base library receives it, what changes at the boundary, and the orde
   content repositories (`resources/persona`, `resources/skills`), 30 service checkouts, and `tools/news` and
   `tools/stock-index`.
 - **`tools/privacy-scan` is one script in no repository.**
-- **The checkouts outside the graph** are `services/gate-harvest`, `services/tui`, `services/word-chain` and
+- **The checkouts outside the graph** are three private units' checkouts and
   the non-repository folder; every other checkout is registered with the code graph.
 - **The boundaries read:** each base's `docs/boundary.md` or `docs/contract.md`, `docs/api.md` and `docs/design.md`;
   each service's `docs/boundary*`, `docs/api.md`, `docs/design.md` and `testbed.toml`.
@@ -139,14 +139,14 @@ independent unless the order says otherwise.
 | R5 | `services/pocket` | `sdk/contract/src/*` (the tool contract and an answer ceiling), `host/src/{handler,toolbook}.rs`, `client/src/{wire,error,openapi}.rs` | bmo-text; bmo-tool; bmo-service | Move the contract crate to `base/tool` and depend on it; the ceiling goes to `bmo-text`; the host skeleton and the client shapes come from `bmo-service` |
 | R6 | `services/explorer` | `src/tool/{ceiling,input,kept,manifest,protocol,resources,session}.rs`, `src/mcp.rs`, `src/wire.rs`, `src/openapi.rs`, `src/web/clock.rs` | bmo-text; bmo-tool; bmo-service | The ceiling goes to `bmo-text`; the six near-copies go to `bmo-tool`, keeping `served.rs` and the site-tool trait; the server, wire, OpenAPI and clock come from `bmo-service` |
 | R7 | `services/web` | `client/apps/web/shared/web-address.ts`, `shared/translation-parts.ts`, `app/domain/numbers.ts`, `app/domain/player.ts`, `server/client/src/{wire,openapi}.rs` | bmo-text; bmo-ui; bmo-service | Take the package and delete the two readings; use the layer's number and player modules; take the server client shapes from `bmo-service`; the vendored package named `bmo-markup` is declared but unused — use it or remove it in the same change |
-| R8 | `services/kakaotalk` | `src/addresses.rs` (a two-prefix address test), `picture/src/{avif,svg}.rs` and the redrawing in `lib.rs` | bmo-text; bmo-picture | Call the base's address test; the picture crate keeps only its platform policy |
+| R8 | a private unit | `src/addresses.rs` (a two-prefix address test), `picture/src/{avif,svg}.rs` and the redrawing in `lib.rs` | bmo-text; bmo-picture | Call the base's address test; the picture crate keeps only its platform policy |
 | R9 | `base/chat` | `provider/src/plain.rs` (the markdown stripped to words) | bmo-text | The chat base depends on `bmo-text` and its dependency test and boundary document change from "nothing `bmo-*`" to "`bmo-text` alone"; this is the one base-to-base edge and is decided before it is filed |
 | R10 | `services/face` | `client/app/components/{MessageIsland,NumberInput}.vue`, `client/app/domain/{island,layers,numbers,overlays,screen}.ts`, the Pretendard and Caskaydia font copies | bmo-ui | Add the layer to the package and the Nuxt configuration, add the layer's wording keys to the pack, delete the copied components, modules and fonts, keep the editor's own components |
 | R11 | `services/drive` | `client/app/domain/copy.ts`; the bmo-ui release under `client/vendor/`; `src/mcp/`, `src/wire.rs`, `src/openapi.rs` | bmo-ui; bmo-service | Take the clipboard from the layer; update the vendored layer to `0.1.0-rev.5`; take the server skeleton from `bmo-service` |
 | R12 | `services/mail` | the bmo-ui release under `client/vendor/`; `src/mcp.rs`, `src/wire.rs`, `src/openapi.rs` | bmo-ui; bmo-service | Update the vendored layer to `0.1.0-rev.5`; take the server skeleton from `bmo-service` |
 | R13 | `services/remote` | the bmo-ui release under `client/vendor/`; `src/wire.rs`, `src/openapi.rs` | bmo-ui; bmo-service | Update the vendored layer to `0.1.0-rev.5`; take the wire shapes and documents from `bmo-service`; the terminal fonts stay, they are the service's own |
 | R14 | `services/review` | the bmo-ui release under `client/vendor/`; `src/mcp.rs`, `src/wire.rs`, `src/openapi.rs` | bmo-ui; bmo-service | Update the vendored layer to `0.1.0-rev.5`; take the server skeleton from `bmo-service` |
-| R15 | `services/graph` | the bmo-ui release under `client/vendor/`; `src/mcp.rs`, `src/wire.rs`, `src/settings.rs`, `src/openapi.rs` | bmo-ui; bmo-service | Update the vendored layer to `0.1.0-rev.5`; take the server skeleton, wire shapes and document builder from `bmo-service`; its graph settings schema stays |
+| R15 | a private unit | the bmo-ui release under `client/vendor/`; `src/mcp.rs`, `src/wire.rs`, `src/settings.rs`, `src/openapi.rs` | bmo-ui; bmo-service | Update the vendored layer to `0.1.0-rev.5`; take the server skeleton, wire shapes and document builder from `bmo-service`; its graph settings schema stays |
 | R16 | `services/voice` | the bmo-ui release under `client/vendor/` in the studio; `src/mcp.rs`, `src/wire.rs`, `src/openapi.rs` | bmo-ui; bmo-service | Update the vendored layer to `0.1.0-rev.5`; take the server skeleton from `bmo-service` |
 | R17 | `services/agency` | `crates/tool-call/*`, `crates/server/src/{mcp,openapi}.rs`, and its clock and configuration modules where they restate the common shapes | bmo-tool; bmo-service | Replace the tool-call crate with `bmo-tool`; take the server skeleton and common shapes from `bmo-service` |
 | R18 | `services/arbiter` | `crates/plugin/src/server.rs`, `crates/client/src/{page,error,openapi}.rs` | bmo-service | Take the server skeleton and client helpers from `bmo-service` |
@@ -154,13 +154,13 @@ independent unless the order says otherwise.
 | R20 | `services/cache-siren` | `src/mcp.rs`, `src/wire.rs`, `src/clock.rs`, `src/openapi.rs` | bmo-service | Take the skeleton, shapes, clock and builder; its local and transcript time rules stay |
 | R21 | `services/cache-warmer` | `src/mcp.rs`, `src/wire.rs`, `src/clock.rs`, `src/openapi.rs` | bmo-service | Take the skeleton, shapes, clock and builder |
 | R22 | `services/job` | `crates/plugin/src/{server,openapi}.rs`, `src/{clock,settings,refusal}.rs`, `crates/client/src/{page,openapi}.rs` | bmo-service | Take the server skeleton, clock, settings loader, refusal shape and client page from `bmo-service`; the code set and settings keys stay |
-| R23 | `services/ms-teams` | `client/src/{wire,types,openapi}.rs` | bmo-service | Take the common wire shapes and document builder; the platform types stay |
+| R23 | a private unit | `client/src/{wire,types,openapi}.rs` | bmo-service | Take the common wire shapes and document builder; the platform types stay |
 | R24 | `services/node` | `crates/plugin/src/{server,openapi}.rs`, `crates/client/src/{page,error}.rs` | bmo-service | Take the server skeleton, page and error shape |
-| R25 | `services/song` | `crates/plugin/src/{server,openapi}.rs`, `crates/client/src/{page,error}.rs` | bmo-service | Take the server skeleton, page and error shape |
+| R25 | a private unit | `crates/plugin/src/{server,openapi}.rs`, `crates/client/src/{page,error}.rs` | bmo-service | Take the server skeleton, page and error shape |
 | R26 | `services/testbed` | `plugin/src/{server,openapi}.rs`, `client/src/error.rs`, `suite/tests/integration/personal_data.rs` | bmo-service | Take the server skeleton; add the personal-data check to its suite and drop the repository test (this row also owns the check) |
 | R27 | `services/cli` | `tests/personal_data.rs` | testbed | Drop the repository test and add the check to `testbed.toml` |
 | R28 | `services/discord` | `tests/personal_data.rs` | testbed | Drop the repository test and add the check to `testbed.toml` |
-| R29 | `services/tui` | `tests/personal_data.rs` | testbed | Drop the repository test and add the check to `testbed.toml` |
+| R29 | a private unit | `tests/personal_data.rs` | testbed | Drop the repository test and add the check to `testbed.toml` |
 
 ## Base-side items
 
@@ -253,7 +253,7 @@ more than one base has one part per base, and each part lands where its base is 
   a prose, the untranslated mark) stay in gate: bmo-text does not serve them and no second consumer exists.
 - **The provider picture policy** (Telegram's icon type and size, KakaoTalk's white ground) stays with the
   provider; the base takes the mechanism.
-- **`services/gate-harvest`, `services/word-chain`, the content repositories and the two tools repositories**
+- **Two private units' checkouts, the content repositories and the two tools repositories**
   hold no copy of base code. Their vendored files are published clients taken as delivered.
 
 ## The count
