@@ -7,7 +7,7 @@ use clap::{Parser, Subcommand};
 
 /// Readings of markdown and text.
 #[derive(Parser)]
-#[command(name = "bmo-text", version)]
+#[command(name = "bmo-text", version = bmo_text::mcp::VERSION)]
 struct Command {
   #[command(subcommand)]
   verb: Verb,
