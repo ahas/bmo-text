@@ -63,5 +63,6 @@ on it; a review service may assist. A merge moves no version (`docs/conventions.
   the crate, `bun run build` first: the package's tests fail on a WebAssembly build older than the crate.
 - `testbed.toml` declares the quick checks and the setup for the testbed, which checks and tests the crate
   as the root project and the package by its `check` script.
-- The version is the repository's, in semver: `VERSION`, the crate's and the package's version are one
-  number, and the repository test fails where they differ.
+- The version is the set's, read off the git tag when a build is made: the testbed hands it to the build as
+  `BMO_VERSION`, and the MCP server names it (bmo-chat's `docs/conventions.md`, 「Versions」). The crate's,
+  the package's and the plugin's manifest versions are placeholders that never move.

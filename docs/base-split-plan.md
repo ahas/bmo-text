@@ -227,7 +227,7 @@ more than one base has one part per base, and each part lands where its base is 
 **A base item**
 
 - The base's own checks and suite pass; its boundary, API and inventory documents name what it now serves and
-  what it dropped; `VERSION` and every manifest carry the new number together.
+  what it dropped.
 - For `bmo-text`, the crate's checks and tests pass and the package is built before its tests.
 - For `bmo-ui`, the guard test passes and the layer's wording-key list is unchanged unless the layer itself
   changed.

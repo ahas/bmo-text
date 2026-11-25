@@ -12,9 +12,9 @@
   and the `bmo-text` skill.
 - **The cases** both sides are held to, one file per module under `cases/`, named in `docs/api.md`.
 
-The version both carry is the repository's, in `VERSION`. A consumer pins the version it was built
-against, an exact revision while the number is `0.1.0-rev.N`, and moves to a later one only by its own
-change.
+The version is the set's, read off the git tag when a build is made; the manifests' versions are placeholders
+that never move. A consumer pins no version: it depends on this repository by path and is built against the
+checkout beside it.
 
 ## What this repository calls
 

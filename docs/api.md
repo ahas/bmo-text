@@ -1,9 +1,9 @@
 # Public API
 
 Everything a consumer may use, project by project and module by module, and the tools of the MCP server,
-fixed at version `0.1.0-rev.5` (「Version numbers」). An item not named here is internal and may change in
-any version. Both sides carry the same modules (`docs/design.md`, 「The twins」), the crate's `js` apart, and
-a module gives one answer for one input on either side. Lengths are UTF-16 units and spaces are
+fixed at the release the commit is tagged with (「Version numbers」). An item not named here is internal and
+may change in any version. Both sides carry the same modules (`docs/design.md`, 「The twins」), the crate's
+`js` apart, and a module gives one answer for one input on either side. Lengths are UTF-16 units and spaces are
 JavaScript's white space; a length named `chars` counts code points. An item one side carries and the other
 does not is marked as such.
 
@@ -159,7 +159,7 @@ The markdown an agent writes, read line for line into Telegram's HTML and plain 
 The crate's own, compiled only with the `mcp` feature: the MCP server the binary starts (「The MCP server
 `bmo-text mcp`」). **`serve_stdio`** answers MCP over the process's standard input and output until the other
 side closes them; **`TextTools`** is the server, whose tools are no API of their own beyond what that section
-states.
+states; **`VERSION`** is the version the server names itself at (「Version numbers」).
 
 ### `translation_parts`
 
@@ -378,7 +378,7 @@ sentence.
 
 ## The harness plugin `bmo-text`
 
-`plugin/` is the plugin a harness installs: its manifest names it `bmo-text` at the repository's version,
+`plugin/` is the plugin a harness installs: its manifest names it `bmo-text` at a placeholder version,
 its MCP configuration starts `bmo-text mcp` from the harness's `PATH`, and its skill `bmo-text` tells the
 harness when to call each tool.
 
@@ -395,9 +395,12 @@ harness when to call each tool.
 
 ## Version numbers
 
-The repository is numbered `0.1.0` until its first release, each version cut before it carrying a `-rev.N`
-suffix that counts the versions so far; the version in force is `0.1.0-rev.5`. A number the repository
-carried under its earlier semver numbering reads as the revision beside it and names the same API:
+The version is the set's (bmo-chat's `docs/conventions.md`, 「Versions」): a release is the git tag
+`v<version>` on a commit, and a build reads its version off the tags when it is made, which the testbed hands
+it as `BMO_VERSION`. The MCP server names that version, or the crate's manifest version where a build was made
+without it. The crate's, the package's and the plugin's manifest versions are placeholders that never move, and
+nothing shows them as the running version. A number the repository carried under its earlier semver numbering
+reads as the revision beside it and names the same API:
 
 | Earlier number | Revision |
 | --- | --- |

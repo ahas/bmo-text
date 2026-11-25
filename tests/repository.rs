@@ -183,22 +183,6 @@ fn neither_manifest_depends_on_another_bmo_repository() {
   );
 }
 
-#[test]
-fn the_crate_and_the_package_carry_the_repository_version() {
-  let version = text_of("VERSION").trim().to_owned();
-  let crate_version = cargo_manifest()["package"]["version"].as_str().map(str::to_owned);
-  let package_version = package_manifest()["version"].as_str().map(str::to_owned);
-
-  assert!(!version.is_empty(), "VERSION names the repository's version");
-  assert_eq!(crate_version.as_deref(), Some(version.as_str()), "the crate's version is VERSION's");
-  assert_eq!(package_version.as_deref(), Some(version.as_str()), "the package's version is VERSION's");
-  assert_eq!(
-    plugin_manifest()["version"].as_str(),
-    Some(version.as_str()),
-    "the plugin's version is VERSION's"
-  );
-}
-
 fn plugin_manifest() -> Value {
   serde_json::from_str(&text_of("plugin/.claude-plugin/plugin.json"))
     .expect("the plugin's manifest is JSON")

@@ -30,11 +30,12 @@ repository.
   Rust consumer taking the readings alone, leave it out with `default-features = false`.
 - **The harness plugin in `plugin/`.** The plugin `bmo-text` is the manifest a harness installs, the MCP
   server it starts, and the `bmo-text` skill telling the harness when to call which tool.
-- **One version.** `VERSION` holds the repository's semver; the crate, the package and the plugin carry
-  the same number. Until the first release the number is `0.1.0` with a `-rev.N` suffix, N counting the
-  versions cut so far (`docs/api.md`, 「Version numbers」). The public API stated in `docs/api.md`, the MCP
-  server's tools among it, is fixed at the revision `VERSION` names; a change to a public signature, to a
-  tool's input or output, or to what a reading answers for an input cuts the next revision.
+- **The set's version.** The version is the set's, read off the git tag when a build is made and handed to
+  it as `BMO_VERSION` (`docs/api.md`, 「Version numbers」); the crate, the package and the plugin name a
+  placeholder version in their manifests that never moves. The public API stated in `docs/api.md`, the MCP
+  server's tools among it, is fixed at the release the commit is tagged with; a change to a public
+  signature, to a tool's input or output, or to what a reading answers for an input is a contract change,
+  which sets the next release's semver step.
 
 ## One implementation
 

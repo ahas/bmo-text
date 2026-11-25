@@ -20,6 +20,14 @@ use crate::translation_parts::{TRANSLATION_PART_TOKENS, translation_parts};
 use crate::web_address::web_addresses_in;
 use crate::wording::text_swaps;
 
+/// The version the server names itself at: the set's version the build was made at, which the testbed
+/// hands the build as `BMO_VERSION`, else the manifest's placeholder (bmo-chat's `docs/conventions.md`,
+/// 「Versions」).
+pub const VERSION: &str = match option_env!("BMO_VERSION") {
+  Some(version) => version,
+  None => env!("CARGO_PKG_VERSION"),
+};
+
 /// What a harness is told of the server when it connects.
 const INSTRUCTIONS: &str = "Readings of markdown and plain text, each a pure computation over the text given: \
 the dashes left between words, the language a text is written in, a markdown text's headings and sections, an \
@@ -301,7 +309,7 @@ impl TextTools {
 impl ServerHandler for TextTools {
   fn get_info(&self) -> ServerConfig {
     ServerConfig::new(ServerCapabilities::builder().enable_tools().build())
-      .with_server_info(Implementation::new("bmo-text", env!("CARGO_PKG_VERSION")))
+      .with_server_info(Implementation::new("bmo-text", VERSION))
       .with_instructions(INSTRUCTIONS)
   }
 }

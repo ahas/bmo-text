@@ -47,7 +47,7 @@ impl Server {
     );
 
     assert_eq!(info["serverInfo"]["name"], "bmo-text");
-    assert_eq!(info["serverInfo"]["version"], env!("CARGO_PKG_VERSION"));
+    assert_eq!(info["serverInfo"]["version"], bmo_text::mcp::VERSION);
     server.send(&json!({ "jsonrpc": "2.0", "method": "notifications/initialized" }));
     server
   }
