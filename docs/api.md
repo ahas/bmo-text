@@ -399,14 +399,4 @@ The version is the set's (bmo-chat's `docs/conventions.md`, 「Versions」): a r
 `v<version>` on a commit, and a build reads its version off the tags when it is made, which the testbed hands
 it as `BMO_VERSION`. The MCP server names that version, or the crate's manifest version where a build was made
 without it. The crate's, the package's and the plugin's manifest versions are placeholders that never move, and
-nothing shows them as the running version. A number the repository carried under its earlier semver numbering
-reads as the revision beside it and names the same API:
-
-| Earlier number | Revision |
-| --- | --- |
-| `0.1.0` | `0.1.0` |
-| `1.0.0` | `0.1.0-rev.1` |
-| `2.0.0` | `0.1.0-rev.2` |
-| `2.1.0` | `0.1.0-rev.3` |
-| `2.2.0` | `0.1.0-rev.4` |
-| `3.0.0` | `0.1.0-rev.5` |
+nothing shows them as the running version.
